@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { browser } from '$app/environment';
+	import oauthUrl from '../lib/oauthUrl';
 
 	export let data: PageData;
 
@@ -9,7 +10,7 @@
 
 		const scopes = ['guilds','guilds.members.read'].join('%20');
 		const state = self.crypto.randomUUID();
-		const redirect = 'https://basedcount-bingo.netlify.app/oauth';
+		const redirect = oauthUrl;
 		const url = `https://discord.com/oauth2/authorize?response_type=code&client_id=${data.discordId}&scope=${scopes}&state=${state}&redirect_uri=${redirect}`;
 				
 		return url;
