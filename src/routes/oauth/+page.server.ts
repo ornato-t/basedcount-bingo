@@ -16,10 +16,10 @@ export const load: PageServerLoad = async ({ url }) => {
     try {
         const res = await fetch('https://discord.com/api/oauth2/token', {
             method: 'POST',
-            body: JSON.stringify({
-                grant_type: 'authorization_code',
-                code: code,
-                redirect_uri: oauthUrl
+            body: new URLSearchParams({
+                'grant_type': 'authorization_code',
+                'code': code ?? '',
+                'redirect_uri': oauthUrl
             }),
             headers: new Headers({
                 'Authorization': 'Basic '+btoa(`${DISCORD_ID}:${DISCORD_SECRET}`), 
@@ -31,7 +31,7 @@ export const load: PageServerLoad = async ({ url }) => {
         if (!res.ok) throw skError(res.status, { message: json.error });
 
         return {
-            res: res.json(),
+            res: json,
             status: res.status,
             statusTest: res.statusText
         };
