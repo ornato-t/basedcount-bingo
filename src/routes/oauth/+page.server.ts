@@ -72,6 +72,7 @@ async function fetchProfile(token: string) {
     return res.json() as Promise<UserProfile>;
 }
 
+//Inserts or refreshes a user's Discord data in the database. Non updated data remains unchanged.
 async function upsertUser(user: UserProfile, db: Collection<User>) {
     const res = await db.findOneAndUpdate(
         { discordId: user.user.id },

@@ -6,6 +6,8 @@
 
 <ul>
 	<li>Name: {data.discord.nick}</li>
+	<li>Discord ID: {data.discord.user.id}</li>
+	<li>Internal ID: {data.id}</li>
 	<li>Bio: {data.discord.bio}</li>
 	<li>Roles: {data.discord.roles}</li>
 	<li>Image: <img src="https://cdn.discordapp.com/avatars/{data.discord.user.id}/{data.discord.avatar ?? data.discord.user.avatar}" alt="avatar"></li>
