@@ -37,6 +37,6 @@ export const load: PageServerLoad = async ({ url }) => {
         };
 
     } catch (_) {
-        throw skError(500, { message: "Error during OAuth2 token exchange", });
+        throw skError(500, { message: "Error during OAuth2 token exchange: " + _, });
     }
 };
