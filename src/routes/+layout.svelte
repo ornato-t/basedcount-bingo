@@ -35,7 +35,7 @@
 	<meta name="og:type" content="website">
 </svelte:head>
 
-<div class="navbar bg-base-100">
+<nav class="navbar bg-base-100">
   <div class="navbar-start">
   </div>
 
@@ -45,7 +45,7 @@
 
   <div class="navbar-end">
   </div>     
-</div>
+</nav>
 
 <main class="lg:min-h-[calc(100vh-9rem)] min-h-[calc(100vh-4rem)]">
   <slot />
