@@ -6,13 +6,13 @@
 	export let data: PageData;
 
 	function getLogin() {
-		if(!browser) return;	//Necessary for UUID generation
+		if (!browser) return; //Necessary for UUID generation
 
 		const scopes = ['guilds.members.read'].join('%20');
-		const state = self.crypto.randomUUID();
+		const state = self.crypto.randomUUID(); //TODO: verify state
 		const redirect = oauthUrl;
 		const url = `https://discord.com/oauth2/authorize?response_type=code&client_id=${data.discordId}&scope=${scopes}&state=${state}&redirect_uri=${redirect}`;
-				
+
 		return url;
 	}
 </script>

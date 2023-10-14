@@ -5,9 +5,9 @@
 </script>
 
 <ul>
-	<li>Name: {data.nick}</li>
-	<li>Bio: {data.bio}</li>
-	<li>Roles: {data.roles}</li>
-	<li>Image: <img src="https://cdn.discordapp.com/avatars/{data.user.id}/{data.avatar ?? data.user.avatar}" alt="avatar"></li>
-	<li>Banner: <img src="https://cdn.discordapp.com/avatars/{data.user.id}/{data.banner ?? data.user.banner}" alt="banner"></li>
+	<li>Name: {data.discord.nick}</li>
+	<li>Bio: {data.discord.bio}</li>
+	<li>Roles: {data.discord.roles}</li>
+	<li>Image: <img src="https://cdn.discordapp.com/avatars/{data.discord.user.id}/{data.discord.avatar ?? data.discord.user.avatar}" alt="avatar"></li>
+	<li>Banner: <img src="https://cdn.discordapp.com/avatars/{data.discord.user.id}/{data.discord.banner ?? data.discord.user.banner}" alt="banner"></li>
 </ul>

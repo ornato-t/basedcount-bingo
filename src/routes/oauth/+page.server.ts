@@ -1,10 +1,14 @@
 import type { PageServerLoad } from './$types';
+import type { Collection } from 'mongodb';
 import { env } from '$env/dynamic/private';
 import { error as skError } from '@sveltejs/kit';
 import oauthUrl from '../../lib/oauthUrl';
-import serverId from '../../lib/serverId';
+import { serverId } from '../../lib/discord';
+import type User from '$lib/userType';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, locals }) => {
+    const { users } = locals;
+
     const code = url.searchParams.get('code');
     const error = url.searchParams.get('error');
     const errorDescription = url.searchParams.get('error_description');
@@ -13,8 +17,13 @@ export const load: PageServerLoad = async ({ url }) => {
 
     const token = await fetchToken(code);
 
+    const profile = await fetchProfile(token);
+
+    const id = await upsertUser(profile, users);
+
     return {
-        ...await fetchProfile(token)
+        id,
+        discord: profile
     }
 };
 
@@ -61,32 +70,51 @@ async function fetchProfile(token: string) {
     })
 
     return res.json() as Promise<UserProfile>;
+}
 
-    interface UserProfile {
-        avatar: string
-        flags: number
-        joined_at: string
-        nick: string
-        pending: boolean
-        roles: string[]
-        user: User
-        mute: boolean
-        deaf: boolean
-        bio: string
-        banner: string
-      }
-      
-      interface User {
-        id: string
-        username: string
-        avatar: string
-        discriminator: string
-        public_flags: number
-        flags: number
-        banner: string
-        accent_color: number
-        global_name: string
-        avatar_decoration_data: string
-        banner_color: string
-      }
+async function upsertUser(user: UserProfile, db: Collection<User>) {
+    const res = await db.findOneAndUpdate(
+        { discordId: user.user.id },
+        {
+            $set: {
+                banner: user.banner ?? user.user.banner ?? null,
+                bio: user.bio,
+                discordId: user.user.id,
+                image: user.avatar ?? user.user.avatar ?? null,
+                name: user.nick
+            }
+        },
+        { upsert: true }
+    );
+
+    return res?._id.toString();
+}
+
+
+interface UserProfile {
+    avatar: string | undefined
+    flags: number
+    joined_at: string
+    nick: string
+    pending: boolean
+    roles: string[]
+    user: DiscordUser
+    mute: boolean
+    deaf: boolean
+    bio: string
+    banner: string | undefined
+}
+
+interface DiscordUser {
+    id: string
+    username: string
+    avatar: string | undefined
+    discriminator: string
+    public_flags: number
+    flags: number
+    banner: string | undefined
+    accent_color: number
+    global_name: string
+    avatar_decoration_data: string | undefined
+    banner_color: string
 }
