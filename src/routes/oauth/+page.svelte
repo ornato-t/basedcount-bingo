@@ -10,6 +10,6 @@
 	<li>Internal ID: {data.id}</li>
 	<li>Bio: {data.discord.bio}</li>
 	<li>Roles: {data.discord.roles}</li>
-	<li>Image: <img src="https://cdn.discordapp.com/avatars/{data.discord.user.id}/{data.discord.avatar ?? data.discord.user.avatar}" alt="avatar"></li>
-	<li>Banner: <img src="https://cdn.discordapp.com/avatars/{data.discord.user.id}/{data.discord.banner ?? data.discord.user.banner}" alt="banner"></li>
+	<li>Image: <img src="https://cdn.discordapp.com/avatars/{data.discord.user.id}/{data.discord.avatar ?? data.discord.user.avatar}" alt="No avatar available"></li>
+	<li>Banner: <img src="https://cdn.discordapp.com/avatars/{data.discord.user.id}/{data.discord.banner ?? data.discord.user.banner}" alt="No banner available"></li>
 </ul>

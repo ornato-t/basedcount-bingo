@@ -6,7 +6,7 @@ import oauthUrl from '../../lib/oauthUrl';
 import { serverId } from '../../lib/discord';
 import type User from '$lib/userType';
 
-export const load: PageServerLoad = async ({ url, locals }) => {
+export const load: PageServerLoad = async ({ url, locals, cookies }) => {
     const { users } = locals;
 
     const code = url.searchParams.get('code');
@@ -20,6 +20,11 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     const profile = await fetchProfile(token);
 
     const id = await upsertUser(profile, users);
+    if (id !== undefined) {
+        cookies.set('bingo-id', id, {
+            path: '/',
+        })
+    }
 
     return {
         id,
