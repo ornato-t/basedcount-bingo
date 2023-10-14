@@ -7,8 +7,7 @@
 <div>
 	Hello oauth. Got these:
 	<ul>
-		<li>Status: {data.status}</li>
-		<li>Status Text: {data.statusTest}</li>
-		<li>JSON: {JSON.stringify(data.res)}</li>
+		<li>Servers: {JSON.stringify(data.servers)}</li>
+		<li>Profile in BC server: {JSON.stringify(data.serverProfile)}</li>
 	</ul>
 </div>
