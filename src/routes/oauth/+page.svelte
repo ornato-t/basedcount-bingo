@@ -9,6 +9,6 @@
 	<ul>
 		<li>Status: {data.status}</li>
 		<li>Status Text: {data.statusTest}</li>
-		<li>JSON: {data.res}</li>
+		<li>JSON: {JSON.stringify(data.res)}</li>
 	</ul>
 </div>
