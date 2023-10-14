@@ -14,8 +14,7 @@ export const load: PageServerLoad = async ({ url }) => {
     const token = await fetchToken(code);
 
     return {
-        servers: await fetchGuilds(token),
-        serverProfile: await fetchProfile(token)
+        ...await fetchProfile(token)
     }
 };
 
@@ -50,20 +49,6 @@ async function fetchToken(code: string | null) {
     }
 }
 
-async function fetchGuilds(token: string) {
-    const url = 'https://discord.com/api/users/@me/guilds';
-
-    const res = await fetch(url, {
-        method: 'GET',
-        headers: new Headers({
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }),
-    })
-
-    return res.json();
-}
-
 async function fetchProfile(token: string) {
     const url = `https://discord.com/api/users/@me/guilds/${serverId}/member`;
 
@@ -75,5 +60,33 @@ async function fetchProfile(token: string) {
         }),
     })
 
-    return res.json();
+    return res.json() as Promise<UserProfile>;
+
+    interface UserProfile {
+        avatar: string
+        flags: number
+        joined_at: string
+        nick: string
+        pending: boolean
+        roles: string[]
+        user: User
+        mute: boolean
+        deaf: boolean
+        bio: string
+        banner: string
+      }
+      
+      interface User {
+        id: string
+        username: string
+        avatar: string
+        discriminator: string
+        public_flags: number
+        flags: number
+        banner: string
+        accent_color: number
+        global_name: string
+        avatar_decoration_data: string
+        banner_color: string
+      }
 }
