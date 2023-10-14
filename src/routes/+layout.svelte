@@ -1,8 +1,15 @@
 <script>
   import "../app.css";
+
+  const DISCORD_LINK = 'https://discord.com/invite/fDnkukh6CF';
+  const WEBSITE_LINK = 'https://basedcount.com';
+  const LEMMY_LINK = 'https://lemmy.basedcount.com';
+  const GITHUB_LINK = 'https://github.com/ornato-t/basedcount-bingo';
 </script>
 
 <svelte:head>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 	<!-- COMMON TAGS -->
 	<meta charset="utf-8">
 	<title>Based Count Bingo</title>
@@ -28,4 +35,35 @@
 	<meta name="og:type" content="website">
 </svelte:head>
 
-<slot />
+<div class="navbar bg-base-100">
+  <div class="navbar-start">
+  </div>
+
+  <div class="navbar-center">
+    <a class="btn btn-ghost normal-case text-2xl cursor-pointer" href="/">Based Count Bingo</a>
+  </div>
+
+  <div class="navbar-end">
+  </div>     
+</div>
+
+<main class="lg:min-h-[calc(100vh-9rem)] min-h-[calc(100vh-4rem)]">
+  <slot />
+</main>
+
+<footer class="footer items-center p-4 text-neutral-content hidden md:grid">
+  <nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+    <a href={DISCORD_LINK} class="btn btn-circle btn-ghost">
+      <i class='bx bxl-discord-alt bx-sm'/>
+    </a>
+    <a href={WEBSITE_LINK} class="btn btn-circle btn-ghost">
+      <i class='bx bx-world bx-sm'/>
+    </a>
+    <a href={LEMMY_LINK} class="btn btn-circle btn-ghost">
+      <i class='bx bxs-conversation bx-sm'/>
+    </a>
+    <a href={GITHUB_LINK} class="btn btn-circle btn-ghost" >
+      <i class='bx bxl-github bx-sm'></i>
+  </a>
+  </nav>
+</footer>
