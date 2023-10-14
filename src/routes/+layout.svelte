@@ -47,8 +47,8 @@
   </div>     
 </nav>
 
-<main class="lg:min-h-[calc(100vh-9rem)] min-h-[calc(100vh-4rem)]">
-  <slot />
+<main class="custom-full-size">
+  <slot/>
 </main>
 
 <footer class="footer items-center p-4 text-neutral-content hidden md:grid">

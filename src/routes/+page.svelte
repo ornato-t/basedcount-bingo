@@ -1,13 +1,17 @@
-<main>
-    <h1 class="text-3xl font-bold text-red-500 underline">
-        Hello world!
-    </h1>
-  
-    <button class="btn">This is a button</button>
-
-    <div>
-        The balloon will stop working if you don't start working
-
-        <i class='bx bxs-balloon'></i>
+<div class="hero">
+  <div class="hero-overlay bg-opacity-80"></div>
+  <div class="hero-content text-center rounded-2xl">
+    <div class="max-w-lg">
+        <h1 class="mb-5 text-5xl font-bold">Welcome</h1>
+        <p class="mb-2">
+            Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge.
+        <p/><p class="mb-7">
+            Tread carefully, for pure retardation awaits you beyond this point.
+        </p>
+        <button class="btn btn-primary btn-lg">
+            <i class='bx bxl-discord-alt bx-sm'/>
+            enter with discord
+        </button>
     </div>
-</main>
+  </div>
+</div>

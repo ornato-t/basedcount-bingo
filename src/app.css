@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*      Defining rules */
+/* Used in mobile pages */
+.full-size-mobile > * {
+    height: calc(100vh - 4rem);
+}
+
+/* Used in desktop pages */
+.full-size-desktop > * {
+    height: calc(100vh - 9rem);
+
+}
+
+/* Applying rules */
+.custom-full-size {
+    @apply full-size-mobile;
+  }
+  
+  @screen lg {
+    .custom-full-size {
+      @apply full-size-desktop;
+    }
+  }
