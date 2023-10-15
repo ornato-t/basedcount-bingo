@@ -76,15 +76,15 @@ async function fetchProfile(token: string) {
 //Inserts or refreshes a user's Discord data in the database. Non updated data remains unchanged.
 async function upsertUser(user: UserProfile, db: Collection<User>) {
     const res = await db.findOneAndUpdate(
-        { discordId: user.user.id },
+        { discord_id: user.user.id },
         {
             $set: {
                 discord_id: user.user.id,
                 name: user.nick,
                 admin: isAdmin(user),
                 bio: user.bio,
-                image: user.avatar !== null ? `https://cdn.discordapp.com/avatars/${user.user.id}/${user.avatar}.webp` : null,
-                banner: user.banner !== null ? `https://cdn.discordapp.com/avatars/${user.user.id}/${user.banner}.webp` : null,
+                image: createLink(user.user.id, user.avatar ?? user.user.avatar, 'avatars'),
+                banner: createLink(user.user.id, user.banner ?? user.user.banner, 'banners'),
             }
         },
         { upsert: true }
@@ -106,6 +106,13 @@ function isPlayer(user: UserProfile) {
     if (user.roles.includes(bingoPlayerRole))
         return true;
     return false;
+}
+
+function createLink(id: string, hash: string | undefined, endpoint: 'avatars' | 'banners') {
+    if (hash == null && endpoint === 'avatars') return 'https://discord.com/assets/7c8f476123d28d103efe381543274c25.png';   //Green default picture
+    else if (hash == null && endpoint === 'banners') return null;
+
+    return `https://cdn.discordapp.com/${endpoint}/${id}/${hash}.webp`
 }
 
 interface UserProfile {
