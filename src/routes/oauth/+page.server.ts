@@ -1,10 +1,10 @@
 import type { PageServerLoad } from './$types';
 import type { Collection } from 'mongodb';
-import { env } from '$env/dynamic/private';
-import { error as skError } from '@sveltejs/kit';
-import oauthUrl from '../../lib/oauthUrl';
-import { serverId } from '../../lib/discord';
 import type User from '$lib/userType';
+import { env } from '$env/dynamic/private';
+import { redirect, error as skError } from '@sveltejs/kit';
+import { serverId } from '../../lib/discord';
+import oauthUrl from '../../lib/oauthUrl';
 
 export const load: PageServerLoad = async ({ url, locals, cookies }) => {
     const { users } = locals;
@@ -20,16 +20,11 @@ export const load: PageServerLoad = async ({ url, locals, cookies }) => {
     const profile = await fetchProfile(token);
 
     const id = await upsertUser(profile, users);
-    if (id !== undefined) {
-        cookies.set('bingo-id', id, {
-            path: '/',
-        })
-    }
+    cookies.set('bingo-id', id, {
+        path: '/',
+    })
 
-    return {
-        id,
-        discord: profile
-    }
+    throw redirect(308, '/');
 };
 
 async function fetchToken(code: string | null) {
@@ -93,7 +88,9 @@ async function upsertUser(user: UserProfile, db: Collection<User>) {
         { upsert: true }
     );
 
-    return res?._id.toString();
+    if (res === null) throw skError(500, "Error while updating database");
+
+    return res._id.toString();
 }
 
 

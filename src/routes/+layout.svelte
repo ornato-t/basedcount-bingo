@@ -1,10 +1,15 @@
-<script>
+<script lang="ts">
+	import type { LayoutData } from './$types';
 	import '../app.css';
 
 	const DISCORD_LINK = 'https://discord.com/invite/fDnkukh6CF';
 	const WEBSITE_LINK = 'https://basedcount.com';
 	const LEMMY_LINK = 'https://lemmy.basedcount.com';
 	const GITHUB_LINK = 'https://github.com/ornato-t/basedcount-bingo';
+
+	export let data: LayoutData;
+
+	console.log('Loading with cookie:', data.cookie)
 </script>
 
 <svelte:head>
