@@ -25,10 +25,17 @@
 			<p class="mb-2">Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge.</p>
 			<p />
 			<p class="mb-7">Tread carefully, for pure retardation awaits you beyond this point.</p>
-			<a class="btn btn-primary btn-lg" href={getLogin()}>
-				<i class="bx bxl-discord-alt bx-sm" />
-				enter with discord
-			</a>
+			{#if data.id !== null}
+				<a class="btn btn-primary btn-lg" href="/play">
+					<i class="bx bx-play bx-sm" />
+					play
+				</a>
+			{:else}
+				<a class="btn btn-primary btn-lg" href={getLogin()}>
+					<i class="bx bxl-discord-alt bx-sm" />
+					enter with discord
+				</a>
+			{/if}
 		</div>
 	</div>
 </div>
