@@ -4,6 +4,7 @@
 	import oauthUrl from '../lib/oauthUrl';
 
 	export let data: PageData;
+	export let id: string | null;
 
 	function getLogin() {
 		if (!browser) return; //Necessary for UUID generation
@@ -29,6 +30,7 @@
 				<i class="bx bxl-discord-alt bx-sm" />
 				enter with discord
 			</a>
+			Received id: {id}
 		</div>
 	</div>
 </div>

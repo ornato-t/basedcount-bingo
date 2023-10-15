@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { LayoutData } from './$types';
 	import '../app.css';
+	import { onMount } from 'svelte';
+	import type { LayoutData } from './$types';
 
 	const DISCORD_LINK = 'https://discord.com/invite/fDnkukh6CF';
 	const WEBSITE_LINK = 'https://basedcount.com';
@@ -9,7 +10,18 @@
 
 	export let data: LayoutData;
 
-	console.log('Loading with cookie:', data.cookie)
+	$: id = null as string | null;
+
+	onMount(() => {
+		const stored = window.localStorage.getItem('bingo-id');
+
+		if(data.cookie !== undefined && data.cookie !== stored){	//Set id to cookie, refresh local storage
+			id = data.cookie;
+			window.localStorage.setItem('bingo-id', data.cookie);
+		} else if(stored !== null){									//Set id to local storage
+			id = stored;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -19,32 +31,20 @@
 	<meta charset="utf-8" />
 	<title>Based Count Bingo</title>
 	<!-- Search Engine -->
-	<meta
-		name="description"
-		content="Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge."
-	/>
+	<meta name="description" content="Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge." />
 	<meta name="image" content="https://basedcount-bingo.netlify.app/favicon.png" />
 	<!-- Schema.org for Google -->
 	<meta itemprop="name" content="Based Count Bingo" />
-	<meta
-		itemprop="description"
-		content="Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge."
-	/>
+	<meta itemprop="description" content="Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge." />
 	<meta itemprop="image" content="https://basedcount-bingo.netlify.app/favicon.png" />
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:title" content="Based Count Bingo" />
-	<meta
-		name="twitter:description"
-		content="Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge."
-	/>
+	<meta name="twitter:description" content="Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge." />
 	<meta name="twitter:image:src" content="https://basedcount-bingo.netlify.app/favicon.png" />
 	<!-- Open Graph general (Facebook, Pinterest & Google+) -->
 	<meta name="og:title" content="Based Count Bingo" />
-	<meta
-		name="og:description"
-		content="Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge."
-	/>
+	<meta name="og:description" content="Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge." />
 	<meta name="og:image" content="https://basedcount-bingo.netlify.app/favicon.png" />
 	<meta name="og:url" content="https://basedcount-bingo.netlify.app/" />
 	<meta name="og:site_name" content="Based Count Bingo" />
@@ -63,7 +63,8 @@
 </nav>
 
 <main class="custom-full-size">
-	<slot />
+	Id is: {id}
+	<slot {id}/>
 </main>
 
 <footer class="footer items-center p-4 text-neutral-content hidden md:grid">
