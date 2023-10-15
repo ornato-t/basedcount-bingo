@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 
 	const DISCORD_LINK = 'https://discord.com/invite/fDnkukh6CF';
@@ -9,19 +8,6 @@
 	const GITHUB_LINK = 'https://github.com/ornato-t/basedcount-bingo';
 
 	export let data: LayoutData;
-
-	$: id = null as string | null;
-
-	onMount(() => {
-		const stored = window.localStorage.getItem('bingo-id');
-
-		if(data.cookie !== undefined && data.cookie !== stored){	//Set id to cookie, refresh local storage
-			id = data.cookie;
-			window.localStorage.setItem('bingo-id', data.cookie);
-		} else if(stored !== null){									//Set id to local storage
-			id = stored;
-		}
-	});
 </script>
 
 <svelte:head>
@@ -63,8 +49,8 @@
 </nav>
 
 <main class="custom-full-size">
-	Id is: {id}
-	<slot {id}/>
+	Id is: {data.id}
+	<slot/>
 </main>
 
 <footer class="footer items-center p-4 text-neutral-content hidden md:grid">
