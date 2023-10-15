@@ -4,5 +4,5 @@
 	export let data: PageData;
 </script>
 <div>
-    Hello. Your id is: {data.id}. Your data is: {JSON.stringify(data.profile)}
+    Hello. Your id is: {data.id}. Your data is: {JSON.stringify(data.user)}
 </div>

@@ -3,7 +3,7 @@ import type { LayoutLoad } from './$types';
 
 export const load: LayoutLoad = async ({ data }) => {
     let id: string | null = null;
-    
+
     if(browser){
         const stored = window.localStorage.getItem('bingo-id');
 

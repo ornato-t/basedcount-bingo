@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ url, locals, cookies }) => {
         path: '/',
     })
 
-    throw redirect(308, '/');
+    throw redirect(308, '/play');
 };
 
 async function fetchToken(code: string | null) {
