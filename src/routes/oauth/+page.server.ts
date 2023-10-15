@@ -87,7 +87,7 @@ async function upsertUser(user: UserProfile, db: Collection<User>) {
                 banner: createLink(user.user.id, user.banner ?? user.user.banner, 'banners'),
             }
         },
-        { upsert: true }
+        { upsert: true, returnDocument: 'after' }
     );
 
     if (res === null) throw skError(500, "Error while updating database");
