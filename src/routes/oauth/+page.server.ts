@@ -1,13 +1,12 @@
 import type { PageServerLoad } from './$types';
-import type { Collection } from 'mongodb';
-import type { User } from '$lib/user';
+import type postgres from 'postgres';
 import { env } from '$env/dynamic/private';
 import { redirect, error as skError } from '@sveltejs/kit';
 import { serverId, bingoPlayerRole, bingoMasterRole, adminRole } from '../../lib/discord';
 import oauthUrl from '../../lib/oauthUrl';
 
 export const load: PageServerLoad = async ({ url, locals, cookies }) => {
-    const { users } = locals;
+    const { sql } = locals;
 
     const code = url.searchParams.get('code');
     const error = url.searchParams.get('error');
@@ -22,7 +21,7 @@ export const load: PageServerLoad = async ({ url, locals, cookies }) => {
         throw skError(403, { message: "You don't have the \"bingo player\" role, you can't play" })
     }
 
-    const id = await upsertUser(profile, users);
+    const id = await upsertUser(profile, sql);
     cookies.set('bingo-id', id, { path: '/' });
 
     throw redirect(308, '/play');
@@ -74,24 +73,22 @@ async function fetchProfile(token: string) {
 }
 
 //Inserts or refreshes a user's Discord data in the database. Non updated data remains unchanged.
-async function upsertUser(user: UserProfile, db: Collection<User>) {
-    const res = await db.findOneAndUpdate(
-        { discord_id: user.user.id },
-        {
-            $set: {
-                discord_id: user.user.id,
-                name: user.nick ?? user.user.global_name ?? user.user.username,
-                admin: isAdmin(user),
-                image: createLink(user.user.id, user.avatar ?? user.user.avatar, 'avatars'),
-                banner: createLink(user.user.id, user.banner ?? user.user.banner, 'banners'),
-            }
-        },
-        { upsert: true, returnDocument: 'after' }
-    );
+async function upsertUser(user: UserProfile, sql: postgres.Sql<Record<string, never>>) {
+    const uuid = crypto.randomUUID();
 
-    if (res === null) throw skError(500, "Error while updating database");
+    await sql`
+        INSERT INTO discord_user
+        VALUES(
+            ${user.user.id},
+            ${user.nick ?? user.user.global_name ?? user.user.username}, 
+            ${isAdmin(user)},
+            ${createLink(user.user.id, user.avatar ?? user.user.avatar, 'avatars')},
+            ${createLink(user.user.id, user.banner ?? user.user.banner, 'banners')},
+            ${uuid}
+        )
+    `;
 
-    return res._id.toString();
+    return uuid;
 
 }
 

@@ -1,13 +1,11 @@
-import { MongoClient } from "mongodb"
-import { MONGODB_URI } from "$env/static/private";
+import postgres from 'postgres'
+import { PG_URI } from "$env/static/private";
 import type { Handle } from '@sveltejs/kit';
-import type { User } from "$lib/user";
 
-const client = new MongoClient(MONGODB_URI as string);
-await client.connect();
+const sql = postgres(PG_URI);
 
 export const handle: Handle = (async ({ event, resolve }) => {
-    event.locals.users = client.db('bingo').collection<User>('users');
+    event.locals.sql = sql;
 
     return resolve(event)
 });

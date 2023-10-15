@@ -1,12 +1,11 @@
-import type { User } from "$lib/user";
-import type { Collection } from "mongodb";
+import type postgres from "postgres";
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
 	namespace App {
 		// interface Error {}
-		interface Locals { users: Collection<User> }
+		interface Locals { sql: postgres.Sql<> }
 		// interface PageData {}
 		// interface Platform {}
 	}

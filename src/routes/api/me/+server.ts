@@ -1,9 +1,8 @@
-import type { User } from "$lib/user";
 import type { RequestHandler } from "@sveltejs/kit";
-import { ObjectId, type Collection } from "mongodb";
+import type postgres from "postgres";
 
 export const GET: RequestHandler = async ({ locals, request }) => {
-    const { users } = locals;
+    const { sql } = locals;
 
     try {
         const auth = request.headers.get('Authorization');
@@ -11,9 +10,8 @@ export const GET: RequestHandler = async ({ locals, request }) => {
             throw new Error("401");
         }
 
-        const id = auth.slice(7);
-
-        const res = await getUser(id, users);
+        const token = auth.slice(7);
+        const res = await getUser(token, sql);
 
         return new Response(JSON.stringify(res));
     } catch (e) {
@@ -27,10 +25,15 @@ export const GET: RequestHandler = async ({ locals, request }) => {
     }
 }
 
-async function getUser(id: string, db: Collection<User>) {
-    const res = await db.findOne({ _id: new ObjectId(id) }, { projection: { _id: 0 } });
+async function getUser(token: string, sql: postgres.Sql<Record<string, never>>) {
+    const res = await sql`
+        SELECT name, admin, image, banner
+        FROM discord_user
+        WHERE token=${token}
+        LIMIT 1
+    `;
 
-    if (res === null) throw new Error("404");
+    if (res.length === 0) throw new Error("404");
 
-    return res;
+    return res[0];
 }
