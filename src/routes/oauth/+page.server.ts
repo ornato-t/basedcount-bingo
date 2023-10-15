@@ -86,6 +86,12 @@ async function upsertUser(user: UserProfile, sql: postgres.Sql<Record<string, ne
             ${createLink(user.user.id, user.banner ?? user.user.banner, 'banners')},
             ${uuid}
         )
+        ON CONFLICT (discord_id) DO UPDATE SET 
+        name = EXCLUDED.name,
+        admin = EXCLUDED.admin,
+        image = EXCLUDED.image,
+        banner = EXCLUDED.banner,
+        token = EXCLUDED.token
     `;
 
     return uuid;
