@@ -8,6 +8,8 @@
 	const GITHUB_LINK = 'https://github.com/ornato-t/basedcount-bingo';
 
 	export let data: LayoutData;
+
+	console.log('Got id:', data.id);
 </script>
 
 <svelte:head>
@@ -49,7 +51,6 @@
 </nav>
 
 <main class="custom-full-size">
-	Id is: {data.id}
 	<slot/>
 </main>
 

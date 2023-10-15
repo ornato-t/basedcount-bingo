@@ -29,7 +29,6 @@
 				<i class="bx bxl-discord-alt bx-sm" />
 				enter with discord
 			</a>
-			Received id: {data.id}
 		</div>
 	</div>
 </div>
