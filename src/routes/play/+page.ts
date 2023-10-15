@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { browser } from '$app/environment';
-import { getProfile, type User } from '$lib/user';
+import type { User } from '$lib/user';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ parent, fetch }) => {
@@ -18,7 +18,7 @@ export const load: PageLoad = async ({ parent, fetch }) => {
 
 
         return {
-            user: getProfile(user)
+            user
         };
     }
 

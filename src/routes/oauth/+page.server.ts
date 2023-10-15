@@ -3,7 +3,7 @@ import type { Collection } from 'mongodb';
 import type { User } from '$lib/user';
 import { env } from '$env/dynamic/private';
 import { redirect, error as skError } from '@sveltejs/kit';
-import { serverId } from '../../lib/discord';
+import { serverId, bingoPlayerRole, bingoMasterRole, adminRole } from '../../lib/discord';
 import oauthUrl from '../../lib/oauthUrl';
 
 export const load: PageServerLoad = async ({ url, locals, cookies }) => {
@@ -18,11 +18,12 @@ export const load: PageServerLoad = async ({ url, locals, cookies }) => {
     const token = await fetchToken(code);
 
     const profile = await fetchProfile(token);
+    if (!isPlayer(profile)) {
+        throw skError(403, { message: "You don't have the \"bingo player\" role, you can't play" })
+    }
 
     const id = await upsertUser(profile, users);
-    cookies.set('bingo-id', id, {
-        path: '/',
-    })
+    cookies.set('bingo-id', id, { path: '/' });
 
     throw redirect(308, '/play');
 };
@@ -78,11 +79,12 @@ async function upsertUser(user: UserProfile, db: Collection<User>) {
         { discordId: user.user.id },
         {
             $set: {
-                banner: user.banner ?? user.user.banner ?? null,
+                discord_id: user.user.id,
+                name: user.nick,
+                admin: isAdmin(user),
                 bio: user.bio,
-                discordId: user.user.id,
-                image: user.avatar ?? user.user.avatar ?? null,
-                name: user.nick
+                image: user.avatar !== null ? `https://cdn.discordapp.com/avatars/${user.user.id}/${user.avatar}.webp` : null,
+                banner: user.banner !== null ? `https://cdn.discordapp.com/avatars/${user.user.id}/${user.banner}.webp` : null,
             }
         },
         { upsert: true }
@@ -91,8 +93,20 @@ async function upsertUser(user: UserProfile, db: Collection<User>) {
     if (res === null) throw skError(500, "Error while updating database");
 
     return res._id.toString();
+
 }
 
+function isAdmin(user: UserProfile) {
+    if (user.roles.includes(adminRole) || user.roles.includes(bingoMasterRole))
+        return true;
+    return false;
+}
+
+function isPlayer(user: UserProfile) {
+    if (user.roles.includes(bingoPlayerRole))
+        return true;
+    return false;
+}
 
 interface UserProfile {
     avatar: string | undefined
