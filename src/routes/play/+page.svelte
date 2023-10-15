@@ -13,7 +13,7 @@
 			<div>
 				{data.user.admin ? 'Admin' : 'Not an admin'}
 			</div>
-			{#if data.user.bio !== null}
+			{#if data.user.bio.length > 0}
 				<div>
 					"{data.user.bio}"
 				</div>
