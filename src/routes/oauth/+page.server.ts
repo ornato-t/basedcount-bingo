@@ -80,9 +80,8 @@ async function upsertUser(user: UserProfile, db: Collection<User>) {
         {
             $set: {
                 discord_id: user.user.id,
-                name: user.nick,
+                name: user.nick ?? user.user.global_name ?? user.user.username,
                 admin: isAdmin(user),
-                bio: user.bio,
                 image: createLink(user.user.id, user.avatar ?? user.user.avatar, 'avatars'),
                 banner: createLink(user.user.id, user.banner ?? user.user.banner, 'banners'),
             }
@@ -119,13 +118,13 @@ interface UserProfile {
     avatar: string | undefined
     flags: number
     joined_at: string
-    nick: string
+    nick: string | undefined
     pending: boolean
     roles: string[]
     user: DiscordUser
     mute: boolean
     deaf: boolean
-    bio: string
+    bio: string | undefined
     banner: string | undefined
 }
 
@@ -138,7 +137,7 @@ interface DiscordUser {
     flags: number
     banner: string | undefined
     accent_color: number
-    global_name: string
+    global_name: string | undefined
     avatar_decoration_data: string | undefined
     banner_color: string
 }

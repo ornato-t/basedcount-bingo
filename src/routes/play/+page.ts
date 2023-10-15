@@ -16,7 +16,6 @@ export const load: PageLoad = async ({ parent, fetch }) => {
 
         if ('error' in user) throw error(res.status, { message: user.error });
 
-
         return {
             user
         };
