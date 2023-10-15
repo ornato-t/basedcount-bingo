@@ -1,4 +1,4 @@
-import type User from "$lib/userType";
+import type { User } from "$lib/user";
 import type { Collection } from "mongodb";
 
 // See https://kit.svelte.dev/docs/types#app

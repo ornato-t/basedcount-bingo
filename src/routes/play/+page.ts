@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { browser } from '$app/environment';
+import { getProfile, type User } from '$lib/user';
 import type { PageLoad } from './$types';
-import type User from '$lib/userType';
 
 export const load: PageLoad = async ({ parent, fetch }) => {
     const id = (await parent()).id;
@@ -14,11 +14,15 @@ export const load: PageLoad = async ({ parent, fetch }) => {
 
         user = await res.json() as User | { error: string };
 
-        if (!res.ok && 'error' in user) throw error(res.status, { message: await user.error });
+        if ('error' in user) throw error(res.status, { message: user.error });
+
+
+        return {
+            user: getProfile(user)
+        };
     }
 
-
     return {
-        user
-    };
+        user: null
+    }
 };

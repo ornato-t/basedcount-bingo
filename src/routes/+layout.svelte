@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import type { LayoutData } from './$types';
 
 	const DISCORD_LINK = 'https://discord.com/invite/fDnkukh6CF';
 	const WEBSITE_LINK = 'https://basedcount.com';

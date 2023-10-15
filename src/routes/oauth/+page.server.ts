@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import type { Collection } from 'mongodb';
-import type User from '$lib/userType';
+import type { User } from '$lib/user';
 import { env } from '$env/dynamic/private';
 import { redirect, error as skError } from '@sveltejs/kit';
 import { serverId } from '../../lib/discord';

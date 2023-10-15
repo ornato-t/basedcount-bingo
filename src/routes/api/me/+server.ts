@@ -1,4 +1,4 @@
-import type User from "$lib/userType";
+import type { User } from "$lib/user";
 import type { RequestHandler } from "@sveltejs/kit";
 import { ObjectId, type Collection } from "mongodb";
 

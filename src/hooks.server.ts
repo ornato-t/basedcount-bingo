@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb"
 import { MONGODB_URI } from "$env/static/private";
 import type { Handle } from '@sveltejs/kit';
-import type User from "$lib/userType";
+import type { User } from "$lib/user";
 
 const client = new MongoClient(MONGODB_URI as string);
 await client.connect();
