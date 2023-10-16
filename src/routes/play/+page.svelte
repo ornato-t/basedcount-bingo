@@ -21,6 +21,9 @@
 					<img src={data.user.banner} alt="Banner" />
 				</div>
 			{/if}
+			<a href="/play/add" class="btn btn-secondary btn-lg">
+				Add a card
+			</a>
 		</div>
 	{/if}
 </main>

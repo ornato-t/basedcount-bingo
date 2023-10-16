@@ -6,11 +6,11 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
     const data = await parent();
 
     const added = await sql`
-        SELECT test, user.name, user.avatar, user.discord_id as id
+        SELECT box.text, u.name, u.image, u.discord_id AS id
         FROM box
-        INNER JOIN discord_user user box.creator_discord_id=user.discord_id
-        WHERE user.token=${data.token ?? null}
-    `;
+        INNER JOIN discord_user AS u ON box.creator_discord_id=u.discord_id
+        WHERE u.token=${data.token ?? null}
+    ` as { text: string, name: string, image: string, discord_id: string }[];
 
     return {
         users: data.users,
