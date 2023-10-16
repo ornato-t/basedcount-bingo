@@ -6,7 +6,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 
     try {
         const auth = request.headers.get('Authorization');
-        if (!auth || !auth.toLowerCase().startsWith('bearer ')) {
+        if (!auth || !auth.toLowerCase().startsWith('bearer ') || auth.toLocaleLowerCase() === 'bearer undefined') {
             throw new Error("401");
         }
 

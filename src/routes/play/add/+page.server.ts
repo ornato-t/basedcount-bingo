@@ -9,12 +9,12 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
         SELECT test, user.name, user.avatar, user.discord_id as id
         FROM box
         INNER JOIN discord_user user box.creator_discord_id=user.discord_id
-        WHERE user.token=${data.cookie ?? null}
+        WHERE user.token=${data.token ?? null}
     `;
 
     return {
         users: data.users,
-        cookie: data.cookie,
+        token: data.token,
         added
     };
 };

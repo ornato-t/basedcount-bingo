@@ -25,7 +25,7 @@
 			<p class="mb-2">Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge.</p>
 			<p />
 			<p class="mb-7">Tread carefully, for pure retardation awaits you beyond this point.</p>
-			{#if data.token !== null}
+			{#if data.token !== undefined}
 				<a class="btn btn-primary btn-lg" href="/play">
 					<i class="bx bx-play bx-sm" />
 					play
