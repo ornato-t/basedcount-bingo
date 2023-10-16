@@ -4,12 +4,12 @@ import type { User } from '$lib/user';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ parent, fetch }) => {
-    const id = (await parent()).id;
+    const token = (await parent()).token;
 
     let user: User | null | { error: string } = null;
     if (browser) {
         const res = await fetch('/api/me', {
-            headers: new Headers({ 'Authorization': `Bearer ${id}` }),
+            headers: new Headers({ 'Authorization': `Bearer ${token}` }),
         });
 
         user = await res.json() as User | { error: string };

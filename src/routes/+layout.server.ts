@@ -8,7 +8,7 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
     `;
 
     return {
-        cookie: cookies.get('bingo-id'),
+        cookie: cookies.get('bingo-token'),
         users
     };
 };

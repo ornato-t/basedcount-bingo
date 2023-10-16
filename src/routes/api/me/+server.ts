@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
         if (e === "401")
             return new Response(JSON.stringify({ error: 'No authorization provided' }), { status: 400, statusText: 'Unauthorized' });
         if (e === "404")
-            return new Response(JSON.stringify({ error: 'No matcing user found for provided id' }), { status: 404, statusText: 'Not found' });
+            return new Response(JSON.stringify({ error: 'No matcing user found for provided token' }), { status: 404, statusText: 'Not found' });
 
         console.error(e);
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500, statusText: 'Internal server error' });

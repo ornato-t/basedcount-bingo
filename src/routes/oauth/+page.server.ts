@@ -14,15 +14,15 @@ export const load: PageServerLoad = async ({ url, locals, cookies }) => {
 
     if (error !== null && errorDescription !== null) throw skError(403, { message: errorDescription.replaceAll('+', ' '), });
 
-    const token = await fetchToken(code);
+    const discordToken = await fetchToken(code);
 
-    const profile = await fetchProfile(token);
+    const profile = await fetchProfile(discordToken);
     if (!isPlayer(profile)) {
         throw skError(403, { message: "You don't have the \"bingo player\" role, you can't play" })
     }
 
-    const id = await upsertUser(profile, sql);
-    cookies.set('bingo-id', id, { path: '/' });
+    const token = await upsertUser(profile, sql);
+    cookies.set('bingo-token', token, { path: '/' });
 
     throw redirect(308, '/play');
 };
