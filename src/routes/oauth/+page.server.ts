@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ url, locals, cookies }) => {
     }
 
     const token = await upsertUser(profile, sql);
-    cookies.set('bingo-token', token, { path: '/' });
+    cookies.set('bingo-token', token, { path: '/', maxAge: 60 * 60 * 24 * 365 * 2 });   //Token expires in 2 years [seconds]
 
     throw redirect(308, '/play');
 };
