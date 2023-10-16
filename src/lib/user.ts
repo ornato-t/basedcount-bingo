@@ -4,4 +4,5 @@ export interface User {
     admin: boolean,
     image: string | null,
     banner: string | null,
+    token: string | null,   //This isn't always returned
 }

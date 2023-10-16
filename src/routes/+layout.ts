@@ -16,6 +16,7 @@ export const load: LayoutLoad = async ({ data }) => {
     }
 
     return {
-        id
+        id,
+        users: data.users
     };
 };
