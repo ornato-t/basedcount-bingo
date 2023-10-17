@@ -4,26 +4,21 @@
 	export let data: PageData;
 </script>
 
-<main class="w-fit mx-auto">
-	{#if data.user !== null}
-		<div class="flex flex-col">
-			<div>
-				{data.user.name}
-			</div>
-			<div>
-				{data.user.admin ? 'Admin' : 'Not an admin'}
-			</div>
-			<div>
-				<img src={data.user.image} alt="Avatar" />
-			</div>
-			{#if data.user.banner !== null}
-				<div>
-					<img src={data.user.banner} alt="Banner" />
-				</div>
+<div>
+	<h1 class="text-3xl font-semibold">Your profile</h1>
+	<div class="card card-compact w-80 bg-base-100 shadow-xl image-full">
+		<figure><img src={data.currentUser?.banner} alt="" /></figure>
+		<div class="card-body grid grid-rows-4 grid-cols-2">
+			{#if data.currentUser}
+				<img src={data.currentUser?.image} alt="" class="rounded-lg row-span-4 h-full" />
+				<h2 class="card-title row-span-2">{data.currentUser?.name ?? ''}</h2>
+				<p>
+					{#if data.currentUser?.admin}Admin{/if}
+				</p>
+				<p>{data.currentUser?.victories} {data.currentUser.victories === 1 ? 'victory' : 'victories'}</p>
 			{/if}
-			<a href="/play/add" class="btn btn-secondary btn-lg mt-4">
-				Add a card
-			</a>
 		</div>
-	{/if}
-</main>
+	</div>
+
+	<a href="/play/add" class="btn btn-secondary btn-lg mt-4"> Add a card </a>
+</div>

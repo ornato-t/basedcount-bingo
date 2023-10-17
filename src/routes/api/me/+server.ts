@@ -1,3 +1,4 @@
+import type { User } from "$lib/user";
 import type { RequestHandler } from "@sveltejs/kit";
 import type postgres from "postgres";
 
@@ -27,13 +28,25 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 
 async function getUser(token: string, sql: postgres.Sql<Record<string, never>>) {
     const res = await sql`
-        SELECT name, admin, image, banner
+        SELECT name, admin, image, banner, COUNT(round_number) as victories
         FROM discord_user
+        INNER JOIN discord_user_wins_round win
+        ON discord_user.discord_id=win.discord_user_discord_id
         WHERE token=${token}
-        LIMIT 1
+        GROUP BY name, admin, image, banner
     `;
 
     if (res.length === 0) throw new Error("404");
+    
+    const returned = {
+        admin: res[0].admin,
+        banner: res[0].banner,
+        discord_id: res[0].discord_id,
+        image: res[0].image,
+        name: res[0].name,
+        token: res[0].token,
+        victories: Number.parseInt(res[0].victories)
+    } satisfies User;
 
-    return res[0];
+    return returned;
 }

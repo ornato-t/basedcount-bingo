@@ -5,4 +5,5 @@ export interface User {
     image: string | null,
     banner: string | null,
     token: string | null,   //This isn't always returned
+    victories: number,
 }

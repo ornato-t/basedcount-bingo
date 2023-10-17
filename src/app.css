@@ -10,7 +10,7 @@
 
 /* Used in desktop pages */
 .full-size-desktop > * {
-    height: calc(100vh - 9rem);
+    height: calc(100vh - 12rem);
 
 }
 
