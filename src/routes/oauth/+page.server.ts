@@ -82,8 +82,8 @@ async function upsertUser(user: UserProfile, sql: postgres.Sql<Record<string, ne
             ${user.user.id},
             ${user.nick ?? user.user.global_name ?? user.user.username}, 
             ${isAdmin(user)},
-            ${createLink(user.user.id, user.avatar ?? user.user.avatar, 'avatars')},
-            ${createLink(user.user.id, user.banner ?? user.user.banner, 'banners')},
+            ${createLink(user.user.id, user.avatar, user.user.avatar, 'avatars')},
+            ${createLink(user.user.id, user.banner, user.user.banner, 'banners')},
             ${uuid}
         )
         ON CONFLICT (discord_id) DO UPDATE SET 
@@ -110,11 +110,13 @@ function isPlayer(user: UserProfile) {
     return false;
 }
 
-function createLink(id: string, hash: string | undefined, endpoint: 'avatars' | 'banners') {
-    if (hash == null && endpoint === 'avatars') return 'https://discord.com/assets/7c8f476123d28d103efe381543274c25.png';   //Green default picture
-    else if (hash == null && endpoint === 'banners') return null;
+function createLink(id: string, localHash: string | undefined, globalHash: string | undefined, endpoint: 'avatars' | 'banners') {
+    if (localHash) return `https://cdn.discordapp.com/guilds/${serverId}/users/${id}/${endpoint}/${localHash}.webp`;
+    if (globalHash) return `https://cdn.discordapp.com/${endpoint}/${id}/${globalHash}.webp`
 
-    return `https://cdn.discordapp.com/${endpoint}/${id}/${hash}.webp`
+    if (globalHash == null && endpoint === 'avatars') return 'https://discord.com/assets/7c8f476123d28d103efe381543274c25.png';   //Green default picture
+
+    return null;
 }
 
 interface UserProfile {
