@@ -41,17 +41,21 @@ async function getServerUsers(): Promise<DiscordMember[]> {
         discord_id: member.user.id,
         image: createLink(member.user.id, member.avatar, member.user.avatar),
         player: member.roles.includes(bingoPlayerRole)
-    } satisfies DiscordMember))
-    // .sort((a, b) => {
-    //     return a.name - b.name || a.player - b.player;
-    // });
+    } satisfies DiscordMember)).sort((a, b) => {
+        // Sort by player field first (players come first)
+        if (a.player && !b.player) return -1;
+        if (!a.player && b.player) return 1;
+
+        // If both are players or both are non-players, sort alphabetically
+        return a.name.localeCompare(b.name);
+    });
 }
 
 function createLink(id: string, localHash: string | undefined, globalHash: string | undefined) {
     if (localHash) return `https://cdn.discordapp.com/guilds/${serverId}/users/${id}/avatars/${localHash}.webp`;
     if (globalHash) return `https://cdn.discordapp.com/avatars/${id}/${globalHash}.webp`
 
-    return 'https://discord.com/assets/7c8f476123d28d103efe381543274c25.png';   //Green default picture
+    return '/discord_green.png';   //Green default picture
 }
 
 export const actions = {

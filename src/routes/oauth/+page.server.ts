@@ -114,7 +114,7 @@ function createLink(id: string, localHash: string | undefined, globalHash: strin
     if (localHash) return `https://cdn.discordapp.com/guilds/${serverId}/users/${id}/${endpoint}/${localHash}.webp`;
     if (globalHash) return `https://cdn.discordapp.com/${endpoint}/${id}/${globalHash}.webp`
 
-    if (globalHash == null && endpoint === 'avatars') return 'https://discord.com/assets/7c8f476123d28d103efe381543274c25.png';   //Green default picture
+    if (globalHash == null && endpoint === 'avatars') return '/discord_green.png';   //Green default picture
 
     return null;
 }
