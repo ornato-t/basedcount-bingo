@@ -1,3 +1,5 @@
+import { bingoPlayerRole, serverId } from '$lib/discord';
+import { DISCORD_TOKEN } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -20,9 +22,37 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
     return {
         users: data.users,
         token: data.token,
-        added
+        added,
+        userList: getServerUsers()
     };
 };
+
+async function getServerUsers(): Promise<DiscordMember[]> {
+    const res = await fetch(`https://discord.com/api/guilds/${serverId}/members?limit=1000`, {
+        headers: new Headers({ 'Authorization': `Bot ${DISCORD_TOKEN}` }),
+    });
+
+    const users = await res.json() as DiscordMemberFull[] | { message: string, code: number };
+
+    if ('message' in users) throw error(res.status, { message: users.message });
+
+    return users.map(member => ({
+        name: member.nick ?? member.user.global_name ?? member.user.username,
+        discord_id: member.user.id,
+        image: createLink(member.user.id, member.avatar, member.user.avatar),
+        player: member.roles.includes(bingoPlayerRole)
+    } satisfies DiscordMember))
+    // .sort((a, b) => {
+    //     return a.name - b.name || a.player - b.player;
+    // });
+}
+
+function createLink(id: string, localHash: string | undefined, globalHash: string | undefined) {
+    if (localHash) return `https://cdn.discordapp.com/guilds/${serverId}/users/${id}/avatars/${localHash}.webp`;
+    if (globalHash) return `https://cdn.discordapp.com/avatars/${id}/${globalHash}.webp`
+
+    return 'https://discord.com/assets/7c8f476123d28d103efe381543274c25.png';   //Green default picture
+}
 
 export const actions = {
     default: async ({ request, locals }) => {
@@ -50,3 +80,30 @@ export const actions = {
         `;
     },
 } satisfies Actions;
+
+export interface DiscordMember {
+    name: string,
+    discord_id: string,
+    image: string | null,
+    player: boolean,
+}
+
+interface DiscordMemberFull {
+    avatar: string
+    flags: number
+    joined_at: string
+    nick: string | null
+    roles: string[]
+    user: DiscordUser
+}
+
+interface DiscordUser {
+    id: string
+    username: string
+    avatar: string
+    discriminator: string
+    public_flags: number
+    flags: number
+    banner: string | null
+    global_name: string
+}

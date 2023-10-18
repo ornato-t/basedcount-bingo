@@ -7,8 +7,6 @@
 	const WEBSITE_LINK = 'https://basedcount.com';
 	const LEMMY_LINK = 'https://lemmy.basedcount.com';
 	const GITHUB_LINK = 'https://github.com/ornato-t/basedcount-bingo';
-
-	console.log(data)
 </script>
 
 <svelte:head>
