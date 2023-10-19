@@ -13,7 +13,7 @@ export const load: LayoutLoad = async ({ fetch, data }) => {
 };
 
 async function getCurrentUser(token: string | undefined, fetch: { (input: RequestInfo | URL, init?: RequestInit | undefined): Promise<Response> }) {
-    if (!browser) return null;
+    if (!browser || !token) return null;
 
     let currentUser: User | null | { error: string } = null;
     
