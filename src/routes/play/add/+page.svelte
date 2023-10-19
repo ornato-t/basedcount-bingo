@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fit, parent_style } from '@leveluptuts/svelte-fit';
 	import type { PageData } from './$types';
 	import Typehead from 'svelte-typeahead';
 	import type { DiscordMember } from './+page.server';
@@ -7,16 +8,16 @@
 
 	const extract = (entry: DiscordMember) => entry.name;
 
-	const added: typeof data.added = [];	//This is a hack to cards from non players. It sucks, I'm aware
-	for(const user of data.added){
-		if(user.name === null && user.image === null){
-			const match = data.userList.find(el => el.discord_id === user.discord_id);
+	const added: typeof data.added = []; //This is a hack to cards from non players. It sucks, I'm aware
+	for (const user of data.added) {
+		if (user.name === null && user.image === null) {
+			const match = data.userList.find((el) => el.discord_id === user.discord_id);
 			added.push({
 				discord_id: user.discord_id,
 				image: match?.image ?? 'null',
 				name: match?.name ?? '',
 				text: user.text
-			})
+			});
 		} else {
 			added.push(user);
 		}
@@ -29,7 +30,7 @@
 	<form method="POST" class="card w-96 bg-neutral shadow-xl mx-auto">
 		<div class="card-body">
 			<h2 class="text-xl">Add a new card</h2>
-			<Typehead label="Triggering user" data={data.userList} {extract} limit={4} let:result on:select={(el) => (discord_id = el.detail.original.discord_id)}>
+			<Typehead label="Triggering user (optional)" data={data.userList} {extract} limit={4} let:result on:select={(el) => (discord_id = el.detail.original.discord_id)}>
 				<div class="flex items-center">
 					<div class="avatar">
 						<div class="h-6 rounded-full">
@@ -53,14 +54,21 @@
 		</div>
 	</form>
 
-	<div class="grid grid-cols-4 gap-4 mx-auto place-items-center">
-		<h2 class="col-span-full text-lg font-medium place-self-start"> Cards added by you: </h2>
+	<div class="grid grid-cols-5 gap-4 mx-auto place-items-center">
+		<h2 class="col-span-full text-lg font-medium place-self-start">Cards added by you:</h2>
 		{#each added as card}
-			<div class="card h-fit bg-base-100 shadow-xl image-full">
+			<!-- <div class="card w-40 h-40 bg-base-100 shadow-xl image-full">
 				<figure><img src={card.image} alt="{card.name}'s avatar" /></figure>
-				<div class="card-body">
-					<h2 class="card-title">{card.text}</h2>
-					<p>{card.name}</p>
+				<div class="card-body p-2">
+					<div style={parent_style}>
+						<h1 use:fit>{card.text}</h1>
+					</div>
+				</div>
+			</div> -->
+
+			<div class="w-40 h-40 rounded-3xl p-2 bg-[url('{card.image}')]">
+				<div style={parent_style}>
+					<h1 use:fit>{card.text + ' ' + card.text}</h1>
 				</div>
 			</div>
 		{/each}
