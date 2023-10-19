@@ -67,7 +67,7 @@ export const actions = {
         const token = formData.get('token');
         const target = formData.get('target');
 
-        if (text === null || token === null || target === null) throw error(400, { message: "All fields must be filled" });
+        if (text === null || token === null) throw error(400, { message: "All fields must be filled" });
 
         await sql`
             INSERT INTO box(text,creator_discord_id,about_discord_id)
@@ -79,7 +79,7 @@ export const actions = {
                     WHERE token=${token.toString()}
                     LIMIT 1
                 ) , 
-                ${target.toString()}
+                ${target === null ? null : target.toString()}
             )
         `;
     },

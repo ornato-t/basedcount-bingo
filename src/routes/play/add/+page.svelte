@@ -23,14 +23,14 @@
 		}
 	}
 
-	let discord_id: string;
+	let discord_id: string | null;
 </script>
 
 <main>
 	<form method="POST" class="card md:w-96 bg-neutral shadow-xl mx-auto">
 		<div class="card-body">
 			<h2 class="text-xl">Add a new card</h2>
-			<Typehead label="Triggering user (optional)" data={data.userList} {extract} limit={4} let:result on:select={(el) => (discord_id = el.detail.original.discord_id)}>
+			<Typehead label="Triggering user (optional)" data={data.userList} {extract} limit={4} let:result on:select={(el) => (discord_id = el.detail.original.discord_id)} on:clear={() => discord_id = null}>
 				<div class="flex items-center">
 					<div class="avatar">
 						<div class="h-6 rounded-full">
