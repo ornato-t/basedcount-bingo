@@ -5,12 +5,12 @@
 /*      Defining rules */
 /* Used in mobile pages */
 .full-size-mobile > * {
-    height: calc(100vh - 4rem);
+    min-height: calc(100vh - 4rem);
 }
 
 /* Used in desktop pages */
 .full-size-desktop > * {
-    height: calc(100vh - 12rem);
+    min-height: calc(100vh - 9rem);
 
 }
 

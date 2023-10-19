@@ -1,8 +1,6 @@
 <script lang="ts">
 	import '../app.css';
 
-	export let data;
-
 	const DISCORD_LINK = 'https://discord.com/invite/fDnkukh6CF';
 	const WEBSITE_LINK = 'https://basedcount.com';
 	const LEMMY_LINK = 'https://lemmy.basedcount.com';
