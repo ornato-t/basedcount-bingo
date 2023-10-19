@@ -27,7 +27,7 @@
 </script>
 
 <main>
-	<form method="POST" class="card w-96 bg-neutral shadow-xl mx-auto">
+	<form method="POST" class="card md:w-96 bg-neutral shadow-xl mx-auto">
 		<div class="card-body">
 			<h2 class="text-xl">Add a new card</h2>
 			<Typehead label="Triggering user (optional)" data={data.userList} {extract} limit={4} let:result on:select={(el) => (discord_id = el.detail.original.discord_id)}>
@@ -54,8 +54,8 @@
 		</div>
 	</form>
 
-	<div class="grid grid-cols-5 gap-x-2 gap-y-6 place-items-center mx-4">
-		<h2 class="col-span-full text-lg font-medium place-self-start">Cards added by you:</h2>
+	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
+		<h2 class="col-span-full text-xl">Cards added by you</h2>
 		{#each added as card}
 			<div>
 				{#if card.name}
@@ -70,7 +70,7 @@
 					</span>
 				</div>
 				{/if}
-				<div class="w-40 h-40 rounded-2xl p-2 bg-neutral">
+				<div class="w-36 h-36 md:w-40 md:h-40 rounded-2xl p-2 bg-neutral">
 					<div style="position: relative; {parent_style}">
 						<h1 use:fit>{card.text}</h1>
 					</div>
