@@ -54,21 +54,26 @@
 		</div>
 	</form>
 
-	<div class="grid grid-cols-5 gap-4 mx-auto place-items-center">
+	<div class="grid grid-cols-5 gap-x-2 gap-y-6 place-items-center mx-4">
 		<h2 class="col-span-full text-lg font-medium place-self-start">Cards added by you:</h2>
 		{#each added as card}
-			<!-- <div class="card w-40 h-40 bg-base-100 shadow-xl image-full">
-				<figure><img src={card.image} alt="{card.name}'s avatar" /></figure>
-				<div class="card-body p-2">
-					<div style={parent_style}>
+			<div>
+				{#if card.name}
+				<div class="flex items-center">
+					<div class="avatar">
+						<div class="h-6 rounded-full">
+							<img src={card.image} alt="{card.name}'s avatar" />
+						</div>
+					</div>
+					<span class="ml-2">
+						{card.name}
+					</span>
+				</div>
+				{/if}
+				<div class="w-40 h-40 rounded-2xl p-2 bg-neutral">
+					<div style="position: relative; {parent_style}">
 						<h1 use:fit>{card.text}</h1>
 					</div>
-				</div>
-			</div> -->
-
-			<div class="w-40 h-40 rounded-3xl p-2 bg-[url('{card.image}')]">
-				<div style={parent_style}>
-					<h1 use:fit>{card.text + ' ' + card.text}</h1>
 				</div>
 			</div>
 		{/each}
