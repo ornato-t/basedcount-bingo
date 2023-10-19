@@ -26,7 +26,7 @@
 </script>
 
 <main>
-	<form method="POST" class="card w-96 bg-base-200 shadow-xl mx-auto">
+	<form method="POST" class="card w-96 bg-neutral shadow-xl mx-auto">
 		<div class="card-body">
 			<h2 class="text-xl">Add a new card</h2>
 			<Typehead label="Triggering user" data={data.userList} {extract} limit={4} let:result on:select={(el) => (discord_id = el.detail.original.discord_id)}>
@@ -36,7 +36,7 @@
 							<img src={result.original.image} alt="{result.original.name}'s avatar" />
 						</div>
 					</div>
-					<span class="bg-base-200 ml-2">
+					<span class="bg-neutral ml-2">
 						{@html result.string}
 					</span>
 				</div>
@@ -53,10 +53,10 @@
 		</div>
 	</form>
 
-	<div class="grid grid-cols-3 gap-4">
-		<span class="col-span-full"> Cards added by you: </span>
+	<div class="grid grid-cols-4 gap-4 mx-auto place-items-center">
+		<h2 class="col-span-full text-lg font-medium place-self-start"> Cards added by you: </h2>
 		{#each added as card}
-			<div class="card w-96 bg-base-100 shadow-xl image-full">
+			<div class="card h-fit bg-base-100 shadow-xl image-full">
 				<figure><img src={card.image} alt="{card.name}'s avatar" /></figure>
 				<div class="card-body">
 					<h2 class="card-title">{card.text}</h2>
@@ -69,8 +69,7 @@
 
 <style>
 	:global([data-svelte-typeahead]) {
-		@apply text-neutral-content;
-		background-color: hsl(var(--b2) / var(--tw-bg-opacity)) !important;
+		background-color: hsl(var(--n) / var(--tw-bg-opacity)) !important;
 	}
 
 	:global([data-svelte-search] input) {
