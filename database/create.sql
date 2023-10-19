@@ -14,8 +14,7 @@ CREATE TABLE box (
     creator_discord_id TEXT NOT NULL,
     about_discord_id TEXT NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (creator_discord_id) REFERENCES discord_user(discord_id),
-    FOREIGN KEY (about_discord_id) REFERENCES discord_user(discord_id)
+    FOREIGN KEY (creator_discord_id) REFERENCES discord_user(discord_id)
 );
 CREATE TABLE round (
     number TEXT NOT NULL,
