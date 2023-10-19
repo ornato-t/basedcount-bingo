@@ -8,9 +8,9 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
     const data = await parent();
 
     const added = await sql`
-        SELECT box.text, u.name, u.image, u.discord_id
+        SELECT box.text, u.name, u.image, box.about_discord_id as discord_id
         FROM box
-        INNER JOIN discord_user AS u ON box.about_discord_id=u.discord_id
+        LEFT JOIN discord_user AS u ON box.about_discord_id=u.discord_id
         WHERE box.creator_discord_id = (
             SELECT discord_id
             FROM discord_user

@@ -7,6 +7,21 @@
 
 	const extract = (entry: DiscordMember) => entry.name;
 
+	const added: typeof data.added = [];	//This is a hack to cards from non players. It sucks, I'm aware
+	for(const user of data.added){
+		if(user.name === null && user.image === null){
+			const match = data.userList.find(el => el.discord_id === user.discord_id);
+			added.push({
+				discord_id: user.discord_id,
+				image: match?.image ?? 'null',
+				name: match?.name ?? '',
+				text: user.text
+			})
+		} else {
+			added.push(user);
+		}
+	}
+
 	let discord_id: string;
 </script>
 
@@ -40,7 +55,7 @@
 
 	<div class="grid grid-cols-3 gap-4">
 		<span class="col-span-full"> Cards added by you: </span>
-		{#each data.added as card}
+		{#each added as card}
 			<div class="card w-96 bg-base-100 shadow-xl image-full">
 				<figure><img src={card.image} alt="{card.name}'s avatar" /></figure>
 				<div class="card-body">
