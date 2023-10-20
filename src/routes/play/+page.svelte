@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import BingoBoard from './bingoBoard.svelte';
+	import CloseRoundModal from './closeRoundModal.svelte';
 
 	export let data: PageData;
 </script>
@@ -8,7 +9,7 @@
 <main class="grid gap-y-8">
 	<section>
 		<h1 class="text-3xl font-semibold mb-4">Your card</h1>
-		<BingoBoard cards={data.cards}/>
+		<BingoBoard cards={data.cards} />
 	</section>
 
 	<section>
@@ -35,7 +36,16 @@
 			<h1 class="text-3xl font-semibold">Admin control panel</h1>
 			<div class="" />
 
-			<button class="btn btn-secondary btn-lg mt-4"> Do admin stuff </button>
+			<!-- svelte-ignore missing-declaration -->
+			<button
+				class="btn btn-secondary btn-lg mt-4"
+				on:click={() => {
+					// @ts-ignore
+					closeRound.showModal();
+				}}>Start a new round</button
+			>
 		</section>
 	{/if}
 </main>
+
+<CloseRoundModal token={data.token ?? ''} users={data.users}/>

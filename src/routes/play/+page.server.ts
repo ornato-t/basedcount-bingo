@@ -1,6 +1,6 @@
-// import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import type { Box } from '$lib/bingo';
+import type postgres from 'postgres';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
     const { sql } = locals;
@@ -26,13 +26,40 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 };
 
 export const actions = {
-    // default: async ({ request, locals }) => {
-    //     const { sql } = locals;
+    startNewRound: async ({ request, locals }) => {
+        const { sql } = locals;
 
-    //     const formData = await request.formData();
+        const formData = await request.formData();
+        const token = formData.get('token') ?? null;
+        const winners = formData.get('winners') ?? { toString: () => '' };
 
-    //     await sql`
+        const { admin } = (await sql`
+            SELECT admin
+            FROM discord_user
+            WHERE token=${token === null ? null : token.toString()}
+            LIMIT 1
+        `)[0] as { admin: boolean };
 
-    //     `;
-    // },
+        if (admin) {
+            await saveWinners(sql, winners.toString())
+            await startRound(sql)
+        };
+    },
 } satisfies Actions;
+
+async function saveWinners(sql: postgres.Sql<Record<string, never>>, winnersStr: string) {
+    if (winnersStr === '') return;
+    const winners = winnersStr.split(';');
+
+    for (const winner of winners) {
+        await sql`
+            INSERT INTO discord_user_wins_round (discord_user_discord_id, round_number)
+            VALUES (${winner}, (SELECT MAX(id) FROM round)); 
+        `
+    }
+
+}
+
+async function startRound(sql: postgres.Sql<Record<string, never>>) {
+    console.log(typeof sql)
+}
