@@ -27,10 +27,25 @@
 </script>
 
 <main>
+	<div class="w-full grid place-items-center mb-4">
+		<a class="btn btn-secondary w-full md:w-96" href="/play">
+			<i class="bx bx-left-arrow-alt" />
+			Back to your card
+		</a>
+	</div>
+
 	<form method="POST" class="card md:w-96 bg-neutral shadow-xl mx-auto">
 		<div class="card-body">
 			<h2 class="text-xl">Add a new card</h2>
-			<Typehead label="Triggering user (optional)" data={data.userList} {extract} limit={4} let:result on:select={(el) => (discord_id = el.detail.original.discord_id)} on:clear={() => discord_id = null}>
+			<Typehead
+				label="Triggering user (optional)"
+				data={data.userList}
+				{extract}
+				limit={4}
+				let:result
+				on:select={(el) => (discord_id = el.detail.original.discord_id)}
+				on:clear={() => (discord_id = null)}
+			>
 				<div class="flex items-center">
 					<div class="avatar">
 						<div class="h-6 rounded-full">
@@ -59,16 +74,16 @@
 		{#each added as card}
 			<div>
 				{#if card.name}
-				<div class="flex items-center">
-					<div class="avatar">
-						<div class="h-6 rounded-full">
-							<img src={card.image} alt="{card.name}'s avatar" />
+					<div class="flex items-center">
+						<div class="avatar">
+							<div class="h-6 rounded-full">
+								<img src={card.image} alt="{card.name}'s avatar" />
+							</div>
 						</div>
+						<span class="ml-2">
+							{card.name}
+						</span>
 					</div>
-					<span class="ml-2">
-						{card.name}
-					</span>
-				</div>
 				{/if}
 				<div class="w-36 h-36 md:w-40 md:h-40 rounded-2xl p-2 bg-neutral">
 					<div style="position: relative; {parent_style}">
