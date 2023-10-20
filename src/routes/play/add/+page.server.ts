@@ -79,7 +79,7 @@ export const actions = {
                     WHERE token=${token.toString()}
                     LIMIT 1
                 ) , 
-                ${target === null ? null : target.toString()}
+                ${target == null ? null : target.toString()}
             )
         `;
     },

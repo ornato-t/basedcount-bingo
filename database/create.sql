@@ -12,7 +12,7 @@ CREATE TABLE box (
     id SERIAL,
     text TEXT NOT NULL,
     creator_discord_id TEXT NOT NULL,
-    about_discord_id TEXT NOT NULL,
+    about_discord_id TEXT,
     PRIMARY KEY (id),
     FOREIGN KEY (creator_discord_id) REFERENCES discord_user(discord_id)
 );
