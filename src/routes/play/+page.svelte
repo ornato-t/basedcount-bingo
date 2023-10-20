@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { fit, parent_style } from '@leveluptuts/svelte-fit';
+	import BingoBoard from './bingoBoard.svelte';
 
 	export let data: PageData;
 </script>
@@ -8,15 +8,7 @@
 <main class="grid gap-y-8">
 	<section>
 		<h1 class="text-3xl font-semibold mb-4">Your card</h1>
-		<div class="grid grid-cols-5 w-fit mx-auto rounded-lg border-2 border-secondary bg-neutral-focus select-none">
-			{#each data.cards as card}
-				<div class="w-16 h-16 sm:w-28 sm:h-28 border border-secondary p-1.5">
-					<div style="position: relative; {parent_style}">
-						<h1 use:fit>{card.text}</h1>
-					</div>
-				</div>
-			{/each}
-		</div>
+		<BingoBoard cards={data.cards}/>
 	</section>
 
 	<section>

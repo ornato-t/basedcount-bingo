@@ -1,5 +1,6 @@
 // import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import type { Box } from '$lib/bingo';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
     const { sql } = locals;
@@ -15,7 +16,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
         WHERE c.round_number=(SELECT MAX(round_number) FROM card) AND u.token=${data.token ?? ''};
     ` as Box[];
 
-    ownCard.splice(12, 0, {about_discord_id: null, id: NaN, text: 'KEKW'});
+    ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image:/kekw.png', creator_discord_id: '' });
 
     return {
         users: data.users,
@@ -35,9 +36,3 @@ export const actions = {
     //     `;
     // },
 } satisfies Actions;
-
-interface Box {
-    id: number,
-    text: string,
-    about_discord_id: string | null
-}
