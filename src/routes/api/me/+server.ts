@@ -30,7 +30,7 @@ async function getUser(token: string, sql: postgres.Sql<Record<string, never>>) 
     const res = await sql`
         SELECT name, admin, image, banner, COUNT(round_number) as victories
         FROM discord_user
-        INNER JOIN discord_user_wins_round win
+        LEFT JOIN discord_user_wins_round win
         ON discord_user.discord_id=win.discord_user_discord_id
         WHERE token=${token}
         GROUP BY name, admin, image, banner
