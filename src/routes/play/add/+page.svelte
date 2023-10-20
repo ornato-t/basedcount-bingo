@@ -8,7 +8,7 @@
 
 	const extract = (entry: DiscordMember) => entry.name;
 
-	const added: typeof data.added = []; //This is a hack to cards from non players. It sucks, I'm aware
+	const added: typeof data.added = []; //This is a hack fetch names and images of of non players. It sucks, I'm aware
 	for (const user of data.added) {
 		if (user.name === null && user.image === null) {
 			const match = data.userList.find((el) => el.discord_id === user.discord_id);
