@@ -45,8 +45,12 @@ CREATE TABLE discord_user_wins_round (
 CREATE TABLE checks (
     discord_user_discord_id TEXT NOT NULL,
     box_id INTEGER NOT NULL,
+    card_owner_discord_id INTEGER NOT NULL,
+    card_round_number INTEGER NOT NULL,
     time timestamp NOT NULL,
-    PRIMARY KEY (discord_user_discord_id, box_id),
+    PRIMARY KEY (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number),
     FOREIGN KEY (discord_user_discord_id) REFERENCES discord_user(discord_id),
     FOREIGN KEY (box_id) REFERENCES BOX(id)
+    FOREIGN KEY (card_owner_discord_id) REFERENCES card(owner_discord_id),
+    FOREIGN KEY (card_round_number) REFERENCES card(round_number)
 );
