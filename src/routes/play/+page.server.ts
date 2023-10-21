@@ -61,5 +61,27 @@ async function saveWinners(sql: postgres.Sql<Record<string, never>>, winnersStr:
 }
 
 async function startRound(sql: postgres.Sql<Record<string, never>>) {
-    console.log(typeof sql)
+    await sql`
+        DO $$
+            DECLARE
+            user_record discord_user%ROWTYPE;
+            new_round_number INTEGER;
+            BEGIN
+            INSERT INTO round DEFAULT VALUES;
+            
+            SELECT MAX(id) INTO new_round_number FROM round;
+            
+            FOR user_record IN SELECT * FROM discord_user
+            LOOP      
+                INSERT INTO card (owner_discord_id, round_number)
+                VALUES (user_record.discord_id, new_round_number);
+                
+                INSERT INTO box_in_card (box_id, card_owner_discord_id, card_round_number)
+                SELECT id, user_record.discord_id, new_round_number
+                FROM box
+                ORDER BY RANDOM()
+                LIMIT 24;
+            END LOOP;
+        END $$;
+    `;
 }
