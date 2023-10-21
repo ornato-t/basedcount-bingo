@@ -20,6 +20,7 @@ BEGIN
       INSERT INTO box_in_card (box_id, card_owner_discord_id, card_round_number)
       SELECT id, user_record.discord_id, new_round_number
       FROM box
+      WHERE about_discord_id IS DISTINCT FROM user_record.discord_id
       ORDER BY RANDOM()
       LIMIT 24;
    END LOOP;
