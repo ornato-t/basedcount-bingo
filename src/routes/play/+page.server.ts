@@ -8,15 +8,23 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
     //Pulls the most recent card for the user with the provided token
     const ownCard = await sql`
-        SELECT b.id, b.text, b.about_discord_id
+        SELECT 
+            b.id, 
+            b.text, 
+            b.about_discord_id,
+            CASE 
+                WHEN ch.time IS NOT NULL THEN TRUE
+                ELSE FALSE
+            END AS checked
         FROM box b
         INNER JOIN box_in_card bc ON b.id=bc.box_id
         INNER JOIN card c ON bc.card_owner_discord_id=c.owner_discord_id AND bc.card_round_number=c.round_number
         INNER JOIN discord_user u ON bc.card_owner_discord_id=u.discord_id
+        LEFT JOIN checks ch ON ch.discord_user_discord_id=u.discord_id AND ch.box_id=b.id AND ch.card_owner_discord_id=c.owner_discord_id AND ch.card_round_number=c.round_number
         WHERE c.round_number=(SELECT MAX(round_number) FROM card) AND u.token=${data.token ?? ''};
-    ` as Box[];
+    ` as BoxCheckable[];
 
-    ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image:/kekw.png', creator_discord_id: '' });
+    ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image:/kekw.png', creator_discord_id: '', checked: true });
 
     return {
         users: data.users,
@@ -26,6 +34,30 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 };
 
 export const actions = {
+    check: async ({ request, locals }) => {
+        const { sql } = locals;
+
+        const formData = await request.formData();
+        const token = formData.get('token');
+        const boxId = formData.get('box');
+        const valueField = formData.get('value') ?? { toString: () => '' };
+        const value = valueField.toString() === 'on' ? true : false;
+
+        if (token === null || boxId === null) return;
+
+        if (value) {
+            await sql`
+                INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time)
+                SELECT discord_id, ${boxId.toString()}, discord_id, (SELECT MAX(id) FROM round), NOW()
+                FROM discord_user
+                WHERE token=${token.toString()}
+            `;
+        } else {
+            // await sql`
+            
+            // `;
+        }
+    },
     startNewRound: async ({ request, locals }) => {
         const { sql } = locals;
 
@@ -85,4 +117,8 @@ async function startRound(sql: postgres.Sql<Record<string, never>>) {
             END LOOP;
         END $$;
     `;
+}
+
+export interface BoxCheckable extends Box {
+    checked: boolean;
 }

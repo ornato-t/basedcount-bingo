@@ -9,7 +9,7 @@
 <main class="grid gap-y-8">
 	<section>
 		<h1 class="text-3xl font-semibold mb-4">Your card</h1>
-		<BingoBoard cards={data.cards} />
+		<BingoBoard cards={data.cards} token={data.token ?? ''}/>
 	</section>
 
 	<section>
