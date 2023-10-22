@@ -56,7 +56,7 @@
 		<p class="pt-4">You are trying to tick the following box:</p>
 		<p class="pl-2 py-4 font-mono">{selectedBox.text}</p>
 		<p class="">Enter a link to the message that triggered it.</p>
-		<p class="py-1.5 text-sm italic">Hint: right click the message and select "Copy Message Link"</p>
+		<p class="py-1.5 text-sm italic">Hint: right click the message and select "Copy message link"</p>
 
 		<form method="post" action="?/check" class="modal-action flex flex-col">
 			<input 

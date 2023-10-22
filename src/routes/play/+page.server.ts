@@ -38,7 +38,6 @@ export const actions = {
         const { sql } = locals;
 
         const formData = await request.formData();
-        console.log(formData)
         const token = formData.get('token');
         const boxId = formData.get('box');
         const url = formData.get('url');
@@ -47,12 +46,13 @@ export const actions = {
 
         if (token === null || boxId === null) return;
         if(Number.isNaN(Number.parseInt(boxId.toString()))) return; //KEKW can't be unchecked
-        if (url === null && value === true) return; //Ticking a box requires a URL to be specified
-        //TODO: do something with url
+        
         if (value) {
+            if (url === null) return; //Ticking a box requires a URL to be specified
+
             await sql`
-                INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time)
-                SELECT discord_id, ${boxId.toString()}, discord_id, (SELECT MAX(id) FROM round), NOW()
+                INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time, url)
+                SELECT discord_id, ${boxId.toString()}, discord_id, (SELECT MAX(id) FROM round), NOW(), ${url.toString()}
                 FROM discord_user
                 WHERE token=${token.toString()}
             `;
