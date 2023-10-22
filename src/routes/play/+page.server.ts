@@ -44,6 +44,7 @@ export const actions = {
         const value = valueField.toString() === 'on' ? true : false;
 
         if (token === null || boxId === null) return;
+        if(Number.isNaN(Number.parseInt(boxId.toString()))) return; //KEKW can't be unchecked
 
         if (value) {
             await sql`
@@ -53,9 +54,13 @@ export const actions = {
                 WHERE token=${token.toString()}
             `;
         } else {
-            // await sql`
-            
-            // `;
+            await sql`
+            DELETE FROM checks
+            WHERE discord_user_discord_id = (SELECT discord_id FROM discord_user WHERE token=${token.toString()})
+            AND box_id=${boxId.toString()}
+            AND card_owner_discord_id = (SELECT discord_id FROM discord_user WHERE token=${token.toString()})
+            AND card_round_number=(SELECT MAX(id) FROM round);
+            `;
         }
     },
     startNewRound: async ({ request, locals }) => {
