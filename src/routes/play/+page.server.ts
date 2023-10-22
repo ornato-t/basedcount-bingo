@@ -1,27 +1,19 @@
 import type { Actions, PageServerLoad } from './$types';
 import type { Box } from '$lib/bingo';
 import type postgres from 'postgres';
+import { checkBingo } from './bingo';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
     const { sql } = locals;
     const data = await parent();
+    await checkBingo(sql, data.token ?? '');    //DEV
 
     //Pulls the most recent card for the user with the provided token
     const ownCard = await sql`
-        SELECT 
-            b.id, 
-            b.text, 
-            b.about_discord_id,
-            CASE 
-                WHEN ch.time IS NOT NULL THEN TRUE
-                ELSE FALSE
-            END AS checked
-        FROM box b
-        INNER JOIN box_in_card bc ON b.id=bc.box_id
-        INNER JOIN card c ON bc.card_owner_discord_id=c.owner_discord_id AND bc.card_round_number=c.round_number
-        INNER JOIN discord_user u ON bc.card_owner_discord_id=u.discord_id
-        LEFT JOIN checks ch ON ch.discord_user_discord_id=u.discord_id AND ch.box_id=b.id AND ch.card_owner_discord_id=c.owner_discord_id AND ch.card_round_number=c.round_number
-        WHERE c.round_number=(SELECT MAX(round_number) FROM card) AND u.token=${data.token ?? ''};
+        SELECT id, text, about_discord_id, checked
+        FROM v_box_in_card
+        WHERE token=${data.token ?? ''}
+        ORDER BY position ASC;
     ` as BoxCheckable[];
 
     ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image:/kekw.png', creator_discord_id: '', checked: true });
@@ -49,13 +41,16 @@ export const actions = {
         
         if (value) {
             if (url === null) return; //Ticking a box requires a URL to be specified
+            const tokenStr = token.toString();
 
             await sql`
                 INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time, url)
                 SELECT discord_id, ${boxId.toString()}, discord_id, (SELECT MAX(id) FROM round), NOW(), ${url.toString()}
                 FROM discord_user
-                WHERE token=${token.toString()}
+                WHERE token=${tokenStr}
             `;
+
+            await checkBingo(sql, tokenStr);
         } else {
             await sql`
             DELETE FROM checks

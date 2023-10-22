@@ -1,4 +1,9 @@
 -- Pulls one's most recent card
+SELECT id, text, about_discord_id, checked
+FROM v_box_in_card
+WHERE token=''
+
+-- Alias for
 SELECT 
     b.id, 
     b.text, 

@@ -31,6 +31,7 @@ CREATE TABLE box_in_card (
     box_id INTEGER NOT NULL,
     card_owner_discord_id TEXT NOT NULL,
     card_round_number INTEGER NOT NULL,
+    position INTEGER NOT NULL,
     PRIMARY KEY (box_id, card_owner_discord_id, card_round_number),
     FOREIGN KEY (box_id) REFERENCES box(id),
     FOREIGN KEY (card_owner_discord_id, card_round_number) REFERENCES card(owner_discord_id, round_number)
@@ -54,3 +55,22 @@ CREATE TABLE checks (
     FOREIGN KEY (box_id) REFERENCES BOX(id),
     FOREIGN KEY (card_owner_discord_id, card_round_number) REFERENCES card(owner_discord_id, round_number)
 );
+CREATE OR REPLACE VIEW v_box_in_card AS
+    SELECT 
+    b.id, 
+    b.text, 
+    b.about_discord_id,
+    CASE 
+        WHEN ch.time IS NOT NULL THEN TRUE
+        ELSE FALSE
+    END AS checked,
+    bc.position,
+    u.token,
+    ch.time,
+    ch.url
+    FROM box b
+    INNER JOIN box_in_card bc ON b.id=bc.box_id
+    INNER JOIN card c ON bc.card_owner_discord_id=c.owner_discord_id AND bc.card_round_number=c.round_number
+    INNER JOIN discord_user u ON bc.card_owner_discord_id=u.discord_id
+    LEFT JOIN checks ch ON ch.discord_user_discord_id=u.discord_id AND ch.box_id=b.id AND ch.card_owner_discord_id=c.owner_discord_id AND ch.card_round_number=c.round_number
+    WHERE c.round_number=(SELECT MAX(round_number) FROM card);
