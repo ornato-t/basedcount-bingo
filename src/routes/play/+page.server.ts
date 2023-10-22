@@ -6,7 +6,6 @@ import { checkBingo } from './bingo';
 export const load: PageServerLoad = async ({ parent, locals }) => {
     const { sql } = locals;
     const data = await parent();
-    await checkBingo(sql, data.token ?? '');    //DEV
 
     //Pulls the most recent card for the user with the provided token
     const ownCard = await sql`
@@ -37,11 +36,11 @@ export const actions = {
         const value = valueField.toString() === 'true' ? true : false;
 
         if (token === null || boxId === null) return;
-        if(Number.isNaN(Number.parseInt(boxId.toString()))) return; //KEKW can't be unchecked
-        
+        if (Number.isNaN(Number.parseInt(boxId.toString()))) return; //KEKW can't be unchecked
+
+        const tokenStr = token.toString();
         if (value) {
             if (url === null) return; //Ticking a box requires a URL to be specified
-            const tokenStr = token.toString();
 
             await sql`
                 INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time, url)
@@ -50,16 +49,17 @@ export const actions = {
                 WHERE token=${tokenStr}
             `;
 
-            await checkBingo(sql, tokenStr);
         } else {
             await sql`
             DELETE FROM checks
-            WHERE discord_user_discord_id = (SELECT discord_id FROM discord_user WHERE token=${token.toString()})
+            WHERE discord_user_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
             AND box_id=${boxId.toString()}
-            AND card_owner_discord_id = (SELECT discord_id FROM discord_user WHERE token=${token.toString()})
+            AND card_owner_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
             AND card_round_number=(SELECT MAX(id) FROM round);
             `;
         }
+        
+        await checkBingo(sql, tokenStr);
     },
     startNewRound: async ({ request, locals }) => {
         const { sql } = locals;

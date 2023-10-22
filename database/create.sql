@@ -23,6 +23,7 @@ CREATE TABLE round (
 CREATE TABLE card (
     owner_discord_id TEXT NOT NULL,
     round_number INTEGER NOT NULL,
+    bingo BOOLEAN NOT NULL DEFAULT FALSE;
     PRIMARY KEY (owner_discord_id, round_number),
     FOREIGN KEY (owner_discord_id) REFERENCES discord_user(discord_id),
     FOREIGN KEY (round_number) REFERENCES round(id)
