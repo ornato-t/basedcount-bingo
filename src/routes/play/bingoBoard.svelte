@@ -61,7 +61,7 @@
 		<form method="post" action="?/check" class="modal-action flex flex-col">
 			<input 
 				type="url" name="url" id="url" title="the URL must be a Discord message link" required
-				placeholder="https://discord.com" pattern="https:\/\/discord\.com\/channels\/{serverId}\/\d+\/\d+"  
+				placeholder="https://discord.com" pattern="https:\/\/discord\.com\/channels\/{serverId}\/\d+\/\d+" autocomplete="off" autocapitalize="off"
 				class="input input-bordered input-primary w-full"
 			/>
 			<input name="token" type="hidden" value={token} />
