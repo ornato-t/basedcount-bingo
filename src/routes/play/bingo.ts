@@ -1,5 +1,6 @@
 import type postgres from "postgres";
 import { DISCORD_TOKEN } from "$env/static/private";
+import { bingoChannelId, bingoPlayerRole } from "$lib/discord";
 
 export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token: string) {
     const checked = await sql`
@@ -10,14 +11,14 @@ export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token
     ` as { id: number, text: string, position: number, time: Date, url: string }[];
 
     if (isBingo(checked.map(el => el.position))) {  //Is bingo
-        const alreadyBingo = await sql`
-            SELECT c.bingo
+        const bingoInfo = await sql`
+            SELECT c.bingo, u.discord_id, u.image, u.name
             FROM card c
             INNER JOIN discord_user u ON c.owner_discord_id=u.discord_id
             WHERE c.round_number = (SELECT MAX(id) FROM round) AND u.token=${token}
-        ` as {bingo: boolean}[];
+        ` as { bingo: boolean, discord_id: string, image: string, name: string }[];
 
-        if (alreadyBingo[0].bingo !== true) {   //If it wasn't bingo earlier on, save it as such
+        if (bingoInfo[0].bingo !== true) {   //If it wasn't bingo earlier on, save it as such
             await sql`
                 UPDATE card
                 SET bingo=TRUE
@@ -28,7 +29,7 @@ export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token
                 )
             `;
 
-            await sendDiscordAnnouncement(checked);
+            await sendDiscordAnnouncement(checked, bingoInfo[0].discord_id, bingoInfo[0].image, bingoInfo[0].name);
         }
     } else {    //Isn't bingo / is no longer bingo
         await sql`
@@ -72,6 +73,33 @@ function isBingo(boxes: number[]) {
     }
 }
 
-async function sendDiscordAnnouncement(boxes: { id: number, text: string, position: number, time: Date, url: string }[]){
-    console.log(typeof DISCORD_TOKEN, typeof boxes)
+async function sendDiscordAnnouncement(boxes: { id: number, text: string, position: number, time: Date, url: string }[], userId: string, image: string, name: string) {
+    const gif = 'https://media.giphy.com/media/DFu7j1d1AQbaE/giphy.gif';
+    
+    await fetch(`https://discord.com/api/channels/${bingoChannelId}/messages`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bot ${DISCORD_TOKEN}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            content: `<@&${bingoPlayerRole}>`,
+            embeds: [{
+                author: {
+                    name: `${name}`,
+                    "icon_url": image
+                },
+                title: 'Bingo!',
+                description:
+                    `
+                        <@${userId}> scored a bingo with the following boxes
+                        ${boxes.map(
+                        box => `- [${box.text}](${box.url})\n`)
+                        .join('')
+                    }
+                    `,
+                image: { url: gif }
+            }]
+        })
+    });
 }
