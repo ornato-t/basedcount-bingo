@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import BingoBoard from './bingoBoard.svelte';
 	import CloseRoundModal from './closeRoundModal.svelte';
+	import Log from './log.svelte';
 
 	export let data: PageData;
 </script>
@@ -9,7 +10,7 @@
 <main class="grid gap-y-8">
 	<section>
 		<h1 class="text-3xl font-semibold mb-4">Your card</h1>
-		<BingoBoard cards={data.cards} token={data.token ?? ''}/>
+		<BingoBoard cards={data.cards} token={data.token ?? ''} />
 	</section>
 
 	<section>
@@ -46,6 +47,8 @@
 			>
 		</section>
 	{/if}
+
+	<Log entries={data.log}/>
 </main>
 
-<CloseRoundModal token={data.token ?? ''} users={data.users}/>
+<CloseRoundModal token={data.token ?? ''} users={data.users} />

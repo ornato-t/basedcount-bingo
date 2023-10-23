@@ -19,10 +19,28 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
     ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image:/kekw.png', creator_discord_id: '', checked: true });
 
+    const log = await sql`
+        WITH union_query AS (
+                SELECT owner_discord_id AS discord_id, bingo_time AS time, 'bingo' as type, null as text, null as url, round_number as round
+                FROM card
+                WHERE bingo=true
+            UNION
+                SELECT discord_user_discord_id AS discord_id, time AS time, 'check' as type, b.text, c.url, card_round_number as round
+                FROM checks c
+                INNER JOIN box b ON c.box_id=b.id
+        )
+        SELECT uq.discord_id, uq.time, uq.type, uq.text, uq.url, u.discord_id, u.name, u.image
+        FROM union_query uq
+        INNER JOIN discord_user u ON uq.discord_id=u.discord_id
+        WHERE uq.round=(SELECT MAX(id) FROM round)
+        ORDER BY uq.time ASC;
+    ` as Log[];
+
     return {
         users: data.users,
         token: data.token,
-        cards: ownCard
+        cards: ownCard,
+        log
     };
 };
 
@@ -75,7 +93,7 @@ export const actions = {
                 AND card_round_number=(SELECT MAX(id) FROM round);
             `;
         }
-        
+
         await checkBingo(sql, tokenStr);
     },
     startNewRound: async ({ request, locals }) => {
@@ -95,13 +113,13 @@ export const actions = {
         if (admin) {
             const winnersStr = winners.toString();
             if (winnersStr === '') return;
-        
+
             for (const winner of winnersStr.split(';')) {
                 await sql`
                     INSERT INTO discord_user_wins_round (discord_user_discord_id, round_number)
                     VALUES (${winner}, (SELECT MAX(id) FROM round)); 
                 `
-            }            
+            }
             await startRound(sql)
         };
     },
@@ -148,3 +166,24 @@ async function startRound(sql: postgres.Sql<Record<string, never>>) {
 export interface BoxCheckable extends Box {
     checked: boolean;
 }
+
+interface LogCheck {
+    discord_id: string,
+    time: Date,
+    type: 'check',
+    text: string,
+    url: string,
+    name: string,
+    image: string
+}
+interface LogBingo {
+    discord_id: string,
+    time: Date,
+    type: 'bingo',
+    text: null,
+    url: null,
+    name: string,
+    image: string
+}
+
+export type Log = LogCheck | LogBingo;
