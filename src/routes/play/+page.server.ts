@@ -47,6 +47,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 export const actions = {
     check: async ({ request, locals }) => {
         const { sql } = locals;
+        const discordMessageRegex = /https:\/\/discord\.com\/channels\/\d+\/\d+\/\d+\s*$/;
 
         const formData = await request.formData();
         const token = formData.get('token');
@@ -62,7 +63,7 @@ export const actions = {
         const boxIdStr = boxId.toString();
         const urlStr = url === null ? null : url.toString();
         if (value) {
-            if (urlStr === null) return; //Ticking a box requires a URL to be specified
+            if (urlStr === null || !discordMessageRegex.test(urlStr)) return; //Ticking a box requires a URL to be specified
 
             await sql`
                 INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time, url)
