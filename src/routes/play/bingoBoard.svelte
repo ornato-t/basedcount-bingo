@@ -5,6 +5,7 @@
 
 	export let cards: Box[];
 	export let token: string;
+	export let className: string;
 
 	const regexImage = /image:\/\S+\.(jpg|jpeg|png|gif|webp|svg)/; //Matches image:/
 
@@ -25,7 +26,7 @@
 	}
 </script>
 
-<div class="grid grid-cols-5 w-fit mx-auto rounded-lg border-2 border-secondary bg-neutral-focus select-none">
+<article class="grid grid-cols-5 w-fit mx-auto rounded-lg border-2 border-secondary bg-neutral-focus select-none {className}">
 	{#each cards as box}
 		<form method="post" action="?/check" class="w-16 h-16 sm:w-28 sm:h-28 border border-secondary cursor-pointer relative">
 			<label>
@@ -47,7 +48,7 @@
 			<input name="box" type="hidden" value={box.id} />
 		</form>
 	{/each}
-</div>
+</article>
 
 <dialog id="clickBox" class="modal">
 	<div class="modal-box max-w-md">

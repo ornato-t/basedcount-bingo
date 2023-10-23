@@ -7,48 +7,54 @@
 	export let data: PageData;
 </script>
 
-<main class="grid gap-y-8">
+<main class="grid grid-cols-4 gap-y-8">
 	<section>
-		<h1 class="text-3xl font-semibold mb-4">Your card</h1>
-		<BingoBoard cards={data.cards} token={data.token ?? ''} />
-	</section>
-
-	<section>
-		<h1 class="text-3xl font-semibold">Your profile</h1>
-		<div class="card card-compact w-80 bg-base-100 shadow-xl image-full">
+		<div class="card card-compact w-full bg-base-100 shadow-xl image-full">
 			<figure><img src={data.currentUser?.banner} alt="" /></figure>
-			<div class="card-body grid grid-rows-4 grid-cols-2">
+			<div class="card-body flex flex-row">
 				{#if data.currentUser}
 					<img src={data.currentUser?.image} alt="" class="rounded-lg row-span-4 h-full" />
-					<h2 class="card-title row-span-2">{data.currentUser?.name ?? ''}</h2>
-					<p>
-						{#if data.currentUser?.admin}Admin{/if}
-					</p>
-					<p>{data.currentUser?.victories} {data.currentUser.victories === 1 ? 'victory' : 'victories'}</p>
+					<span class="grid grid-rows-3 grid-cols-3 w-full">
+						<h2 class="card-title row-span-1 col-span-2">
+							{data.currentUser?.name ?? ''}
+						</h2>
+						<!-- svelte-ignore a11y-invalid-attribute -->
+						<a href="" class="btn btn-square btn-error btn-outline btn-sm justify-self-end">
+							<i class="bx bx-log-out text-lg" />
+						</a>
+						<p class="col-span-full">
+							{data.currentUser?.admin ? 'Admin' : 'Player'}
+						</p>
+						<p class="col-span-full">
+							{data.currentUser?.victories}
+							{data.currentUser.victories === 1 ? 'victory' : 'victories'}
+						</p>
+					</span>
 				{/if}
 			</div>
 		</div>
 
-		<a href="/play/add" class="btn btn-secondary btn-lg mt-4"> Add a card </a>
+		<span class="flex flex-col gap-3 mt-3">
+			<a href="/play/add" class="btn btn-secondary"> Add a card </a>
+
+			{#if data.currentUser !== null && data.currentUser.admin}
+				<!-- svelte-ignore missing-declaration -->
+				<button
+					class="btn btn-secondary col-span-2"
+					on:click={() => {
+						// @ts-ignore
+						closeRound.showModal();
+					}}
+				>
+					Start a new round
+				</button>
+			{/if}
+		</span>
 	</section>
 
-	{#if data.currentUser !== null && data.currentUser.admin}
-		<section>
-			<h1 class="text-3xl font-semibold">Admin control panel</h1>
-			<div class="" />
+	<BingoBoard cards={data.cards} token={data.token ?? ''} className={'col-span-2'} />
 
-			<!-- svelte-ignore missing-declaration -->
-			<button
-				class="btn btn-secondary btn-lg mt-4"
-				on:click={() => {
-					// @ts-ignore
-					closeRound.showModal();
-				}}>Start a new round</button
-			>
-		</section>
-	{/if}
-
-	<Log entries={data.log}/>
+	<Log entries={data.log} />
 </main>
 
 <CloseRoundModal token={data.token ?? ''} users={data.users} />
