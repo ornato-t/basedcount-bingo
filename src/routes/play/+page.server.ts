@@ -93,31 +93,28 @@ export const actions = {
         `)[0] as { admin: boolean };
 
         if (admin) {
-            await saveWinners(sql, winners.toString())
+            const winnersStr = winners.toString();
+            if (winnersStr === '') return;
+        
+            for (const winner of winnersStr.split(';')) {
+                await sql`
+                    INSERT INTO discord_user_wins_round (discord_user_discord_id, round_number)
+                    VALUES (${winner}, (SELECT MAX(id) FROM round)); 
+                `
+            }            
             await startRound(sql)
         };
     },
 } satisfies Actions;
-
-async function saveWinners(sql: postgres.Sql<Record<string, never>>, winnersStr: string) {
-    if (winnersStr === '') return;
-    const winners = winnersStr.split(';');
-
-    for (const winner of winners) {
-        await sql`
-            INSERT INTO discord_user_wins_round (discord_user_discord_id, round_number)
-            VALUES (${winner}, (SELECT MAX(id) FROM round)); 
-        `
-    }
-
-}
 
 async function startRound(sql: postgres.Sql<Record<string, never>>) {
     await sql`
         DO $$
             DECLARE
             user_record discord_user%ROWTYPE;
+            box_record box%ROWTYPE;
             new_round_number INTEGER;
+            position INTEGER := 0;
             BEGIN
             INSERT INTO round DEFAULT VALUES;
             
@@ -128,12 +125,21 @@ async function startRound(sql: postgres.Sql<Record<string, never>>) {
                 INSERT INTO card (owner_discord_id, round_number)
                 VALUES (user_record.discord_id, new_round_number);
                 
-                INSERT INTO box_in_card (box_id, card_owner_discord_id, card_round_number)
-                SELECT id, user_record.discord_id, new_round_number
-                FROM box
-                WHERE about_discord_id IS DISTINCT FROM user_record.discord_id
-                ORDER BY RANDOM()
-                LIMIT 24;
+                position := 0;
+            
+                FOR box_record IN (
+                    SELECT *
+                    FROM box
+                    WHERE about_discord_id IS DISTINCT FROM user_record.discord_id
+                    ORDER BY RANDOM()
+                    LIMIT 24
+                )
+                LOOP
+                    position := position + 1;
+            
+                    INSERT INTO box_in_card (box_id, card_owner_discord_id, card_round_number, position)
+                    VALUES (box_record.id, user_record.discord_id, new_round_number, position);
+                END LOOP;
             END LOOP;
         END $$;
     `;
