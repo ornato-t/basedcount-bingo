@@ -20,7 +20,7 @@ export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token
         if (bingoInfo[0].bingo !== true) {   //If it wasn't bingo earlier on, save it as such
             await sql`
                 UPDATE card
-                SET bingo=TRUE
+                SET bingo=TRUE, bingo_time=NOW()
                 WHERE round_number=(SELECT MAX(id) FROM round) AND owner_discord_id=(
                     SELECT discord_id
                     FROM discord_user
@@ -33,7 +33,7 @@ export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token
     } else {    //Isn't bingo / is no longer bingo
         await sql`
             UPDATE card
-            SET bingo=FALSE
+            SET bingo=FALSE, bingo_time=NULL
             WHERE round_number=(SELECT MAX(id) FROM round) AND owner_discord_id=(
                 SELECT discord_id
                 FROM discord_user
