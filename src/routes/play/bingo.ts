@@ -1,6 +1,5 @@
 import type postgres from "postgres";
-import { DISCORD_TOKEN } from "$env/static/private";
-import { bingoChannelId, bingoPlayerRole } from "$lib/discord";
+import { sendBingoAnnouncement } from "./discord";
 
 export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token: string) {
     const checked = await sql`
@@ -29,7 +28,7 @@ export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token
                 )
             `;
 
-            await sendDiscordAnnouncement(checked, bingoInfo[0].discord_id, bingoInfo[0].image, bingoInfo[0].name);
+            await sendBingoAnnouncement(checked, bingoInfo[0].discord_id, bingoInfo[0].image, bingoInfo[0].name);
         }
     } else {    //Isn't bingo / is no longer bingo
         await sql`
@@ -71,35 +70,4 @@ function isBingo(boxes: number[]) {
     function isLineComplete(line: number[]): boolean {
         return line.every(num => boxes.includes(num));
     }
-}
-
-async function sendDiscordAnnouncement(boxes: { id: number, text: string, position: number, time: Date, url: string }[], userId: string, image: string, name: string) {
-    const gif = 'https://media.giphy.com/media/DFu7j1d1AQbaE/giphy.gif';
-    
-    await fetch(`https://discord.com/api/channels/${bingoChannelId}/messages`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bot ${DISCORD_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            content: `<@&${bingoPlayerRole}>`,
-            embeds: [{
-                author: {
-                    name: `${name}`,
-                    "icon_url": image
-                },
-                title: 'Bingo!',
-                description:
-                    `
-                        <@${userId}> scored a bingo with the following boxes
-                        ${boxes.map(
-                        box => `- [${box.text}](${box.url})\n`)
-                        .join('')
-                    }
-                    `,
-                image: { url: gif }
-            }]
-        })
-    });
 }

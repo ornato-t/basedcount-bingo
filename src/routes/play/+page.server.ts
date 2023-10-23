@@ -2,6 +2,8 @@ import type { Actions, PageServerLoad } from './$types';
 import type { Box } from '$lib/bingo';
 import type postgres from 'postgres';
 import { checkBingo } from './bingo';
+import { sendBoxAnnouncement } from './discord';
+import type { User } from '$lib/user';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
     const { sql } = locals;
@@ -39,23 +41,38 @@ export const actions = {
         if (Number.isNaN(Number.parseInt(boxId.toString()))) return; //KEKW can't be unchecked
 
         const tokenStr = token.toString();
+        const boxIdStr = boxId.toString();
+        const urlStr = url === null ? null : url.toString();
         if (value) {
-            if (url === null) return; //Ticking a box requires a URL to be specified
+            if (urlStr === null) return; //Ticking a box requires a URL to be specified
 
             await sql`
                 INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time, url)
-                SELECT discord_id, ${boxId.toString()}, discord_id, (SELECT MAX(id) FROM round), NOW(), ${url.toString()}
+                SELECT discord_id, ${boxIdStr}, discord_id, (SELECT MAX(id) FROM round), NOW(), ${urlStr}
                 FROM discord_user
                 WHERE token=${tokenStr}
             `;
 
+            const box = (await sql`
+                SELECT *
+                FROM box
+                WHERE id=${boxIdStr}
+            `)[0] as Box;
+
+            const user = (await sql`
+                SELECT *
+                FROM discord_user
+                WHERE token=${tokenStr}
+            `)[0] as User;
+
+            await sendBoxAnnouncement(box, urlStr, user.discord_id, user.image as string, user.name);
         } else {
             await sql`
-            DELETE FROM checks
-            WHERE discord_user_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
-            AND box_id=${boxId.toString()}
-            AND card_owner_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
-            AND card_round_number=(SELECT MAX(id) FROM round);
+                DELETE FROM checks
+                WHERE discord_user_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
+                AND box_id=${boxIdStr}
+                AND card_owner_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
+                AND card_round_number=(SELECT MAX(id) FROM round);
             `;
         }
         
