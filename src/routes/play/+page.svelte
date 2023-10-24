@@ -12,17 +12,17 @@
 </script>
 
 <main class="grid grid-cols-1 lg:grid-cols-4 gap-y-8 place-items-center lg:place-items-start">
-	<section class="w-2/3 lg:w-full mx-auto">
+	<section class="w-5/6 lg:w-full mx-auto">
 		<div class="card card-compact w-full bg-base-100 shadow-xl image-full">
 			<figure><img src={data.currentUser?.banner} alt="" /></figure>
 			<div class="card-body flex flex-row">
 				{#if data.currentUser}
 					<img src={data.currentUser?.image} alt="" class="rounded-lg row-span-4 h-full" />
-					<span class="grid grid-rows-3 grid-cols-3 w-full">
+					<span class="grid grid-rows-4 lg:grid-rows-3 grid-cols-1 lg:grid-cols-3 w-full">
 						<h2 class="card-title row-span-1 col-span-2">
 							{data.currentUser?.name ?? ''}
 						</h2>
-						<a href="/logout" class="btn btn-square btn-error btn-outline btn-sm justify-self-end">
+						<a href="/logout" class="btn btn-square btn-error btn-outline btn-sm justify-self-end order-first lg:order-none">
 							<i class="bx bx-log-out text-lg" />
 						</a>
 						<p class="col-span-full">

@@ -10,7 +10,7 @@
 	});
 
 	function newDay(entry: Log, i: number): boolean {
-		if (i === 0) return false;
+		if (i === 0) return true;
 
 		const prev = entries[i - 1];
 		if (entry.time.getDay() !== prev.time.getDay()) return true;
@@ -19,7 +19,7 @@
 	}
 </script>
 
-<aside class="h-[34rem] carousel carousel-vertical carousel-end">
+<aside class="h-96 lg:h-[35rem] carousel carousel-vertical carousel-end rounded-lg bg-neutral p-1.5">
 	{#each entries as log, i}
 		{#if newDay(log, i)}
 			<div class="divider">{log.time.toLocaleDateString()}</div>
