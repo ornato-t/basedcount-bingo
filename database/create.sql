@@ -23,7 +23,7 @@ CREATE TABLE round (
 CREATE TABLE card (
     owner_discord_id TEXT NOT NULL,
     round_number INTEGER NOT NULL,
-    bingo BOOLEAN NOT NULL DEFAULT FALSE;
+    bingo BOOLEAN NOT NULL DEFAULT FALSE,
     bingo_time timestamp NOT NULL,
     PRIMARY KEY (owner_discord_id, round_number),
     FOREIGN KEY (owner_discord_id) REFERENCES discord_user(discord_id),
@@ -50,7 +50,7 @@ CREATE TABLE checks (
     box_id INTEGER NOT NULL,
     card_owner_discord_id TEXT NOT NULL,
     card_round_number INTEGER NOT NULL,
-    bingo_time timestamp,
+    time timestamp,
     url TEXT NOT NULL,
     PRIMARY KEY (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number),
     FOREIGN KEY (discord_user_discord_id) REFERENCES discord_user(discord_id),
