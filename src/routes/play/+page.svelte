@@ -38,7 +38,7 @@
 		</div>
 
 		<span class="flex flex-col gap-3 mt-3">
-			<a href="/play/add" class="btn btn-secondary"> Add a card </a>
+			<a href="/play/add" class="btn btn-secondary"> Add a box </a>
 
 			{#if data.currentUser !== null && data.currentUser.admin}
 				<!-- svelte-ignore missing-declaration -->

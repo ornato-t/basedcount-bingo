@@ -29,7 +29,7 @@
 <main>
 	<form method="POST" class="card md:w-96 bg-neutral shadow-xl mx-auto">
 		<div class="card-body">
-			<h2 class="text-xl">Add a new card</h2>
+			<h2 class="text-xl">Add a new box</h2>
 			<Typehead
 				label="Triggering user (optional)"
 				data={data.userList}
@@ -58,7 +58,7 @@
 			</div>
 			<input name="target" type="hidden" value={discord_id} />
 			<input name="token" type="hidden" value={data.token} />
-			<button type="submit" class="mt-6 btn btn-active btn-primary">Submit card</button>
+			<button type="submit" class="mt-6 btn btn-active btn-primary">Submit box</button>
 		</div>
 	</form>
 	<div class="w-full grid place-items-center mt-4">
@@ -69,7 +69,7 @@
 	</div>
 
 	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
-		<h2 class="col-span-full text-xl">Cards added by you</h2>
+		<h2 class="col-span-full text-xl">Boxes added by you</h2>
 		{#each added as card}
 			<div>
 				{#if card.name}
