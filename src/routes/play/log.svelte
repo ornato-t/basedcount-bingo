@@ -2,6 +2,8 @@
 	import type { Log } from './proxy+page.server';
 
 	export let entries: Log[];
+
+	console.log(entries)
 </script>
 
 <aside>

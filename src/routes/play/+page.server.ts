@@ -29,7 +29,8 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
                 FROM checks c
                 INNER JOIN box b ON c.box_id=b.id
         )
-        SELECT uq.discord_id, uq.time, uq.type, uq.text, uq.url, u.discord_id, u.name, u.image
+        SELECT uq.discord_id, uq.time, uq.type, uq.text, uq.url, u.discord_id, u.name, u.image,
+            CASE WHEN u.token = ${data.token ?? ''} THEN true ELSE false END AS self
         FROM union_query uq
         INNER JOIN discord_user u ON uq.discord_id=u.discord_id
         WHERE uq.round=(SELECT MAX(id) FROM round)
@@ -175,7 +176,8 @@ interface LogCheck {
     text: string,
     url: string,
     name: string,
-    image: string
+    image: string,
+    self: boolean
 }
 interface LogBingo {
     discord_id: string,
@@ -184,7 +186,8 @@ interface LogBingo {
     text: null,
     url: null,
     name: string,
-    image: string
+    image: string,
+    self: boolean
 }
 
 export type Log = LogCheck | LogBingo;
