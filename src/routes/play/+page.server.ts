@@ -5,9 +5,11 @@ import { checkBingo } from './bingo';
 import { sendBoxAnnouncement } from './discord';
 import type { User } from '$lib/user';
 
-export const load: PageServerLoad = async ({ parent, locals }) => {
+export const load: PageServerLoad = async ({ parent, locals, depends }) => {
     const { sql } = locals;
     const data = await parent();
+
+    depends('play');
 
     //Pulls the most recent card for the user with the provided token
     const ownCard = await sql`

@@ -1,10 +1,14 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import BingoBoard from './bingoBoard.svelte';
 	import CloseRoundModal from './closeRoundModal.svelte';
 	import Log from './log.svelte';
 
 	export let data: PageData;
+	
+	onMount(() => setInterval(() => invalidate('play'), 10000));
 </script>
 
 <main class="grid grid-cols-4 gap-y-8">

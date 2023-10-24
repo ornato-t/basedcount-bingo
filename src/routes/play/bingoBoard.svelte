@@ -26,7 +26,7 @@
 	}
 </script>
 
-<article class="grid grid-cols-5 w-fit mx-auto rounded-lg border-2 border-secondary bg-neutral-focus select-none {className}">
+<article class="grid grid-cols-5 w-fit h-fit mx-auto rounded-lg border-2 border-secondary bg-neutral-focus select-none {className}">
 	{#each cards as box}
 		<form method="post" action="?/check" class="w-16 h-16 sm:w-28 sm:h-28 border border-secondary cursor-pointer relative">
 			<label>
