@@ -11,8 +11,8 @@
 	onMount(() => setInterval(() => invalidate('play'), 10000));
 </script>
 
-<main class="grid grid-cols-4 gap-y-8">
-	<section>
+<main class="grid grid-cols-1 lg:grid-cols-4 gap-y-8 place-items-center lg:place-items-start">
+	<section class="w-2/3 lg:w-full mx-auto">
 		<div class="card card-compact w-full bg-base-100 shadow-xl image-full">
 			<figure><img src={data.currentUser?.banner} alt="" /></figure>
 			<div class="card-body flex flex-row">
