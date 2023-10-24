@@ -27,13 +27,6 @@
 </script>
 
 <main>
-	<div class="w-full grid place-items-center mb-4">
-		<a class="btn btn-secondary w-full md:w-96" href="/play">
-			<i class="bx bx-left-arrow-alt" />
-			Back to your card
-		</a>
-	</div>
-
 	<form method="POST" class="card md:w-96 bg-neutral shadow-xl mx-auto">
 		<div class="card-body">
 			<h2 class="text-xl">Add a new card</h2>
@@ -68,6 +61,12 @@
 			<button type="submit" class="mt-6 btn btn-active btn-primary">Submit card</button>
 		</div>
 	</form>
+	<div class="w-full grid place-items-center mt-4">
+		<a class="btn btn-secondary w-full md:w-96" href="/play">
+			<i class="bx bx-left-arrow-alt" />
+			Back to your card
+		</a>
+	</div>
 
 	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
 		<h2 class="col-span-full text-xl">Cards added by you</h2>
