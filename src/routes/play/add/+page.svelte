@@ -111,13 +111,15 @@
 					</div>
 				{/if}
 				<div class="w-36 h-36 md:w-40 md:h-40 rounded-2xl bg-neutral">
-					<div style="position: relative; {parent_style}">
-						{#if regexImage.test(box.text)}
+					{#if regexImage.test(box.text)}
+						<div class="grid place-items-center w-full h-full">
 							<img class="w-full" src={getImgUrl(box)} alt={getImgUrl(box)} />
-						{:else}
+						</div>
+					{:else}
+						<div style="position: relative; {parent_style}">
 							<h1 class="p-1" use:fit>{box.text}</h1>
-						{/if}
-					</div>
+						</div>
+					{/if}
 				</div>
 			</div>
 		{/each}
