@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
     const data = await parent();
 
     const added = await sql`
-        SELECT box.text, u.name, u.image, box.about_discord_id as discord_id
+        SELECT box.id, box.text, u.name, u.image, box.about_discord_id
         FROM box
         LEFT JOIN discord_user AS u ON box.about_discord_id=u.discord_id
         WHERE box.creator_discord_id = (
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
             WHERE token=${data.token ?? null}
             LIMIT 1
         )
-    ` as { text: string, name: string, image: string, discord_id: string }[];
+    ` as { id: number, text: string, aboutName: string, aboutImage: string, about_discord_id: string }[];
 
     return {
         users: data.users,
@@ -65,7 +65,7 @@ export const actions = {
         const formData = await request.formData();
         const text = formData.get('text');
         const token = formData.get('token');
-        const target = formData.get('target');
+        const target = formData.get('target') ?? null;
 
         if (text === null || token === null) throw error(400, { message: "All fields must be filled" });
 
@@ -79,7 +79,7 @@ export const actions = {
                     WHERE token=${token.toString()}
                     LIMIT 1
                 ) , 
-                ${target == null ? null : target.toString()}
+                ${target === null ? null : target.toString()}
             )
         `;
     },

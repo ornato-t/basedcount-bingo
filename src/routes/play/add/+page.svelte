@@ -3,6 +3,7 @@
 	import type { PageData } from './$types';
 	import Typehead from 'svelte-typeahead';
 	import type { DiscordMember } from './+page.server';
+	import { regexImage, getImgUrl } from '$lib/image';
 
 	export let data: PageData;
 
@@ -10,12 +11,13 @@
 
 	const added: typeof data.added = []; //This is a hack fetch names and images of of non players. It sucks, I'm aware
 	for (const user of data.added) {
-		if (user.name === null && user.image === null) {
-			const match = data.userList.find((el) => el.discord_id === user.discord_id);
+		if (user.aboutName === null && user.aboutImage === null) {
+			const match = data.userList.find((el) => el.discord_id === user.about_discord_id);
 			added.push({
-				discord_id: user.discord_id,
-				image: match?.image ?? 'null',
-				name: match?.name ?? '',
+				id: user.id,
+				about_discord_id: user.about_discord_id,
+				aboutImage: match?.image ?? 'null',
+				aboutName: match?.name ?? '',
 				text: user.text
 			});
 		} else {
@@ -70,23 +72,27 @@
 
 	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
 		<h2 class="col-span-full text-xl">Boxes added by you</h2>
-		{#each added as card}
+		{#each added as box}
 			<div>
-				{#if card.name}
+				{#if box.aboutName}
 					<div class="flex items-center">
 						<div class="avatar">
 							<div class="h-6 rounded-full">
-								<img src={card.image} alt="{card.name}'s avatar" />
+								<img src={box.aboutImage} alt="{box.aboutName}'s avatar" />
 							</div>
 						</div>
 						<span class="ml-2">
-							{card.name}
+							{box.aboutName}
 						</span>
 					</div>
 				{/if}
-				<div class="w-36 h-36 md:w-40 md:h-40 rounded-2xl p-2 bg-neutral">
+				<div class="w-36 h-36 md:w-40 md:h-40 rounded-2xl bg-neutral">
 					<div style="position: relative; {parent_style}">
-						<h1 use:fit>{card.text}</h1>
+						{#if regexImage.test(box.text)}
+							<img class="w-full" src={getImgUrl(box)} alt={getImgUrl(box)} />
+						{:else}
+							<h1 class="p-1" use:fit>{box.text}</h1>
+						{/if}
 					</div>
 				</div>
 			</div>
