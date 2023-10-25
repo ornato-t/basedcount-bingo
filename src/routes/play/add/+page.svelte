@@ -26,6 +26,9 @@
 	}
 
 	let discord_id: string | null;
+
+	let imageBox = false;
+	let text = '';
 </script>
 
 <main>
@@ -53,13 +56,34 @@
 				</div>
 			</Typehead>
 			<div class="form-control">
-				<label class="label" for="boxText">
-					<span class="label-text">Text</span>
-				</label>
-				<textarea id="boxText" name="text" class="textarea textarea-bordered textarea-secondary h-24" />
+				<div class="flex flex-col">
+					<label class="label" for="boxText">
+						<span class="label-text">Text</span>
+					</label>
+
+					<button class="btn btn-square btn-outline" on:click={() => (imageBox = !imageBox)}>
+						<i class="bx {imageBox ? 'bx-image-add' : 'bx-text'} " />
+					</button>
+				</div>
+				{#if imageBox}
+					<input
+						type="url"
+						id="boxText"
+						class="input input-bordered input-secondary w-full"
+						bind:value={text}
+						required
+						placeholder="https://i.imgur.com/something.jpg"
+						pattern="https?:\/\/\S+\.(jpg|jpeg|png|gif|webp|svg)"
+						autocomplete="off"
+						autocapitalize="off"
+					/>
+				{:else}
+					<textarea id="boxText" class="textarea textarea-bordered textarea-secondary h-24" bind:value={text} />
+				{/if}
 			</div>
 			<input name="target" type="hidden" value={discord_id} />
 			<input name="token" type="hidden" value={data.token} />
+			<input name="text" type="hidden" value={imageBox ? `image:/${text}` : text} />
 			<button type="submit" class="mt-6 btn btn-active btn-primary">Submit box</button>
 		</div>
 	</form>
