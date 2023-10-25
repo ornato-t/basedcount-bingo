@@ -56,13 +56,13 @@
 				</div>
 			</Typehead>
 			<div class="form-control">
-				<div class="flex flex-col">
+				<div class="grid grid-cols-2">
 					<label class="label" for="boxText">
-						<span class="label-text">Text</span>
+						<span class="label-text">{imageBox ? 'Image' : 'Text'}</span>
 					</label>
 
-					<button class="btn btn-square btn-outline" on:click={() => (imageBox = !imageBox)}>
-						<i class="bx {imageBox ? 'bx-image-add' : 'bx-text'} " />
+					<button type="button" class="btn btn-sm btn-square btn-outline btn-primary place-self-end mb-1" on:click={() => (imageBox = !imageBox)}>
+						<i class="bx {imageBox ? 'bx-text' : 'bx-image-add'} " />
 					</button>
 				</div>
 				{#if imageBox}
@@ -78,7 +78,7 @@
 						autocapitalize="off"
 					/>
 				{:else}
-					<textarea id="boxText" class="textarea textarea-bordered textarea-secondary h-24" bind:value={text} />
+					<textarea id="boxText" class="textarea textarea-bordered textarea-secondary h-24" bind:value={text} required placeholder="Some text for your new box" />
 				{/if}
 			</div>
 			<input name="target" type="hidden" value={discord_id} />
