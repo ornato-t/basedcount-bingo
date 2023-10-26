@@ -116,14 +116,15 @@ export const actions = {
 
         if (admin) {
             const winnersStr = winners.toString();
-            if (winnersStr === '') return;
-
-            for (const winner of winnersStr.split(';')) {
-                await sql`
-                    INSERT INTO discord_user_wins_round (discord_user_discord_id, round_number)
-                    VALUES (${winner}, (SELECT MAX(id) FROM round)); 
-                `
+            if (winnersStr !== '') {
+                for (const winner of winnersStr.split(';')) {
+                    await sql`
+                        INSERT INTO discord_user_wins_round (discord_user_discord_id, round_number)
+                        VALUES (${winner}, (SELECT MAX(id) FROM round)); 
+                    `
+                }
             }
+
             await startRound(sql)
         };
     },
