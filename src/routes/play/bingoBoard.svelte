@@ -3,6 +3,7 @@
 	import { fit, parent_style } from '@leveluptuts/svelte-fit';
 	import type { BoxCheckable as Box } from './+page.server';
 	import { regexImage, getImgUrl } from '$lib/image';
+	import { enhance } from '$app/forms';
 
 	export let cards: Box[];
 	export let token: string;
@@ -25,7 +26,7 @@
 
 <article class="grid grid-cols-5 w-fit h-fit mx-auto rounded-lg border-2 border-primary bg-neutral-focus select-none {className}">
 	{#each cards as box}
-		<form method="post" action="?/check" class="w-16 h-16 sm:w-28 sm:h-28 border border-primary cursor-pointer relative">
+		<form method="post" action="?/check" class="w-16 h-16 sm:w-28 sm:h-28 border border-primary cursor-pointer relative" use:enhance>
 			<label>
 				<input name="value" type="checkbox" class="opacity-0 absolute inset-0 w-full h-full" bind:checked={box.checked} on:change={() => boxClicked(box)} />
 				<div style="position: relative; {parent_style}">
@@ -62,7 +63,7 @@
 		<p class="">Enter a link to the message that triggered it.</p>
 		<p class="py-1.5 text-sm italic">Hint: right click the message and select "Copy message link"</p>
 
-		<form method="post" action="?/check" class="modal-action flex flex-col">
+		<form method="post" action="?/check" class="modal-action flex flex-col" use:enhance>
 			<input
 				type="url"
 				name="url"
@@ -91,7 +92,17 @@
 				>
 					Close
 				</button>
-				<button type="submit" class="btn btn-secondary"> Confirm </button>
+				<!-- svelte-ignore missing-declaration -->
+				<button
+					type="submit"
+					class="btn btn-secondary"
+					on:click={() => {
+						// @ts-ignore
+						clickBox.close();
+					}}
+				>
+					Confirm
+				</button>
 			</div>
 		</form>
 	</div>
