@@ -33,6 +33,8 @@
 	<meta name="og:site_name" content="Based Count Bingo" />
 	<meta name="og:locale" content="en_GB" />
 	<meta name="og:type" content="website" />
+
+	<meta name="robots" content="noindex">
 </svelte:head>
 
 <nav class="navbar bg-base-100">
