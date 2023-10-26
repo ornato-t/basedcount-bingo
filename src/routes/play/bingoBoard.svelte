@@ -59,7 +59,13 @@
 		<h3 class="font-bold text-lg">Confirm your action</h3>
 
 		<p class="pt-4">You are trying to tick the following box:</p>
-		<p class="pl-2 py-4 font-mono">{selectedBox.text}</p>
+		{#if regexImage.test(selectedBox.text)}
+			<div class="py-4 grid place-items-center w-full h-full">
+				<img class="h-36" src={getImgUrl(selectedBox)} alt={getImgUrl(selectedBox)} />
+			</div>
+		{:else}
+			<p class="pl-2 py-4 font-mono">{selectedBox.text}</p>
+		{/if}
 		<p class="">Enter a link to the message that triggered it.</p>
 		<p class="py-1.5 text-sm italic">Hint: right click the message and select "Copy message link"</p>
 
