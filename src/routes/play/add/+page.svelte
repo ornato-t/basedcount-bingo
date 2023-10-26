@@ -98,7 +98,7 @@
 		<h2 class="col-span-full text-xl">Boxes added by you</h2>
 		{#each added as box}
 			<form method="post" action="?/delete">
-				<button class="btn btn-xs btn-circle btn-error relative top-14 left-[8.3rem] z-10 text-neutral-content">
+				<button class="btn btn-xs btn-circle btn-error relative {box.about_name ? 'top-14' : 'top-8'} left-[8.3rem] z-10 text-neutral-content">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 					</svg>
