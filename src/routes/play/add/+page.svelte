@@ -32,7 +32,7 @@
 </script>
 
 <main>
-	<form method="POST" class="card md:w-96 bg-neutral shadow-xl mx-auto">
+	<form method="POST" action="?/add" class="card md:w-96 bg-neutral shadow-xl mx-auto">
 		<div class="card-body">
 			<h2 class="text-xl">Add a new box</h2>
 			<Typehead
@@ -97,7 +97,12 @@
 	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
 		<h2 class="col-span-full text-xl">Boxes added by you</h2>
 		{#each added as box}
-			<div>
+			<form method="post" action="?/delete">
+				<button class="btn btn-xs btn-circle btn-error relative top-8 left-[8.3rem] z-10 text-neutral-content">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
 				{#if box.aboutName}
 					<div class="flex items-center">
 						<div class="avatar">
@@ -121,7 +126,9 @@
 						</div>
 					{/if}
 				</div>
-			</div>
+				<input name="box" type="hidden" value={box.id} />
+				<input name="token" type="hidden" value={data.token ?? null} />
+			</form>
 		{/each}
 	</div>
 </main>

@@ -59,18 +59,18 @@ function createLink(id: string, localHash: string | undefined, globalHash: strin
 }
 
 export const actions = {
-    default: async ({ request, locals }) => {
+    add: async ({ request, locals }) => {
         const { sql } = locals;
 
         const formData = await request.formData();
         const text = formData.get('text');
         const token = formData.get('token');
-        const target = formData.get('target') ?? {toString: () => null};
+        const target = formData.get('target') ?? { toString: () => null };
 
         if (text === null || token === null) throw error(400, { message: "All fields must be filled" });
 
         let targetStr = target.toString();
-        if(targetStr === 'undefined') targetStr = null;
+        if (targetStr === 'undefined') targetStr = null;
 
         await sql`
             INSERT INTO box(text,creator_discord_id,about_discord_id)
@@ -86,6 +86,23 @@ export const actions = {
             )
         `;
     },
+    delete: async ({ request, locals }) => {
+        const { sql } = locals;
+
+        const formData = await request.formData();
+        const boxId = (formData.get('box') ?? { toString: () => null }).toString();
+        const token = (formData.get('token') ?? { toString: () => null }).toString();
+
+        await sql`
+            DELETE FROM box 
+            WHERE id IN (
+                SELECT b.id 
+                FROM box b
+                INNER JOIN discord_user u ON b.creator_discord_id = u.discord_id
+                WHERE b.id = ${boxId} AND u.token = ${token}
+            )        
+        `;
+    }
 } satisfies Actions;
 
 export interface DiscordMember {
