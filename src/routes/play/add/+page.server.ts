@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
     const data = await parent();
 
     const added = await sql`
-        SELECT box.id, box.text, u.name, u.image, box.about_discord_id
+        SELECT box.id, box.text, u.name as about_name, u.image as about_image, box.about_discord_id
         FROM box
         LEFT JOIN discord_user AS u ON box.about_discord_id=u.discord_id
         WHERE box.creator_discord_id = (
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
             WHERE token=${data.token ?? null}
             LIMIT 1
         )
-    ` as { id: number, text: string, aboutName: string, aboutImage: string, about_discord_id: string }[];
+    ` as { id: number, text: string, about_name: string, about_image: string, about_discord_id: string }[];
 
     return {
         users: data.users,
