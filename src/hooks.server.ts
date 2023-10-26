@@ -4,7 +4,7 @@ import type { Handle } from '@sveltejs/kit';
 
 const sql = postgres(PG_URI, {
     idle_timeout: 5,
-    max_lifetime: 30,
+    max_lifetime: 10,    //Play page refreshes every 10 seconds
 
 });
 
