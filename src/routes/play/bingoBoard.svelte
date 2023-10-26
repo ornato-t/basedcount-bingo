@@ -30,8 +30,8 @@
 				<input name="value" type="checkbox" class="opacity-0 absolute inset-0 w-full h-full" bind:checked={box.checked} on:change={() => boxClicked(box)} />
 				<div style="position: relative; {parent_style}">
 					{#if regexImage.test(box.text)}
-						<div class="grid place-items-center w-full h-full">
-							<img class="z-10 relative" src={getImgUrl(box)} alt={getImgUrl(box)} />
+						<div class="grid place-items-center h-full w-full">
+							<img class="z-10 relative h-full w-full object-contain" src={getImgUrl(box)} alt={getImgUrl(box)} />
 						</div>
 					{:else}
 						<h1 class="z-30 relative p-1" use:fit>{box.text}</h1>
