@@ -19,7 +19,7 @@
 </script>
 
 <dialog id="closeRound" class="modal">
-	<div class="modal-box">
+	<div class="modal-box max-w-[30rem]">
 		<h3 class="font-bold text-lg">Are you sure about that?</h3>
 
 		<p class="py-4">You are trying to close the current round and start a new one.</p>
@@ -28,7 +28,7 @@
 			<p>Select the winners of the round, if any.</p>
 			<p>If the round ended inconclusively don't any winners.</p>
 
-			<select class="select select-primary w-full max-w-xs mt-2" bind:value={selectedUser} on:change={addSelectedUser}>
+			<select class="select select-primary w-full max-w-full mt-2" bind:value={selectedUser} on:change={addSelectedUser}>
 				<option value="default" disabled selected>Pick a winner</option>
 				{#each users as user}
 					<option value={user}>
