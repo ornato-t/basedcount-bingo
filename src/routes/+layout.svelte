@@ -51,7 +51,7 @@
 	<slot/>
 </main>
 
-<footer class="footer items-center p-4 text-neutral-content hidden md:grid">
+<footer class="footer items-center p-4 text-neutral-content grid">
 	<nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
 		<a href={DISCORD_LINK} class="btn btn-circle btn-ghost">
 			<i class="bx bxl-discord-alt bx-sm" />
