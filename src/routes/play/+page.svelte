@@ -25,10 +25,10 @@
 							{data.currentUser?.name ?? ''}
 						</h2>
 						<span class="justify-self-end order-first lg:order-none">
-							<a href="/leaderboard" data-tip="leaderboard" class="tooltip btn btn-square btn-warning btn-outline btn-sm mr-1.5" data-sveltekit-preload-data="false">
+							<a href="/leaderboard" class="btn btn-square btn-warning btn-outline btn-sm mr-1.5" data-sveltekit-preload-data="false">
 								<i class="bx bx-trophy text-lg" />
 							</a>
-							<a href="/logout" data-tip="logout" class="tooltip btn btn-square btn-error btn-outline btn-sm justify-self-end order-first lg:order-none" data-sveltekit-preload-data="false">
+							<a href="/logout" class="btn btn-square btn-error btn-outline btn-sm justify-self-end order-first lg:order-none" data-sveltekit-preload-data="false">
 								<i class="bx bx-log-out text-lg" />
 							</a>
 						</span>
