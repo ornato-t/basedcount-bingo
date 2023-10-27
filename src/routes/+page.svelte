@@ -23,19 +23,24 @@
 		<div class="max-w-lg">
 			<h1 class="mb-5 text-5xl font-bold">Welcome</h1>
 			<p class="mb-2">Enter the fray of the Based Count Discord, where being terminally online is not a choice, but a challenge.</p>
-			<p />
 			<p class="mb-7">Tread carefully, for pure retardation awaits you beyond this point.</p>
-			{#if data.token !== undefined}
-				<a class="btn btn-primary btn-lg" href="/play">
-					<i class="bx bx-play bx-sm" />
-					play
+			<div class="flex flex-col w-fit mx-auto gap-4">
+				{#if data.token !== undefined}
+					<a class="btn btn-primary btn-lg" href="/play">
+						<i class="bx bx-play bx-sm" />
+						play
+					</a>
+				{:else}
+					<a class="btn btn-primary btn-lg" href={getLogin()}>
+						<i class="bx bxl-discord-alt bx-sm" />
+						enter with discord
+					</a>
+				{/if}
+				<a class="btn btn-accent btn-lg" href="/leaderboard">
+					<i class="bx bx-trophy bx-sm" />
+					check out our leaderboard
 				</a>
-			{:else}
-				<a class="btn btn-primary btn-lg" href={getLogin()}>
-					<i class="bx bxl-discord-alt bx-sm" />
-					enter with discord
-				</a>
-			{/if}
+			</div>
 		</div>
 	</div>
 </div>
