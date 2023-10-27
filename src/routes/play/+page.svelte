@@ -24,7 +24,7 @@
 						<h2 class="card-title row-span-1 col-span-2">
 							{data.currentUser?.name ?? ''}
 						</h2>
-						<a href="/logout" class="btn btn-square btn-error btn-outline btn-sm justify-self-end order-first lg:order-none">
+						<a href="/logout" class="btn btn-square btn-error btn-outline btn-sm justify-self-end order-first lg:order-none" data-sveltekit-preload-data="false">
 							<i class="bx bx-log-out text-lg" />
 						</a>
 						<p class="col-span-full">
