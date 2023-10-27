@@ -67,7 +67,7 @@ export const actions = {
         const token = formData.get('token');
         const target = formData.get('target') ?? { toString: () => null };
 
-        if (text === null || token === null) throw error(400, { message: "All fields must be filled" });
+        if (text === null || token === null) return { failure: true }
 
         let targetStr = target.toString();
         if (targetStr === 'undefined') targetStr = null;
@@ -85,6 +85,8 @@ export const actions = {
                 ${targetStr}
             )
         `;
+
+        return { success: true }
     },
     delete: async ({ request, locals }) => {
         const { sql } = locals;
@@ -102,6 +104,8 @@ export const actions = {
                 WHERE b.id = ${boxId} AND u.token = ${token}
             )        
         `;
+
+        return { success: true }
     }
 } satisfies Actions;
 

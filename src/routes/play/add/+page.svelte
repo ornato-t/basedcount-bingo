@@ -6,7 +6,7 @@
 	import { regexImage, getImgUrl } from '$lib/image';
 
 	export let data: PageData;
-	console.log(data.added)
+
 	const extract = (entry: DiscordMember) => entry.name;
 
 	const added: typeof data.added = []; //This is a hack fetch names and images of of non players. It sucks, I'm aware

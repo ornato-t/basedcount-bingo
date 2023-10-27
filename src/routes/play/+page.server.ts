@@ -56,50 +56,63 @@ export const actions = {
         const token = formData.get('token');
         const boxId = formData.get('box');
         const url = formData.get('url');
-        const valueField = formData.get('value') ?? { toString: () => '' };
-        const value = valueField.toString() === 'true' ? true : false;
 
         if (token === null || boxId === null) return { failure: true };
-        if (Number.isNaN(Number.parseInt(boxId.toString()))) return { failure: true }; //KEKW can't be unchecked
+        if (Number.isNaN(Number.parseInt(boxId.toString()))) return { failure: true }; //KEKW is already checked
 
         const tokenStr = token.toString();
         const boxIdStr = boxId.toString();
         const urlStr = url === null ? null : url.toString();
-        if (value) {
-            if (urlStr === null || !discordMessageRegex.test(urlStr)) return { failure: true }; //Ticking a box requires a URL to be specified
 
-            await sql`
+        if (urlStr === null || !discordMessageRegex.test(urlStr)) return { failure: true }; //Ticking a box requires a URL to be specified
+
+        await sql`
                 INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time, url)
                 SELECT discord_id, ${boxIdStr}, discord_id, (SELECT MAX(id) FROM round), NOW(), ${urlStr}
                 FROM discord_user
                 WHERE token=${tokenStr}
             `;
 
-            const box = (await sql`
+        const box = (await sql`
                 SELECT *
                 FROM box
                 WHERE id=${boxIdStr}
             `)[0] as Box;
 
-            const user = (await sql`
+        const user = (await sql`
                 SELECT *
                 FROM discord_user
                 WHERE token=${tokenStr}
             `)[0] as User;
 
-            await sendBoxAnnouncement(box, urlStr, user.discord_id, user.image as string, user.name);
-        } else {
-            await sql`
-                DELETE FROM checks
-                WHERE discord_user_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
-                AND box_id=${boxIdStr}
-                AND card_owner_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
-                AND card_round_number=(SELECT MAX(id) FROM round);
-            `;
-        }
+        await sendBoxAnnouncement(box, urlStr, user.discord_id, user.image as string, user.name);
+        await checkBingo(sql, tokenStr);
+
+        return { success: true };
+    },
+    uncheck: async ({ request, locals }) => {
+        const { sql } = locals;
+
+        const formData = await request.formData();
+        const token = formData.get('token');
+        const boxId = formData.get('box');
+
+        if (token === null || boxId === null) return { failure: true };
+        if (Number.isNaN(Number.parseInt(boxId.toString()))) return { failure: true }; //KEKW can't be unchecked
+
+        const tokenStr = token.toString();
+        const boxIdStr = boxId.toString();
+
+        await sql`
+            DELETE FROM checks
+            WHERE discord_user_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
+            AND box_id=${boxIdStr}
+            AND card_owner_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
+            AND card_round_number=(SELECT MAX(id) FROM round);
+        `;
 
         await checkBingo(sql, tokenStr);
-        
+
         return { success: true };
     },
     startNewRound: async ({ request, locals }) => {

@@ -12,23 +12,21 @@
 	let selectedBox: Box = { about_discord_id: null, checked: false, creator_discord_id: '', id: NaN, text: '' };
 
 	function boxClicked(box: Box) {
+		box.checked = !box.checked;
+
 		if (box.checked) {
-			//If the box is being checked ask for confirmation
 			selectedBox = box;
 			// @ts-ignore
 			clickBox.showModal();
-		} else {
-			//If the box is being unchecked just submit the form
-			document.querySelector(`input[name='box'][value='${box.id}']`)!.closest('form')!.submit();
 		}
 	}
 </script>
 
 <article class="grid grid-cols-5 w-fit h-fit mx-auto rounded-lg border-2 border-primary bg-neutral-focus select-none {className}">
 	{#each cards as box}
-		<form method="post" action="?/check" class="w-16 h-16 sm:w-28 sm:h-28 border border-primary cursor-pointer relative" use:enhance>
+		<form method="post" action="?/uncheck" class="w-16 h-16 sm:w-28 sm:h-28 border border-primary cursor-pointer relative" use:enhance>
 			<label>
-				<input name="value" type="checkbox" class="opacity-0 absolute inset-0 w-full h-full" bind:checked={box.checked} on:change={() => boxClicked(box)} />
+				<button type="submit" class="opacity-0 absolute inset-0 w-full h-full" on:click={() => boxClicked(box)} />
 				<div style="position: relative; {parent_style}">
 					{#if regexImage.test(box.text)}
 						<div class="grid place-items-center h-full w-full">
