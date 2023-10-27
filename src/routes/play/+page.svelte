@@ -7,16 +7,18 @@
 	import Log from './log.svelte';
 
 	export let data: PageData;
-	
+
 	onMount(() => setInterval(() => invalidate('play'), 10000));
 </script>
 
 <main class="grid grid-cols-1 lg:grid-cols-4 gap-y-8 place-items-center lg:place-items-start">
 	<section class="w-5/6 lg:w-full mx-auto">
-		<div class="card card-compact w-full bg-base-100 shadow-xl image-full">
-			<figure><img src={data.currentUser?.banner} alt="" /></figure>
-			<div class="card-body flex flex-row">
-				{#if data.currentUser}
+		{#if data.currentUser}
+			<div class="card card-compact w-full bg-base-100 shadow-xl image-full h-36">
+				{#if data.currentUser.banner}
+					<figure><img src={data.currentUser?.banner} alt="" class="object-fill w-full" /></figure>
+				{/if}
+				<div class="card-body flex flex-row">
 					<img src={data.currentUser?.image} alt="" class="rounded-lg row-span-4 h-full" />
 					<span class="grid grid-rows-4 lg:grid-rows-3 grid-cols-1 lg:grid-cols-3 w-full">
 						<h2 class="card-title row-span-1 col-span-2">
@@ -33,11 +35,11 @@
 							{data.currentUser.victories === 1 ? 'victory' : 'victories'}
 						</p>
 					</span>
-				{/if}
+				</div>
 			</div>
-		</div>
+		{/if}
 
-		<span class="flex flex-col gap-3 mt-3">
+		<span class="flex flex-col gap-3 mt-6">
 			<a href="/play/add" class="btn btn-secondary"> Add a box </a>
 
 			{#if data.currentUser !== null && data.currentUser.admin}
