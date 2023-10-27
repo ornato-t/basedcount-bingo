@@ -24,12 +24,12 @@
 
 		<p class="py-4">You are trying to close the current round and start a new one.</p>
 
-		<div class="min-h-[12rem]">
+		<div class="min-h-[12.5rem]">
 			<p>Select the winners of the round, if any.</p>
-			<p>If the round ended inconclusively don't any winners.</p>
+			<p>If the round ended inconclusively don't select any winners.</p>
 
-			<select class="select select-primary w-full max-w-full mt-2" bind:value={selectedUser} on:change={addSelectedUser}>
-				<option value="default" disabled selected>Pick a winner</option>
+			<select class="select select-primary w-full max-w-full mt-4" bind:value={selectedUser} on:change={addSelectedUser}>
+				<option value="default" disabled selected>Select a winner</option>
 				{#each users as user}
 					<option value={user}>
 						{user.name}
