@@ -91,7 +91,6 @@ async function upsertUser(user: UserProfile, sql: postgres.Sql<Record<string, ne
         admin = EXCLUDED.admin,
         image = EXCLUDED.image,
         banner = EXCLUDED.banner,
-        token = EXCLUDED.token
     `;
 
     return uuid;

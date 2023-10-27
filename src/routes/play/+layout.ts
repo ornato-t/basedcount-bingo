@@ -4,7 +4,8 @@ import type { LayoutLoad } from './$types';
 export const load: LayoutLoad = async ({ parent }) => {
     const data = await parent();
 
-    if(data.token === undefined || data.currentUser === null) throw redirect(303, '/'); //TODO: if no user redirect to logout instead
+    if(data.token === undefined) throw redirect(303, '/');
+    if(data.currentUser === null) throw redirect(303, '/logout');
 
     return data;
 };
