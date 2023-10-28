@@ -76,7 +76,7 @@ async function fetchProfile(token: string) {
 async function upsertUser(user: UserProfile, sql: postgres.Sql<Record<string, never>>) {
     const uuid = crypto.randomUUID();
 
-    await sql`
+    const result = await sql`
         INSERT INTO discord_user
         VALUES(
             ${user.user.id},
@@ -90,11 +90,11 @@ async function upsertUser(user: UserProfile, sql: postgres.Sql<Record<string, ne
         name = EXCLUDED.name,
         admin = EXCLUDED.admin,
         image = EXCLUDED.image,
-        banner = EXCLUDED.banner,
+        banner = EXCLUDED.banner
+        RETURNING token
     `;
 
-    return uuid;
-
+    return result[0].token;
 }
 
 function isAdmin(user: UserProfile) {
