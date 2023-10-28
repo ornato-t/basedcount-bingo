@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
         SELECT name, image, banner, COUNT(round_number) as victories, ARRAY_AGG(round_number) as rounds, 
             DENSE_RANK() OVER (ORDER BY COUNT(round_number) DESC) as place
         FROM discord_user_wins_round w
-        INNER JOIN discord_user u ON w.discord_user_discord_id=u.discord_id
+        RIGHT JOIN discord_user u ON w.discord_user_discord_id=u.discord_id
         GROUP BY name, image, banner
         ORDER BY victories DESC;
 
@@ -23,13 +23,13 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
     `
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        .simple() as [Player[], { round_number: number, winners: string }[]];
+        .simple() as [PlayerDB[], { round_number: number, winners: string }[]];
 
     return {
         users: data.users,
         token: data.token,
         currentUser: data.currentUser,
-        leaderboard,
+        leaderboard: parseLeaderboard(leaderboard),
         rounds: parseRounds(rounds)
     };
 };
@@ -68,6 +68,17 @@ function parseRounds(rounds: { round_number: number, winners: string }[]) {
     }
 }
 
+function parseLeaderboard(leaderboard: PlayerDB[]): Player[] {
+    return leaderboard.map(player => ({
+        banner: player.banner,
+        image: player.image,
+        name: player.name,
+        place: Number.parseInt(player.place),
+        victories: Number.parseInt(player.victories),
+        rounds: Number.isNaN(player.rounds[0]) ? [] : player.rounds,
+    }));
+}
 
-interface Player { name: string, image: string, banner: string | null, victories: number, rounds: number[], place: number }
+interface PlayerDB { name: string, image: string, banner: string | null, victories: string, rounds: number[], place: string }
+export interface Player { name: string, image: string, banner: string | null, victories: number, rounds: number[], place: number }
 interface Winner { name: string, image: string, banner: string | null }
