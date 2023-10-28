@@ -7,20 +7,22 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
     depends('leaderboard');
 
     const [leaderboard, rounds] = await sql`
-        SELECT name, image, banner, COUNT(round_number) as victories, ARRAY_AGG(round_number) as rounds, 
+        SELECT name, image, banner, COUNT(round_number) as victories, 
             DENSE_RANK() OVER (ORDER BY COUNT(round_number) DESC) as place
         FROM discord_user_wins_round w
         RIGHT JOIN discord_user u ON w.discord_user_discord_id=u.discord_id
         GROUP BY name, image, banner
-        ORDER BY victories DESC, name ASC;;
+        ORDER BY victories DESC, name ASC;
 
-        SELECT r.id as round_number, ARRAY_AGG((name, image, banner)) as winners
-        FROM discord_user_wins_round w
-        INNER JOIN discord_user u ON w.discord_user_discord_id=u.discord_id
-        RIGHT JOIN round r ON r.id=w.round_number
-        GROUP BY r.id
-        ORDER BY round_number ASC;
-    `
+        SELECT
+        `
+        // SELECT r.id as round_number, ARRAY_AGG((name, image, banner)) as winners
+        // FROM discord_user_wins_round w
+        // INNER JOIN discord_user u ON w.discord_user_discord_id=u.discord_id
+        // RIGHT JOIN round r ON r.id=w.round_number
+        // GROUP BY r.id
+        // ORDER BY round_number ASC;
+        
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         .simple() as [PlayerDB[], { round_number: number, winners: string }[]];
@@ -75,10 +77,9 @@ function parseLeaderboard(leaderboard: PlayerDB[]): Player[] {
         name: player.name,
         place: Number.parseInt(player.place),
         victories: Number.parseInt(player.victories),
-        rounds: Number.isNaN(player.rounds[0]) ? [] : player.rounds,
     }));
 }
 
-interface PlayerDB { name: string, image: string, banner: string | null, victories: string, rounds: number[], place: string }
-export interface Player { name: string, image: string, banner: string | null, victories: number, rounds: number[], place: number }
+interface PlayerDB { name: string, image: string, banner: string | null, victories: string, place: string }
+export interface Player { name: string, image: string, banner: string | null, victories: number, place: number }
 interface Winner { name: string, image: string, banner: string | null }
