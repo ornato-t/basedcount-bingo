@@ -18,7 +18,7 @@
 			</thead>
 			<tbody>
 				{#each data.leaderboard as player, i}
-					<tr class="">
+					<tr>
 						<th>
 							{#if player.place === 1}
 								🥇
@@ -27,10 +27,12 @@
 							{:else if player.place === 3}
 								🥉
 							{:else}
-								{player.place}
+								<span class="ml-1.5">
+									{player.place}
+								</span>
 							{/if}
 						</th>
-						<td> <Player {player} className={"my-1"} /></td>
+						<td> <Player {player} className={'my-1'} /></td>
 						<td>{player.victories}</td>
 					</tr>
 				{/each}

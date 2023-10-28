@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
         FROM discord_user_wins_round w
         RIGHT JOIN discord_user u ON w.discord_user_discord_id=u.discord_id
         GROUP BY name, image, banner
-        ORDER BY victories DESC;
+        ORDER BY victories DESC, name ASC;;
 
         SELECT r.id as round_number, ARRAY_AGG((name, image, banner)) as winners
         FROM discord_user_wins_round w
