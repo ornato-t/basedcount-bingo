@@ -4,11 +4,12 @@
 
 	export let data: PageData;
 
+	const roundReversed = data.rounds.reverse();
 	let ldbOrRound: boolean;
 </script>
 
 <main class="-mb-2">
-	<label class="text-xl mx-auto w-fit font-semibold my-2 flex flex-row items-center gap-x-3 cursor-pointer" for="ldb-or-round">
+	<label class="text-xl mx-auto w-fit font-semibold my-2 flex flex-row items-center gap-x-3 cursor-pointer select-none" for="ldb-or-round">
 		<span class={ldbOrRound ? 'opacity-25' : ''}> Leaderboard </span>
 
 		<label class="swap swap-flip text-4xl">
@@ -22,7 +23,7 @@
 	</label>
 
 	{#if !ldbOrRound}
-		<div class="overflow-x-auto w-2/3 md:mx-auto">
+		<div class="overflow-x-auto md:w-2/3 md:mx-auto">
 			<table class="table table-lg">
 				<thead>
 					<tr>
@@ -55,17 +56,32 @@
 			</table>
 		</div>
 	{:else}
-		<div>
-			<h1 class="font-bold">Rounds</h1>
-			{#each data.rounds as round}
-				<p>
-					{round.round_number} [
-					{#each round.winners as winner}
-						{winner.name + ' '}
+		<div class="overflow-x-auto md:w-1/2 md:mx-auto">
+			<table class="table table-lg">
+				<thead>
+					<tr>
+						<th>Round number</th>
+						<th>Winners</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each roundReversed as round}
+						<tr>
+							<th>
+								{round.round_number}
+							</th>
+							<td class="flex flex-col md:flex-row gap-5">
+								{#if round.winners.length === 0}
+									<span class="font-mono ml-12"> No winner </span>
+								{/if}
+								{#each round.winners as winner}
+									<Player player={winner} className={'w-fit'} />
+								{/each}
+							</td>
+						</tr>
 					{/each}
-					]
-				</p>
-			{/each}
+				</tbody>
+			</table>
 		</div>
 	{/if}
 </main>
