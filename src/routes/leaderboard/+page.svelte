@@ -56,7 +56,7 @@
 			</table>
 		</div>
 	{:else}
-		<div class="overflow-x-auto md:w-1/2 md:mx-auto">
+		<div class="overflow-x-auto md:w-2/3 md:mx-auto">
 			<table class="table table-lg">
 				<thead>
 					<tr>
@@ -65,14 +65,16 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each roundReversed as round}
+					{#each roundReversed as round, i}
 						<tr>
 							<th>
 								{round.round_number}
 							</th>
 							<td class="flex flex-col md:flex-row gap-5">
-								{#if round.winners.length === 0}
-									<span class="font-mono ml-12"> No winner </span>
+								{#if i === 0 && round.winners.length === 0}
+									<span class="font-mono"> Ongoing </span>
+								{:else if round.winners.length === 0}
+									<span class="font-mono"> No winner </span>
 								{/if}
 								{#each round.winners as winner}
 									<Player player={winner} className={'w-fit'} />
