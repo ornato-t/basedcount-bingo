@@ -13,6 +13,7 @@ CREATE TABLE box (
     text TEXT NOT NULL,
     creator_discord_id TEXT NOT NULL,
     about_discord_id TEXT,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (id),
     FOREIGN KEY (creator_discord_id) REFERENCES discord_user(discord_id)
 );

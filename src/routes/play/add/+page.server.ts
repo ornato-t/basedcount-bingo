@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
             FROM discord_user
             WHERE token=${data.token ?? null}
             LIMIT 1
-        )
+        ) AND deleted != TRUE
     ` as { id: number, text: string, about_name: string, about_image: string, about_discord_id: string }[];
 
     return {
@@ -96,7 +96,8 @@ export const actions = {
         const token = (formData.get('token') ?? { toString: () => null }).toString();
 
         await sql`
-            DELETE FROM box 
+            UPDATE box
+            SET deleted = TRUE 
             WHERE id IN (
                 SELECT b.id 
                 FROM box b

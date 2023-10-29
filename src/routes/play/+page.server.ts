@@ -171,6 +171,7 @@ async function startRound(sql: postgres.Sql<Record<string, never>>) {
                     SELECT *
                     FROM box
                     WHERE about_discord_id IS DISTINCT FROM user_record.discord_id
+                    AND deleted != TRUE
                     ORDER BY RANDOM()
                     LIMIT 24
                 )

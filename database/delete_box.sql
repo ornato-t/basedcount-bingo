@@ -1,4 +1,5 @@
-DELETE FROM box 
+UPDATE box
+SET deleted = TRUE 
 WHERE id IN (
   SELECT b.id 
   FROM box b
