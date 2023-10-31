@@ -145,6 +145,7 @@ export const actions = {
 
         return { success: true };
     },
+    manual: async () => { }
 } satisfies Actions;
 
 async function startRound(sql: postgres.Sql<Record<string, never>>) {
