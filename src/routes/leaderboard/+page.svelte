@@ -3,8 +3,6 @@
 	import Player from './player.svelte';
 
 	export let data: PageData;
-
-	const roundReversed = data.rounds.reverse();
 	let ldbOrRound: boolean;
 </script>
 
@@ -65,7 +63,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each roundReversed as round, i}
+					{#each data.rounds as round, i}
 						<tr>
 							<th>
 								{round.round_number}

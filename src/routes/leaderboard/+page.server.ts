@@ -31,7 +31,7 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
         token: data.token,
         currentUser: data.currentUser,
         leaderboard: parseLeaderboard(leaderboard),
-        rounds: parseRounds(rounds)
+        rounds: parseRounds(rounds).reverse()
     };
 };
 
