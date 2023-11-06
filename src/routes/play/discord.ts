@@ -3,7 +3,6 @@ import type { Box } from "$lib/bingo";
 import { bingoChannelId, bingoPlayerRole } from "$lib/discord";
 
 export async function sendBingoAnnouncement(boxes: { id: number, text: string, position: number, time: Date, url: string }[], userId: string, image: string, name: string) {
-    return; //DEV
     const gif = 'https://media.giphy.com/media/DFu7j1d1AQbaE/giphy.gif';
     
     await fetch(`https://discord.com/api/channels/${bingoChannelId}/messages`, {
@@ -35,7 +34,6 @@ export async function sendBingoAnnouncement(boxes: { id: number, text: string, p
 }
 
 export async function sendBoxAnnouncement(box: Box, url: string, userId: string, image: string, name: string) {
-    return; //DEV
     await fetch(`https://discord.com/api/channels/${bingoChannelId}/messages`, {
         method: 'POST',
         headers: {
