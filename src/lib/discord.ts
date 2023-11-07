@@ -3,3 +3,4 @@ export const bingoPlayerRole = '1146738386544111626';   //Discord ID of the role
 export const bingoMasterRole = '1162879967705694318';   //DIscord ID of the bingo master role - this is an admin
 export const adminRole = '928983928289771560';          //Discord ID of the admin role - this is also an admin (same as bingoMasterRole)
 export const bingoChannelId = '1147008618894471188';    //Discord ID of the channel where notifications should be sent
+// export const bingoChannelId = '1137060282309562415';    //DEV channel
