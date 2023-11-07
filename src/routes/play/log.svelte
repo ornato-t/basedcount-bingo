@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { regexImage, getImgUrl } from '$lib/image';
 	import type { Log } from './proxy+page.server';
 
 	export let entries: Log[];
@@ -39,7 +40,11 @@
 			</div>
 			{#if log.type === 'check'}
 				<div class="chat-bubble chat-bubble-secondary">
-					{log.text}
+					{#if regexImage.test(log.text)}
+						<img src={getImgUrl(log)} alt={log.text} class="h-24 rounded-md"/>
+					{:else}
+						{log.text}
+					{/if}
 				</div>
 			{:else}
 				<div class="chat-bubble chat-bubble-accent uppercase">bingo!</div>
