@@ -66,26 +66,35 @@ export const actions = {
 
         if (urlStr === null || !discordMessageRegex.test(urlStr)) return { failure: true }; //Ticking a box requires a URL to be specified
 
+        const checkedBoxes = await sql`
+            SELECT DISTINCT id
+            FROM v_box_in_card
+            WHERE checked=true
+        ` as { id: number }[];
+
         await sql`
-                INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time, url)
-                SELECT discord_id, ${boxIdStr}, discord_id, (SELECT MAX(id) FROM round), NOW(), ${urlStr}
-                FROM discord_user
-                WHERE token=${tokenStr}
-            `;
+            INSERT INTO checks (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number, time, url)
+            SELECT discord_id, ${boxIdStr}, discord_id, (SELECT MAX(id) FROM round), NOW(), ${urlStr}
+            FROM discord_user
+            WHERE token=${tokenStr}
+        `;
 
         const box = (await sql`
-                SELECT *
-                FROM box
-                WHERE id=${boxIdStr}
-            `)[0] as Box;
+            SELECT *
+            FROM box
+            WHERE id=${boxIdStr}
+        `)[0] as Box;
 
         const user = (await sql`
-                SELECT *
-                FROM discord_user
-                WHERE token=${tokenStr}
-            `)[0] as User;
+            SELECT *
+            FROM discord_user
+            WHERE token=${tokenStr}
+        `)[0] as User;
 
-        await sendBoxAnnouncement(box, urlStr, user.discord_id, user.image as string, user.name);
+        if (checkedBoxes.some(el => el.id === box.id)) {
+            await sendBoxAnnouncement(box, urlStr, user.discord_id, user.image as string, user.name);
+        }
+
         await checkBingo(sql, tokenStr);
 
         return { success: true };
