@@ -91,7 +91,7 @@ export const actions = {
             WHERE token=${tokenStr}
         `)[0] as User;
 
-        if (checkedBoxes.some(el => el.id === box.id)) {
+        if (!checkedBoxes.some(el => el.id === box.id)) {
             await sendBoxAnnouncement(box, urlStr, user.discord_id, user.image as string, user.name);
         }
 
