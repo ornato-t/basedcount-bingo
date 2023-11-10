@@ -8,7 +8,7 @@
 
 	export let data: PageData;
 
-	onMount(() => setInterval(() => invalidate('play'), 10000));
+	onMount(() => setInterval(() => invalidate('play'), 5 * 60 * 1000));	//Refresh every 5 minutes
 </script>
 
 <main class="grid grid-cols-1 lg:grid-cols-4 gap-y-8 place-items-center lg:place-items-start">
