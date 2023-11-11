@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import type { Box } from '$lib/bingo';
 import type postgres from 'postgres';
 import { checkBingo } from './bingo';
-import { sendBoxAnnouncement } from './discord';
+import { sendBoxAnnouncement, sendContestation } from './discord';
 import type { User } from '$lib/user';
 
 export const load: PageServerLoad = async ({ parent, locals, depends }) => {
@@ -23,15 +23,15 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
 
     const log = await sql`
         WITH union_query AS (
-                SELECT owner_discord_id AS discord_id, bingo_time AS time, 'bingo' as type, null as text, null as url, round_number as round
+                SELECT owner_discord_id AS discord_id, bingo_time AS time, 'bingo' as type, null as text, null as url, round_number as round, -1 as box_id
                 FROM card
                 WHERE bingo=true
             UNION
-                SELECT discord_user_discord_id AS discord_id, time AS time, 'check' as type, b.text, c.url, card_round_number as round
+                SELECT discord_user_discord_id AS discord_id, time AS time, 'check' as type, b.text, c.url, card_round_number as round, c.box_id as box_id
                 FROM checks c
                 INNER JOIN box b ON c.box_id=b.id
         )
-        SELECT uq.discord_id, uq.time, uq.type, uq.text, uq.url, u.discord_id, u.name, u.image,
+        SELECT uq.discord_id, uq.time, uq.type, uq.text, uq.url, u.discord_id, u.name, u.image,  uq.box_id,
             CASE WHEN u.token = ${data.token ?? ''} THEN true ELSE false END AS self
         FROM union_query uq
         INNER JOIN discord_user u ON uq.discord_id=u.discord_id
@@ -154,6 +154,48 @@ export const actions = {
 
         return { success: true };
     },
+    contest: async ({ request, locals }) => {
+        const { sql } = locals;
+
+        const formData = await request.formData();
+        const token = formData.get('token');
+        const boxId = formData.get('box');
+        const reason = formData.get('reason');
+        const checkerDiscordId = formData.get('checker');
+        const url = formData.get('url');
+
+        if (token === null || boxId === null || reason === null || checkerDiscordId === null || url === null) return { failure: true };
+
+        const tokenStr = token.toString();
+        const boxIdStr = boxId.toString();
+        const reasonStr = reason.toString();
+        const checkerDiscordIdStr = checkerDiscordId.toString();
+        const urlStr = url.toString();
+
+        if (reasonStr.length === 0) return { failure: true };
+
+        const box = (await sql`
+            SELECT *
+            FROM box
+            WHERE id=${boxIdStr}
+        `)[0] as Box;
+
+        const contester = (await sql`
+            SELECT *
+            FROM discord_user
+            WHERE token=${tokenStr}
+        `)[0] as User;
+
+        const checker = (await sql`
+            SELECT *
+            FROM discord_user
+            WHERE discord_id=${checkerDiscordIdStr}
+        `)[0] as User;
+
+        await sendContestation(box, checker, contester, urlStr, reasonStr);
+
+        return { success: true };
+    },
     manual: async () => { }
 } satisfies Actions;
 
@@ -208,17 +250,19 @@ interface LogCheck {
     url: string,
     name: string,
     image: string,
-    self: boolean
+    self: boolean,
+    box_id: number,
 }
 interface LogBingo {
     discord_id: string,
     time: Date,
     type: 'bingo',
-    text: null,
-    url: null,
+    text: '',
+    url: '',
     name: string,
     image: string,
     self: boolean
+    box_id: -1,
 }
 
 export type Log = LogCheck | LogBingo;
