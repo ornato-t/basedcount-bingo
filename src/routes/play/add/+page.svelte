@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { fit, parent_style } from '@leveluptuts/svelte-fit';
 	import type { PageData } from './$types';
 	import Typehead from 'svelte-typeahead';
 	import type { DiscordMember } from './+page.server';
-	import { regexImage, getImgUrl } from '$lib/image';
+	import Box from './box.svelte';
 
 	export let data: PageData;
 
 	const extract = (entry: DiscordMember) => entry.name;
 
-	const added: typeof data.added = []; //This is a hack fetch names and images of of non players. It sucks, I'm aware
+	//This is a hack fetch names and images of of non players. It sucks, I'm aware
+
+	const added: typeof data.added = []; 
 	for (const user of data.added) {
 		if (user.about_name === null && user.about_image === null) {
 			const match = data.userList.find((el) => el.discord_id === user.about_discord_id);
@@ -22,6 +23,22 @@
 			});
 		} else {
 			added.push(user);
+		}
+	}
+
+	const addedByOthers: typeof data.added = [];
+	for (const user of data.addedByOthers) {
+		if (user.about_name === null && user.about_image === null) {
+			const match = data.userList.find((el) => el.discord_id === user.about_discord_id);
+			addedByOthers.push({
+				id: user.id,
+				about_discord_id: user.about_discord_id,
+				about_image: match?.image ?? 'null',
+				about_name: match?.name ?? '',
+				text: user.text
+			});
+		} else {
+			addedByOthers.push(user);
 		}
 	}
 
@@ -115,17 +132,35 @@
 						</span>
 					</div>
 				{/if}
-				<div class="w-36 h-36 md:w-40 md:h-40 rounded-2xl bg-neutral">
-					{#if regexImage.test(box.text)}
-						<div class="grid place-items-center w-full h-full">
-							<img class="w-full" src={getImgUrl(box)} alt={getImgUrl(box)} />
+				<Box {box}/>
+				<input name="box" type="hidden" value={box.id} />
+				<input name="token" type="hidden" value={data.token ?? null} />
+			</form>
+		{/each}
+	</div>
+
+	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
+		<h2 class="col-span-full text-xl">Boxes added by other players</h2>
+		{#each addedByOthers as box}
+			<form method="post" action="?/delete">
+				<button class="btn btn-xs btn-circle btn-error relative {box.about_name ? 'top-14' : 'top-8'} left-[8.3rem] z-10 text-neutral-content">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
+				{#if box.about_name}
+					<div class="flex items-center">
+						<div class="avatar">
+							<div class="h-6 rounded-full">
+								<img src={box.about_image} alt="{box.about_name}'s avatar" />
+							</div>
 						</div>
-					{:else}
-						<div style="position: relative; {parent_style}">
-							<h1 class="p-1" use:fit>{box.text}</h1>
-						</div>
-					{/if}
-				</div>
+						<span class="ml-2">
+							{box.about_name}
+						</span>
+					</div>
+				{/if}
+				<Box {box}/>
 				<input name="box" type="hidden" value={box.id} />
 				<input name="token" type="hidden" value={data.token ?? null} />
 			</form>
