@@ -97,6 +97,8 @@
 							{box.about_name}
 						</span>
 					</div>
+				{:else}
+					<span class="invisible"> Hi! </span>
 				{/if}
 				<Box {box} />
 				<input name="box" type="hidden" value={box.box_id} />
@@ -105,10 +107,10 @@
 		{/each}
 	</div>
 
-	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
+	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-8 place-items-center md:mx-4 mt-12">
 		<h2 class="col-span-full text-xl">Boxes added by other players</h2>
 		{#each data.addedByOthers as box}
-			<div>
+			<div class="flex flex-col">
 				{#if box.about_name}
 					<div class="flex items-center">
 						<div class="avatar">
@@ -120,10 +122,12 @@
 							{box.about_name}
 						</span>
 					</div>
+				{:else}
+					<span class="invisible"> Hi! </span>
 				{/if}
 				<Box {box} />
+				<span class="text-sm"> Added by: </span>
 				<div class="flex items-center">
-					by
 					<div class="avatar">
 						<div class="h-6 rounded-full">
 							<img src={box.creator_image} alt="{box.creator_name}'s avatar" />
