@@ -13,9 +13,10 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
 
     //Pulls the most recent card for the user with the provided token
     const ownCard = await sql`
-        SELECT id, text, about_discord_id, checked
-        FROM v_box_in_card
-        WHERE token=${data.token ?? ''}
+        SELECT v.id, v.text, v.checked, v.about_discord_id, v.checked, u.image as about_image, u.name as about_name
+        FROM v_box_in_card v
+        LEFT JOIN discord_user u ON v.about_discord_id=u.discord_id
+        WHERE v.token=${data.token ?? ''}
         ORDER BY position ASC;
     ` as BoxCheckable[];
 
@@ -240,6 +241,8 @@ async function startRound(sql: postgres.Sql<Record<string, never>>) {
 
 export interface BoxCheckable extends Box {
     checked: boolean;
+    about_image?: string;
+    about_name?: string;
 }
 
 interface LogCheck {

@@ -1,7 +1,9 @@
 -- Pulls one's most recent card
-SELECT id, text, about_discord_id, checked
-FROM v_box_in_card
-WHERE token=''
+ SELECT v.id, v.text, v.checked, v.about_discord_id, v.checked, u.image as about_image
+FROM v_box_in_card v
+INNER JOIN discord_user u ON v.about_discord_id=u.discord_id
+WHERE v.token=${data.token ?? ''}
+ORDER BY position ASC;
 
 -- Alias for
 SELECT 
