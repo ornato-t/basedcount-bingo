@@ -8,40 +8,6 @@
 
 	const extract = (entry: DiscordMember) => entry.name;
 
-	//This is a hack fetch names and images of of non players. It sucks, I'm aware
-
-	const added: typeof data.added = []; 
-	for (const user of data.added) {
-		if (user.about_name === null && user.about_image === null) {
-			const match = data.userList.find((el) => el.discord_id === user.about_discord_id);
-			added.push({
-				id: user.id,
-				about_discord_id: user.about_discord_id,
-				about_image: match?.image ?? 'null',
-				about_name: match?.name ?? '',
-				text: user.text
-			});
-		} else {
-			added.push(user);
-		}
-	}
-
-	const addedByOthers: typeof data.added = [];
-	for (const user of data.addedByOthers) {
-		if (user.about_name === null && user.about_image === null) {
-			const match = data.userList.find((el) => el.discord_id === user.about_discord_id);
-			addedByOthers.push({
-				id: user.id,
-				about_discord_id: user.about_discord_id,
-				about_image: match?.image ?? 'null',
-				about_name: match?.name ?? '',
-				text: user.text
-			});
-		} else {
-			addedByOthers.push(user);
-		}
-	}
-
 	let discord_id: string | null;
 
 	let imageBox = false;
@@ -113,7 +79,7 @@
 
 	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
 		<h2 class="col-span-full text-xl">Boxes added by you</h2>
-		{#each added as box}
+		{#each data.added as box}
 			<form method="post" action="?/delete">
 				<button class="btn btn-xs btn-circle btn-error relative {box.about_name ? 'top-14' : 'top-8'} left-[8.3rem] z-10 text-neutral-content">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -132,8 +98,8 @@
 						</span>
 					</div>
 				{/if}
-				<Box {box}/>
-				<input name="box" type="hidden" value={box.id} />
+				<Box {box} />
+				<input name="box" type="hidden" value={box.box_id} />
 				<input name="token" type="hidden" value={data.token ?? null} />
 			</form>
 		{/each}
@@ -141,13 +107,8 @@
 
 	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
 		<h2 class="col-span-full text-xl">Boxes added by other players</h2>
-		{#each addedByOthers as box}
-			<form method="post" action="?/delete">
-				<button class="btn btn-xs btn-circle btn-error relative {box.about_name ? 'top-14' : 'top-8'} left-[8.3rem] z-10 text-neutral-content">
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-					</svg>
-				</button>
+		{#each data.addedByOthers as box}
+			<div>
 				{#if box.about_name}
 					<div class="flex items-center">
 						<div class="avatar">
@@ -160,10 +121,19 @@
 						</span>
 					</div>
 				{/if}
-				<Box {box}/>
-				<input name="box" type="hidden" value={box.id} />
-				<input name="token" type="hidden" value={data.token ?? null} />
-			</form>
+				<Box {box} />
+				<div class="flex items-center">
+					by
+					<div class="avatar">
+						<div class="h-6 rounded-full">
+							<img src={box.creator_image} alt="{box.creator_name}'s avatar" />
+						</div>
+					</div>
+					<span class="ml-2">
+						{box.creator_name}
+					</span>
+				</div>
+			</div>
 		{/each}
 	</div>
 </main>
