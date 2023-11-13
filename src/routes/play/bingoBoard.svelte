@@ -35,7 +35,7 @@
 					{/if}
 					{#if regexImage.test(box.text)}
 						<div class="grid place-items-center h-full w-full">
-							<img class="z-10 relative h-full w-full object-contain" src={getImgUrl(box)} alt={getImgUrl(box)} />
+							<img class="z-10 absolute top-0 left-0 h-full w-full object-contain" src={getImgUrl(box)} alt={getImgUrl(box)} />
 						</div>
 					{:else}
 						<h1 class="z-30 absolute top-0 left-0 p-1 w-full h-full grid place-items-center" use:fit>{box.text}</h1>
