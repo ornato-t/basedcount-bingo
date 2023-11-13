@@ -24,7 +24,7 @@
 
 <article class="grid grid-cols-5 w-fit h-fit mx-auto rounded-lg border-2 border-primary bg-neutral-focus select-none {className}">
 	{#each cards as box}
-		<form method="post" action="?/uncheck" class="w-full h-[5rem] sm:w-28 sm:h-28 border border-primary cursor-pointer relative" use:enhance>
+		<form method="post" action="?/uncheck" class="w-[4.5rem] h-[6rem] sm:w-28 sm:h-28 border border-primary cursor-pointer relative" use:enhance>
 			<label>
 				<button type="submit" class="opacity-0 absolute inset-0 w-full h-full" on:click={() => boxClicked(box)} />
 				<div style="position: relative; {parent_style}">
