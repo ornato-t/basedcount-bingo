@@ -82,63 +82,65 @@
 	{/each}
 </aside>
 
-<dialog id="contestBox" class="modal">
-	<div class="modal-box max-w-md">
-		<h3 class="font-bold text-lg">Provide a reason</h3>
+{#if entries.length > 0}
+	<dialog id="contestBox" class="modal">
+		<div class="modal-box max-w-md">
+			<h3 class="font-bold text-lg">Provide a reason</h3>
 
-		<p class="pt-4">
-			You are contesting
-			<span class="font-mono">{contesting.name}</span>
-			ticking the following box:
-		</p>
-		{#if regexImage.test(contesting.text)}
-			<div class="py-4 grid place-items-center w-full h-full">
-				<img class="h-36" src={getImgUrl(contesting)} alt={getImgUrl(contesting)} />
-			</div>
-		{:else}
-			<p class="pl-2 py-4 font-mono">{contesting.text}</p>
-		{/if}
-		<p>Enter your complaint below. It will be sent on Discord and relayed to the admins.</p>
+			<p class="pt-4">
+				You are contesting
+				<span class="font-mono">{contesting.name}</span>
+				ticking the following box:
+			</p>
+			{#if regexImage.test(contesting.text)}
+				<div class="py-4 grid place-items-center w-full h-full">
+					<img class="h-36" src={getImgUrl(contesting)} alt={getImgUrl(contesting)} />
+				</div>
+			{:else}
+				<p class="pl-2 py-4 font-mono">{contesting.text}</p>
+			{/if}
+			<p>Enter your complaint below. It will be sent on Discord and relayed to the admins.</p>
 
-		<!-- svelte-ignore missing-declaration -->
-		<form
-			method="post"
-			action="?/contest"
-			class="modal-action flex flex-col"
-			use:enhance
-			on:submit={() => {
-				// @ts-ignore
-				contestBox.close();
-			}}
-		>
-			<textarea
-				name="reason"
-				class="textarea textarea-bordered"
-				placeholder="This box shouldn't have been ticked because..."
-				required
-				autocapitalize="off"
-				autocorrect="off"
-				autosave="off"
-			/>
-			<input name="token" type="hidden" value={token} />
-			<input name="box" type="hidden" value={contesting.box_id} />
-			<input name="checker" type="hidden" value={contesting.discord_id} />
-			<input name="url" type="hidden" value={contesting.url} />
+			<!-- svelte-ignore missing-declaration -->
+			<form
+				method="post"
+				action="?/contest"
+				class="modal-action flex flex-col"
+				use:enhance
+				on:submit={() => {
+					// @ts-ignore
+					contestBox.close();
+				}}
+			>
+				<textarea
+					name="reason"
+					class="textarea textarea-bordered"
+					placeholder="This box shouldn't have been ticked because..."
+					required
+					autocapitalize="off"
+					autocorrect="off"
+					autosave="off"
+				/>
+				<input name="token" type="hidden" value={token} />
+				<input name="box" type="hidden" value={contesting.box_id} />
+				<input name="checker" type="hidden" value={contesting.discord_id} />
+				<input name="url" type="hidden" value={contesting.url} />
 
-			<div class="mt-8 modal-action">
-				<!-- svelte-ignore missing-declaration -->
-				<button
-					class="btn btn-secondary btn-outline"
-					type="button"
-					on:click={() => {
-						// @ts-ignore
-						contestBox.close();
-					}}
-				>
-					Close
-				</button>
-				<button type="submit" class="btn btn-secondary"> Confirm </button>
-			</div>
-		</form>
-	</div>
-</dialog>
+				<div class="mt-8 modal-action">
+					<!-- svelte-ignore missing-declaration -->
+					<button
+						class="btn btn-secondary btn-outline"
+						type="button"
+						on:click={() => {
+							// @ts-ignore
+							contestBox.close();
+						}}
+					>
+						Close
+					</button>
+					<button type="submit" class="btn btn-secondary"> Confirm </button>
+				</div>
+			</form>
+		</div>
+	</dialog>
+{/if}
