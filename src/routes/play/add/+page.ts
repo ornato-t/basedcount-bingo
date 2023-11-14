@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ data }) => {
     }
 
     const added = data.added.map(user => {
-        if (user.about_discord_id === null || user.about_name !== null) return user;
+        if (user.about_discord_id === null || user.about_discord_id.length === 0 || user.about_name !== null) return user;
         const match = users.get(user.about_discord_id)!;
         return {
             about_discord_id: user.about_discord_id,
@@ -28,7 +28,7 @@ export const load: PageLoad = async ({ data }) => {
     });
 
     const addedByOthers = data.addedByOthers.map(user => {
-        if (user.about_discord_id === null || user.about_name !== null) return user;
+        if (user.about_discord_id === null || user.about_discord_id.length === 0 || user.about_name !== null) return user;
         const match = users.get(user.about_discord_id)!;
         return {
             about_discord_id: user.about_discord_id,
