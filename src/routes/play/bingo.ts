@@ -9,7 +9,9 @@ export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token
         ORDER BY POSITION ASC
     ` as { id: number, text: string, position: number, time: Date, url: string }[];
 
-    if (isBingo(checked.map(el => el.position))) {  //Is bingo
+    const boxes = isBingo(checked.map(el => el.position));  //List of position of boxes used to make the current bingo
+
+    if (boxes.length > 0) {  //Is bingo
         const bingoInfo = await sql`
             SELECT c.bingo, u.discord_id, u.image, u.name
             FROM card c
@@ -28,7 +30,8 @@ export async function checkBingo(sql: postgres.Sql<Record<string, never>>, token
                 )
             `;
 
-            await sendBingoAnnouncement(checked, bingoInfo[0].discord_id, bingoInfo[0].image, bingoInfo[0].name);
+            const bingoBoxes = checked.filter(box => boxes.includes(box.position));
+            await sendBingoAnnouncement(bingoBoxes, bingoInfo[0].discord_id, bingoInfo[0].image, bingoInfo[0].name);
         }
     } else {    //Isn't bingo / is no longer bingo
         await sql`
@@ -52,20 +55,20 @@ function isBingo(boxes: number[]) {
     const diagonals = [[1, 7, 18, 24], [5, 9, 16, 20]];
 
     for (const row of rows) {
-        if (isLineComplete(row)) return true;
+        if (isLineComplete(row)) return row;
     }
 
     for (const column of columns) {
-        if (isLineComplete(column)) return true;
+        if (isLineComplete(column)) return column;
 
     }
 
     for (const diagonal of diagonals) {
-        if (isLineComplete(diagonal)) return true;
+        if (isLineComplete(diagonal)) return diagonal;
 
     }
 
-    return false;
+    return [];
 
     function isLineComplete(line: number[]): boolean {
         return line.every(num => boxes.includes(num));
