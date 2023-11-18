@@ -128,7 +128,7 @@ export interface DiscordMember {
     player: boolean,
 }
 
-interface DiscordMemberFull {
+export interface DiscordMemberFull {
     avatar: string
     flags: number
     joined_at: string
