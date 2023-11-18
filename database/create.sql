@@ -6,6 +6,7 @@ CREATE TABLE discord_user (
     image TEXT NOT NULL,
     banner TEXT,
     token TEXT NOT NULL,
+    player BOOL NOT NULL DEFAULT true,
     PRIMARY KEY (discord_id)
 );
 CREATE TABLE box (

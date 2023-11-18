@@ -11,6 +11,7 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
             DENSE_RANK() OVER (ORDER BY COUNT(round_number) DESC) as place
         FROM discord_user_wins_round w
         RIGHT JOIN discord_user u ON w.discord_user_discord_id=u.discord_id
+        WHERE u.player = true
         GROUP BY name, image, banner
         ORDER BY victories DESC, name ASC;
 
