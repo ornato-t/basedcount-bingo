@@ -53,9 +53,9 @@ export async function sendBoxAnnouncement(box: Box, url: string, userId: string,
                     name: `${name}`,
                     icon_url: image
                 },
-                title: 'Box ticked',
+                title: 'Box checked',
                 description: `
-                    <@${userId}> ticked the following box:\n
+                    <@${userId}> checked the following box:\n
                     [Image](${url})
                 `,
                 image: {
@@ -70,9 +70,9 @@ export async function sendBoxAnnouncement(box: Box, url: string, userId: string,
                     name: `${name}`,
                     icon_url: image
                 },
-                title: 'Box ticked',
+                title: 'Box checked',
                 description: `
-                    <@${userId}> ticked the following box:\n
+                    <@${userId}> checked the following box:\n
                     [${box.text}](${url})
                 `,
             }]
@@ -102,7 +102,7 @@ export async function sendContestation(box: Box, author: User, contester: User, 
                 },
                 title: 'Contestation',
                 description: `
-                    <@${contester.discord_id}> disputes <@${author.discord_id}> ticking the following box:\n
+                    <@${contester.discord_id}> disputes <@${author.discord_id}> checked the following box:\n
                     [Image](${url})\n
                     Reason:
                     > ${reason}
@@ -122,7 +122,7 @@ export async function sendContestation(box: Box, author: User, contester: User, 
                 },
                 title: 'Contestation',
                 description: `
-                    <@${contester.discord_id}> disputes <@${author.discord_id}> ticking the following box:\n
+                    <@${contester.discord_id}> disputes <@${author.discord_id}> checked the following box:\n
                     [${box.text}](${url})\n
                     Reason:
                     > ${reason}

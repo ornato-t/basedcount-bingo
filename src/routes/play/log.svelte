@@ -33,7 +33,7 @@
 
 <aside class="h-96 lg:h-[35rem] w-full carousel carousel-vertical carousel-end rounded-lg bg-neutral p-1.5">
 	{#if entries.length === 0}
-		<div class="divider">No boxes have been ticked</div>
+		<div class="divider">No boxes have been checked</div>
 	{/if}
 	{#each entries as log, i}
 		{#if newDay(log, i)}
@@ -90,7 +90,7 @@
 			<p class="pt-4">
 				You are contesting
 				<span class="font-mono">{contesting.name}</span>
-				ticking the following box:
+				checked the following box:
 			</p>
 			{#if regexImage.test(contesting.text)}
 				<div class="py-4 grid place-items-center w-full h-full">
@@ -115,7 +115,7 @@
 				<textarea
 					name="reason"
 					class="textarea textarea-bordered"
-					placeholder="This box shouldn't have been ticked because..."
+					placeholder="This box shouldn't have been checked because..."
 					required
 					autocapitalize="off"
 					autocorrect="off"

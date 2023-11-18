@@ -61,7 +61,7 @@
 	<div class="modal-box max-w-md">
 		<h3 class="font-bold text-lg">Confirm your action</h3>
 
-		<p class="pt-4">You are trying to tick the following box:</p>
+		<p class="pt-4">You are trying to check the following box:</p>
 		{#if regexImage.test(selectedBox.text)}
 			<div class="py-4 grid place-items-center w-full h-full">
 				<img class="h-36" src={getImgUrl(selectedBox)} alt={getImgUrl(selectedBox)} />
