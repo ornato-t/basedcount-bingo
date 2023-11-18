@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import type { Box } from '$lib/bingo';
 import type postgres from 'postgres';
 import { checkBingo } from './bingo';
-import { sendBoxAnnouncement, sendContestation } from './discord';
+import { sendBoxAnnouncement, sendBoxUncheckAnnouncement, sendContestation } from './discord';
 import type { User } from '$lib/user';
 
 export const load: PageServerLoad = async ({ parent, locals, depends }) => {
@@ -113,14 +113,28 @@ export const actions = {
         const tokenStr = token.toString();
         const boxIdStr = boxId.toString();
 
-        await sql`
-            DELETE FROM checks
-            WHERE discord_user_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
-            AND box_id=${boxIdStr}
-            AND card_owner_discord_id = (SELECT discord_id FROM discord_user WHERE token=${tokenStr})
-            AND card_round_number=(SELECT MAX(id) FROM round);
-        `;
-
+        const deleted = await sql`
+            WITH deleted AS (
+                DELETE FROM checks 
+                WHERE discord_user_discord_id IN (
+                SELECT u.discord_id
+                FROM discord_user u
+                WHERE u.token= ${tokenStr}
+                )
+                AND box_id=${boxIdStr}
+                AND card_round_number=(SELECT MAX(id) FROM round)
+                RETURNING *
+            )
+            SELECT u.discord_id AS discord_id, b.text AS box_text, d.url AS url, u.image AS user_image, u.name AS user_name
+            FROM deleted d
+            INNER JOIN discord_user u ON d.discord_user_discord_id=u.discord_id
+            INNER JOIN box b ON d.box_id=b.id;
+        ` as { discord_id: string, box_text: string, url: string, user_image: string, user_name: string }[];
+        
+        if(deleted.length > 0) {
+            await sendBoxUncheckAnnouncement(deleted[0].box_text, deleted[0].url, deleted[0].discord_id, deleted[0].user_image, deleted[0].user_name);
+        }
+        
         await checkBingo(sql, tokenStr);
 
         return { success: true };
