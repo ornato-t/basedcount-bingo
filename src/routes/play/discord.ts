@@ -57,32 +57,28 @@ export async function sendBoxAnnouncement(box: Box, url: string, userId: string,
 }
 
 export async function sendNewRoundAnnouncement(admin_discord_id: string, admin_name: string, admin_image: string, winnersArr: string[]) {
+    let embed: string;
     if (winnersArr.length > 0) {
-        await sendMessage({
-            content: `!bingo <@&${bingoPlayerRole}>`,
-            embeds: [{
-                author: { name: `${admin_name}`, icon_url: admin_image },
-                title: 'New round',
-                description: `
-                    <@${admin_discord_id}> has started a new round.\n
-                    Winners from last round:
-                    ${winnersArr.map(id => `- <@${id}>\n`).join('')}
-                `,
-            }]
-        });
+        embed = `
+            <@${admin_discord_id}> has started a new round.\n
+            Winners from last round:
+            ${winnersArr.map(id => `- <@${id}>\n`).join('')}
+        `;
     } else {
-        await sendMessage({
-            content: `!bingo <@&${bingoPlayerRole}>`,
-            embeds: [{
-                author: { name: `${admin_name}`, icon_url: admin_image },
-                title: 'New round',
-                description: `
-                    <@${admin_discord_id}> has started a new round.\n
-                    No winners were registered
-                `,
-            }]
-        });
+        embed = `
+            <@${admin_discord_id}> has started a new round.\n
+            No winners were registered
+        `;
     }
+
+    await sendMessage({
+        content: `!bingo <@&${bingoPlayerRole}>\nRound begun on <t:${Math.round(new Date().valueOf() / 1000)}:f>`,
+        embeds: [{
+            author: { name: `${admin_name}`, icon_url: admin_image },
+            title: 'New round',
+            description: embed,
+        }]
+    });
 }
 
 export async function sendBoxUncheckAnnouncement(box: string, url: string, userId: string, image: string, name: string) {
