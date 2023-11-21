@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import type { Box } from '$lib/bingo';
 import type postgres from 'postgres';
 import { checkBingo } from './bingo';
-import { sendBoxAnnouncement, sendBoxUncheckAnnouncement, sendContestation } from './discord';
+import { sendBoxAnnouncement, sendBoxUncheckAnnouncement, sendContestation, sendNewRoundAnnouncement } from './discord';
 import type { User } from '$lib/user';
 
 export const load: PageServerLoad = async ({ parent, locals, depends }) => {
@@ -146,18 +146,20 @@ export const actions = {
         const token = formData.get('token') ?? null;
         const winners = formData.get('winners') ?? { toString: () => '' };
 
-        const { admin } = (await sql`
-            SELECT admin
+        const { admin_discord_id,admin_name,  admin_image, admin } = (await sql`
+            SELECT discord_id as admin_discord_id, name as admin_name, image as admin_image, admin
             FROM discord_user
             WHERE token=${token === null ? null : token.toString()}
             LIMIT 1
-        `)[0] as { admin: boolean };
+        `)[0] as { admin_discord_id: string, admin_name: string, admin_image: string, admin: boolean };
 
         if (!admin) return { failure: true };
 
         const winnersStr = winners.toString();
+        const winnersArr = new Array<string>;
         if (winnersStr !== '') {
             for (const winner of winnersStr.split(';')) {
+                winnersArr.push(winner);
                 await sql`
                         INSERT INTO discord_user_wins_round (discord_user_discord_id, round_number)
                         VALUES (${winner}, (SELECT MAX(id) FROM round)); 
@@ -165,7 +167,8 @@ export const actions = {
             }
         }
 
-        await startRound(sql)
+        await sendNewRoundAnnouncement(admin_discord_id, admin_name, admin_image, winnersArr);
+        await startRound(sql);
 
         return { success: true };
     },
