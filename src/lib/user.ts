@@ -6,4 +6,5 @@ export interface User {
     banner: string | null,
     token: string | null,   //This isn't always returned
     victories: number,
+    player: boolean,
 }

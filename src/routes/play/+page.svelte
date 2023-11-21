@@ -60,7 +60,7 @@
 
 	<BingoBoard cards={data.cards} token={data.token ?? ''} className={'col-span-2'} />
 
-	<Log entries={data.log} token={data.token ?? ''}/>
+	<Log entries={data.log} token={data.token ?? ''} />
 </main>
 
-<CloseRoundModal token={data.token ?? ''} users={data.users} />
+<CloseRoundModal token={data.token ?? ''} users={data.users.filter((user) => user.player)} />
