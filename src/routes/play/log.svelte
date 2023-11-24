@@ -3,6 +3,7 @@
 	import { regexImage, getImgUrl } from '$lib/image';
 	import type { Log } from './proxy+page.server';
 	import { enhance } from '$app/forms';
+	import { hoverBox } from '$lib/hoverBoxStore';
 
 	export let entries: Log[];
 	export let token: string;
@@ -50,7 +51,12 @@
 				<time class="text-xs opacity-50">{log.time.toLocaleTimeString()}</time>
 			</div>
 			{#if log.type === 'check'}
-				<div class="chat-bubble chat-bubble-secondary">
+				<div
+					class="chat-bubble chat-bubble-secondary"
+					role="tooltip"
+					on:mouseenter={() => hoverBox.set(log.box_id)}
+					on:mouseleave={() => hoverBox.set(null)}
+				>
 					{#if regexImage.test(log.text)}
 						<img src={getImgUrl(log)} alt={log.text} class="h-24 rounded-md" />
 					{:else}
