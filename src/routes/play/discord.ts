@@ -88,7 +88,7 @@ export async function sendBoxUncheckAnnouncement(box: string, url: string, userI
                 author: { name: `${name}`, icon_url: image },
                 title: 'Box unchecked',
                 description: `
-                    <@${userId}> ubchecked the following box:\n
+                    <@${userId}> unchecked the following box:\n
                     [Image](${url})
                 `,
                 image: { url: getImgUrl({ text: box }) }
