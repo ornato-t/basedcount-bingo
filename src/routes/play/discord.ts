@@ -111,7 +111,7 @@ export async function sendBoxUncheckAnnouncement(box: string, url: string, userI
 export async function sendContestation(box: Box, author: User, contester: User, url: string, reason: string) {
     if (regexImage.test(box.text)) {
         await sendMessage({
-            content: `<@&${bingoMasterRole}>`,
+            content: `<@&${bingoMasterRole}> <@${author.discord_id}>`,
             embeds: [{
                 author: { name: contester.name, icon_url: contester.image ?? '' },
                 title: 'Contestation',
@@ -126,7 +126,7 @@ export async function sendContestation(box: Box, author: User, contester: User, 
         });
     } else {
         await sendMessage({
-            content: `<@&${bingoMasterRole}>`,
+            content: `<@&${bingoMasterRole}> <@${author.discord_id}>`,
             embeds: [{
                 author: { name: contester.name, icon_url: contester.image ?? '' },
                 title: 'Contestation',
