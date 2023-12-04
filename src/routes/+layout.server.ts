@@ -16,12 +16,12 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
     ` as User[];
 
     const currentUserDb = await sql`
-        SELECT name, admin, image, banner, COUNT(round_number) as victories
+        SELECT name, admin, image, banner, COUNT(round_number) as victories, banned
         FROM discord_user
         LEFT JOIN discord_user_wins_round win
         ON discord_user.discord_id=win.discord_user_discord_id
         WHERE token=${token ?? null}
-        GROUP BY name, admin, image, banner  
+        GROUP BY name, admin, image, banner, banned  
     ` as CurrentUserDb[];
 
     let currentUser: CurrentUser | null;
@@ -33,7 +33,8 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
             banner: currentUserDb[0].banner,
             image: currentUserDb[0].image,
             name: currentUserDb[0].name,
-            victories: Number.parseInt(currentUserDb[0].victories)
+            victories: Number.parseInt(currentUserDb[0].victories),
+            banned: currentUserDb[0].banned,
         };
     }
 
@@ -49,7 +50,8 @@ interface CurrentUserDb {
     admin: boolean,
     image: string,
     banner: string,
-    victories: string
+    victories: string,
+    banned: boolean,
 }
 
 interface CurrentUser {
@@ -57,5 +59,6 @@ interface CurrentUser {
     admin: boolean,
     image: string,
     banner: string,
-    victories: number
+    victories: number,
+    banned: boolean,
 }

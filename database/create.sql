@@ -7,6 +7,7 @@ CREATE TABLE discord_user (
     banner TEXT,
     token TEXT NOT NULL,
     player BOOL NOT NULL DEFAULT true,
+    banned BOOL NOT NULL DEFAULT false,
     PRIMARY KEY (discord_id)
 );
 CREATE TABLE box (
