@@ -71,6 +71,7 @@
 					<!-- svelte-ignore missing-declaration -->
 					<button
 						class="btn btn-square btn-error btn-outline btn-sm"
+						title="Contest box"
 						on:click={() => {
 							contesting = log;
 							// @ts-ignore
@@ -79,7 +80,7 @@
 					>
 						<i class="bx bx-comment-error text-lg" />
 					</button>
-					<button class="btn btn-square btn-ghost btn-outline btn-sm" on:click={() => copyLink(log, i)}>
+					<button class="btn btn-square btn-ghost btn-outline btn-sm" on:click={() => copyLink(log, i)} title="Copy message link">
 						<i class="bx {confirmed === i ? 'bx-check text-xl' : 'bx-copy text-lg'}" />
 					</button>
 				</div>
