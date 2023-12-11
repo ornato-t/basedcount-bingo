@@ -1,5 +1,5 @@
 import { bingoPlayerRole, serverId } from '$lib/discord';
-import { DISCORD_TOKEN } from '$env/static/private';
+import { DISCORD_TOKEN, SITE_URL } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -66,7 +66,7 @@ function createLink(id: string, localHash: string | undefined, globalHash: strin
     if (localHash) return `https://cdn.discordapp.com/guilds/${serverId}/users/${id}/avatars/${localHash}.webp`;
     if (globalHash) return `https://cdn.discordapp.com/avatars/${id}/${globalHash}.webp`
 
-    return '/discord_green.png';   //Green default picture
+    return SITE_URL + '/discord_green.png';   //Green default picture
 }
 
 export const actions = {

@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import type postgres from 'postgres';
-import { env } from '$env/dynamic/private';
+import { DISCORD_ID, DISCORD_SECRET, SITE_URL } from '$env/static/private';
 import { redirect, error as skError } from '@sveltejs/kit';
 import { serverId, bingoPlayerRole, bingoMasterRole, adminRole } from '../../lib/discord';
 import oauthUrl from '../../lib/oauthUrl';
@@ -28,9 +28,6 @@ export const load: PageServerLoad = async ({ url, locals, cookies }) => {
 };
 
 async function fetchToken(code: string | null) {
-    const DISCORD_ID = env.DISCORD_ID;
-    const DISCORD_SECRET = env.DISCORD_SECRET;
-
     try {
         const res = await fetch('https://discord.com/api/oauth2/token', {
             method: 'POST',
@@ -113,7 +110,7 @@ function createLink(id: string, localHash: string | undefined, globalHash: strin
     if (localHash) return `https://cdn.discordapp.com/guilds/${serverId}/users/${id}/${endpoint}/${localHash}.webp`;
     if (globalHash) return `https://cdn.discordapp.com/${endpoint}/${id}/${globalHash}.webp`
 
-    if (globalHash == null && endpoint === 'avatars') return '/discord_green.png';   //Green default picture
+    if (globalHash == null && endpoint === 'avatars') return SITE_URL + '/discord_green.png';   //Green default picture
 
     return null;
 }
