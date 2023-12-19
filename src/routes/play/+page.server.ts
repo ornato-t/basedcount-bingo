@@ -40,10 +40,19 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
         ORDER BY uq.time ASC;
     ` as Log[];
 
+    //Pull info about the current round
+    const round = (await sql`
+        SELECT id as number, start_time
+        FROM round
+        ORDER BY number DESC
+        LIMIT 1;
+    `)[0] as { number: number, start_time: Date };
+
     return {
         users: data.users,
         token: data.token,
         cards: ownCard,
+        round,
         log
     };
 };
@@ -130,11 +139,11 @@ export const actions = {
             INNER JOIN discord_user u ON d.discord_user_discord_id=u.discord_id
             INNER JOIN box b ON d.box_id=b.id;
         ` as { discord_id: string, box_text: string, url: string, user_image: string, user_name: string }[];
-        
-        if(deleted.length > 0) {
+
+        if (deleted.length > 0) {
             await sendBoxUncheckAnnouncement(deleted[0].box_text, deleted[0].url, deleted[0].discord_id, deleted[0].user_image, deleted[0].user_name);
         }
-        
+
         await checkBingo(sql, tokenStr);
 
         return { success: true };
@@ -146,7 +155,7 @@ export const actions = {
         const token = formData.get('token') ?? null;
         const winners = formData.get('winners') ?? { toString: () => '' };
 
-        const { admin_discord_id,admin_name,  admin_image, admin } = (await sql`
+        const { admin_discord_id, admin_name, admin_image, admin } = (await sql`
             SELECT discord_id as admin_discord_id, name as admin_name, image as admin_image, admin
             FROM discord_user
             WHERE token=${token === null ? null : token.toString()}

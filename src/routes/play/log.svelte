@@ -4,9 +4,11 @@
 	import type { Log } from './proxy+page.server';
 	import { enhance } from '$app/forms';
 	import { hoverBox } from '$lib/hoverBoxStore';
+	import Counter from './counter.svelte';
 
 	export let entries: Log[];
 	export let token: string;
+	export let round: { number: number; start_time: Date };
 
 	let confirmed: number | null;
 	let contesting: Log = entries[0];
@@ -32,15 +34,19 @@
 	}
 </script>
 
-<aside class="h-96 lg:h-[35rem] w-full carousel carousel-vertical carousel-end rounded-lg bg-neutral p-1.5">
+<aside class="h-96 lg:h-[35rem] w-full carousel carousel-vertical carousel-end rounded-lg bg-neutral pb-1.5">
+	<div class="bg-neutral-focus sticky top-0 z-10 mx-auto w-full grid place-items-center px-2 py-1.5 gap-y-1">
+		Round will end in
+		<Counter time={round.start_time} />
+	</div>
 	{#if entries.length === 0}
-		<div class="divider">No boxes have been checked</div>
+		<div class="divider mx-1.5">No boxes have been checked</div>
 	{/if}
 	{#each entries as log, i}
 		{#if newDay(log, i)}
-			<div class="divider">{log.time.toLocaleDateString()}</div>
+			<div class="divider mx-1.5">{log.time.toLocaleDateString()}</div>
 		{/if}
-		<div class="chat {log.self ? 'chat-end grid-cols-[1fr,auto,auto]' : 'chat-start grid-cols-[auto,1fr,auto]'}">
+		<div class="chat mx-1.5 {log.self ? 'chat-end grid-cols-[1fr,auto,auto]' : 'chat-start grid-cols-[auto,1fr,auto]'}">
 			<div class="chat-image avatar">
 				<div class="w-10 rounded-full">
 					<img src={log.image} alt="{log.name}'s avatar" />
@@ -51,12 +57,7 @@
 				<time class="text-xs opacity-50">{log.time.toLocaleTimeString()}</time>
 			</div>
 			{#if log.type === 'check'}
-				<div
-					class="chat-bubble chat-bubble-secondary"
-					role="tooltip"
-					on:mouseenter={() => hoverBox.set(log.box_id)}
-					on:mouseleave={() => hoverBox.set(null)}
-				>
+				<div class="chat-bubble chat-bubble-secondary" role="tooltip" on:mouseenter={() => hoverBox.set(log.box_id)} on:mouseleave={() => hoverBox.set(null)}>
 					{#if regexImage.test(log.text)}
 						<img src={getImgUrl(log)} alt={log.text} class="h-24 rounded-md" />
 					{:else}

@@ -21,6 +21,7 @@ CREATE TABLE box (
 );
 CREATE TABLE round (
     id SERIAL NOT NULL,
+    start_time timestamp SET DEFAULT NOW(),
     PRIMARY KEY (id)
 );
 CREATE TABLE card (
