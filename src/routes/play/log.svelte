@@ -36,7 +36,6 @@
 
 <aside class="h-96 lg:h-[35rem] w-full carousel carousel-vertical carousel-end rounded-lg bg-neutral pb-1.5">
 	<div class="bg-neutral-focus sticky top-0 z-10 mx-auto w-full grid place-items-center px-2 py-1.5 gap-y-1">
-		Round will end in
 		<Counter time={round.start_time} />
 	</div>
 	{#if entries.length === 0}

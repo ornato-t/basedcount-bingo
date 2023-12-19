@@ -80,6 +80,18 @@ export async function sendNewRoundAnnouncement(admin_discord_id: string, admin_n
         }]
     });
 }
+export async function sendForcedNewRoundAnnouncement() {
+    await sendMessage({
+        content: `!bingo <@&${bingoPlayerRole}>\nRound begun on <t:${Math.round(new Date().valueOf() / 1000)}:f>`,
+        embeds: [{
+            title: 'Forced new round',
+            description: `
+                A week or longer has passed since the start of the current round.
+                In accordance with the rules, the round has been terminated and a new one was automatically started.
+            `,
+        }]
+    });
+}
 
 export async function sendBoxUncheckAnnouncement(box: string, url: string, userId: string, image: string, name: string) {
     if (regexImage.test(box)) {
@@ -155,7 +167,7 @@ function sendMessage(body: Body) {
 interface Body {
     content?: string,
     embeds?: {
-        author: { name: string, icon_url: string },
+        author?: { name: string, icon_url: string },
         title: string,
         description: string,
         image?: { url: string }

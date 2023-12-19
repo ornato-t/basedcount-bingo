@@ -2,8 +2,9 @@ import type { Actions, PageServerLoad } from './$types';
 import type { Box } from '$lib/bingo';
 import type postgres from 'postgres';
 import { checkBingo } from './bingo';
-import { sendBoxAnnouncement, sendBoxUncheckAnnouncement, sendContestation, sendNewRoundAnnouncement } from './discord';
+import { sendBoxAnnouncement, sendBoxUncheckAnnouncement, sendForcedNewRoundAnnouncement, sendContestation, sendNewRoundAnnouncement } from './discord';
 import type { User } from '$lib/user';
+import { getRelativeDate, isFinished } from './forcedNewRound';
 
 export const load: PageServerLoad = async ({ parent, locals, depends }) => {
     const { sql } = locals;
@@ -177,6 +178,24 @@ export const actions = {
         }
 
         await sendNewRoundAnnouncement(admin_discord_id, admin_name, admin_image, winnersArr);
+        await startRound(sql);
+
+        return { success: true };
+    },
+    forceNewRound: async ({ locals }) => {
+        const { sql } = locals;
+
+        const round = (await sql`
+            SELECT id as number, start_time
+            FROM round
+            ORDER BY number DESC
+            LIMIT 1;
+        `)[0] as { number: number, start_time: Date };
+        console.log('Forcing', round)
+
+        if (!isFinished(getRelativeDate(round.start_time))) return { failure: true }
+
+        await sendForcedNewRoundAnnouncement();
         await startRound(sql);
 
         return { success: true };
