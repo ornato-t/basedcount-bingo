@@ -38,8 +38,9 @@
 	<div class="bg-neutral-focus sticky top-0 z-10 mx-auto w-full grid place-items-center px-2 py-1.5 gap-y-1">
 		<Counter time={round.start_time} />
 	</div>
+	<div class="mx-auto mt-1.5 -mb-1 font-mono">Round begun on {round.start_time.toLocaleString()}</div>
 	{#if entries.length === 0}
-		<div class="divider mx-1.5">No boxes have been checked</div>
+		<div class="mx-auto my-auto opacity-70">No boxes have been checked</div>
 	{/if}
 	{#each entries as log, i}
 		{#if newDay(log, i)}
