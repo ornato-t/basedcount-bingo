@@ -21,14 +21,14 @@ CREATE TABLE box (
 );
 CREATE TABLE round (
     id SERIAL NOT NULL,
-    start_time timestamp SET DEFAULT NOW(),
+    start_time timestampz SET DEFAULT NOW(),
     PRIMARY KEY (id)
 );
 CREATE TABLE card (
     owner_discord_id TEXT NOT NULL,
     round_number INTEGER NOT NULL,
     bingo BOOLEAN NOT NULL DEFAULT FALSE,
-    bingo_time timestamp NOT NULL,
+    bingo_time timestampz NOT NULL,
     PRIMARY KEY (owner_discord_id, round_number),
     FOREIGN KEY (owner_discord_id) REFERENCES discord_user(discord_id),
     FOREIGN KEY (round_number) REFERENCES round(id)
@@ -54,7 +54,7 @@ CREATE TABLE checks (
     box_id INTEGER NOT NULL,
     card_owner_discord_id TEXT NOT NULL,
     card_round_number INTEGER NOT NULL,
-    time timestamp,
+    time timestampz,
     url TEXT NOT NULL,
     PRIMARY KEY (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number),
     FOREIGN KEY (discord_user_discord_id) REFERENCES discord_user(discord_id),
