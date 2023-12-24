@@ -1,1 +1,1 @@
-export default 'https://basedcount-bingo.netlify.app/oauth';
+export default 'https://bingo.basedcount.com/oauth';
