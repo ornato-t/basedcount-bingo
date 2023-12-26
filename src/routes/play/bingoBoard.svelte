@@ -5,8 +5,9 @@
 	import { regexImage, getImgUrl } from '$lib/image';
 	import { enhance } from '$app/forms';
 	import { hoverBox } from '$lib/hoverBoxStore';
+	import { hideCard } from '$lib/hideCardStore';
 
-	export let cards: Box[];
+	export let boxes: Box[];
 	export let token: string;
 	export let className: string;
 
@@ -24,12 +25,16 @@
 </script>
 
 <article class="grid grid-cols-5 w-fit h-fit mx-auto rounded-lg border-2 border-primary bg-neutral-focus select-none {className} w-full sm:w-auto">
-	{#each cards as box}
+	{#each boxes as box}
 		<form
 			use:enhance
 			method="post"
 			action="?/uncheck"
-			class="w-full h-[6rem] sm:w-28 sm:h-28 border cursor-pointer relative {$hoverBox === box.id ? 'bg-amber-300 border-warning text-warning-content' : 'border-primary'}"
+			class="
+				w-full h-[6rem] sm:w-28 sm:h-28 border cursor-pointer relative 
+				{$hoverBox === box.id ? 'bg-amber-300 border-warning text-warning-content' : 'border-primary'}
+				{$hideCard && !box.checked? 'text-transparent' : ''}
+			"
 		>
 			<label>
 				<button type="submit" class="opacity-0 absolute inset-0 w-full h-full" on:click={() => boxClicked(box)} />
@@ -39,7 +44,7 @@
 							<img class="z-0 absolute top-0 left-0 h-full w-full object-contain opacity-20" src={box.about_image} alt={box.about_name} />
 						</div>
 					{/if}
-					{#if regexImage.test(box.text)}
+					{#if regexImage.test(box.text) && (!$hideCard || box.checked)}
 						<div class="grid place-items-center h-full w-full">
 							<img class="z-10 absolute top-0 left-0 h-full w-full object-contain {$hoverBox === box.id ? 'opacity-80' : ''}" src={getImgUrl(box)} alt={getImgUrl(box)} />
 						</div>

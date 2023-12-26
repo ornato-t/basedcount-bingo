@@ -3,6 +3,7 @@
 	import BingoBoard from './bingoBoard.svelte';
 	import CloseRoundModal from './closeRoundModal.svelte';
 	import Log from './log.svelte';
+	import { hideCard } from '$lib/hideCardStore';
 
 	export let data: PageData;
 </script>
@@ -21,6 +22,9 @@
 							{data.currentUser?.name ?? ''}
 						</h2>
 						<span class="justify-self-end order-first lg:order-none">
+							<button class="btn btn-square btn-primary {$hideCard ? '' : 'btn-outline'} btn-sm mr-1.5" title="Hide boxes" on:click={() => $hideCard = !$hideCard}>
+								<i class="bx bx-hide text-lg" />
+							</button>
 							<a href="/leaderboard" class="btn btn-square btn-warning btn-outline btn-sm mr-1.5" data-sveltekit-preload-data="off" title="Leaderboard">
 								<i class="bx bx-trophy text-lg" />
 							</a>
@@ -58,7 +62,7 @@
 		</span>
 	</section>
 
-	<BingoBoard cards={data.cards} token={data.token ?? ''} className={'col-span-2'} />
+	<BingoBoard boxes={data.cards} token={data.token ?? ''} className={'col-span-2'} />
 
 	<Log entries={data.log} token={data.token ?? ''} round={data.round}/>
 </main>
