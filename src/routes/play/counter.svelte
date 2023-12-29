@@ -2,8 +2,12 @@
 	import { enhance } from '$app/forms';
 	import { getRelativeDate, isFinished } from './forcedNewRound';
 	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 
 	export let time: Date;
+
+	let reducedMotion = false;
+	onMount(() => (reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches));
 
 	let displayed = relativeDate(time);
 	$: finished = isFinished(displayed);
@@ -13,7 +17,8 @@
 	function relativeDate(roundStart: Date) {
 		const diff = getRelativeDate(roundStart);
 
-		if (finished && browser) {	//If on browser and duration is up, clear the interval and start a new round
+		if (finished && browser) {
+			//If on browser and duration is up, clear the interval and start a new round
 			clearInterval(interval);
 			const form = document.querySelector('form[action="?/forceNewRound"]')!;
 			//@ts-ignore
@@ -49,7 +54,11 @@
 		</div>
 		<div>
 			<span class="countdown font-mono text-3xl">
-				<span style="--value:{Math.round(displayed.seconds)};" />
+				{#if reducedMotion}
+					<span style="--value:0;" />
+				{:else}
+					<span style="--value:{Math.round(displayed.seconds)};" />
+				{/if}
 			</span>
 			sec
 		</div>
