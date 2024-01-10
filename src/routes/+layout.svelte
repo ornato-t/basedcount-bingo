@@ -34,7 +34,7 @@
 	<meta name="og:locale" content="en_GB" />
 	<meta name="og:type" content="website" />
 
-	<meta name="robots" content="noindex">
+	<meta name="robots" content="noindex" />
 </svelte:head>
 
 <nav class="navbar bg-base-100">
@@ -48,22 +48,30 @@
 </nav>
 
 <main class="custom-full-size">
-	<slot/>
+	<slot />
 </main>
 
 <footer class="footer items-center p-4 text-neutral-content grid">
 	<nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
-		<a href={DISCORD_LINK} class="btn btn-circle btn-ghost">
-			<i class="bx bxl-discord-alt bx-sm" />
-		</a>
-		<a href={WEBSITE_LINK} class="btn btn-circle btn-ghost">
-			<i class="bx bx-world bx-sm" />
-		</a>
-		<a href={LEMMY_LINK} class="btn btn-circle btn-ghost">
-			<i class="bx bxs-conversation bx-sm" />
-		</a>
-		<a href={GITHUB_LINK} class="btn btn-circle btn-ghost">
-			<i class="bx bxl-github bx-sm" />
-		</a>
+		<div class="tooltip" data-tip="Discord">
+			<a href={DISCORD_LINK} class="btn btn-circle btn-ghost">
+				<i class="bx bxl-discord-alt bx-sm" />
+			</a>
+		</div>
+		<div class="tooltip" data-tip="basedcount.com">
+			<a href={WEBSITE_LINK} class="btn btn-circle btn-ghost">
+				<i class="bx bx-world bx-sm" />
+			</a>
+		</div>
+		<div class="tooltip" data-tip="Based Lemmy">
+			<a href={LEMMY_LINK} class="btn btn-circle btn-ghost">
+				<i class="bx bxs-conversation bx-sm" />
+			</a>
+		</div>
+		<div class="tooltip" data-tip="Github">
+			<a href={GITHUB_LINK} class="btn btn-circle btn-ghost">
+				<i class="bx bxl-github bx-sm" />
+			</a>
+		</div>
 	</nav>
 </footer>
