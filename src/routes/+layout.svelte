@@ -51,25 +51,25 @@
 	<slot />
 </main>
 
-<footer class="footer items-center p-4 text-neutral-content grid">
-	<nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+<footer class="footer items-center p-6 text-neutral-content grid">
+	<nav class="grid-flow-col gap-8 md:place-self-center md:justify-self-end">
 		<div class="tooltip" data-tip="Discord">
-			<a href={DISCORD_LINK} class="btn btn-circle btn-ghost">
+			<a href={DISCORD_LINK} class="btn btn-circle btn-ghost btn-sm">
 				<i class="bx bxl-discord-alt bx-sm" />
 			</a>
 		</div>
-		<div class="tooltip" data-tip="basedcount.com">
-			<a href={WEBSITE_LINK} class="btn btn-circle btn-ghost">
+		<div class="tooltip" data-tip="Based Count website">
+			<a href={WEBSITE_LINK} class="btn btn-circle btn-ghost btn-sm">
 				<i class="bx bx-world bx-sm" />
 			</a>
 		</div>
-		<div class="tooltip" data-tip="Based Lemmy">
-			<a href={LEMMY_LINK} class="btn btn-circle btn-ghost">
+		<div class="tooltip" data-tip="Based Count Lemmy">
+			<a href={LEMMY_LINK} class="btn btn-circle btn-ghost btn-sm">
 				<i class="bx bxs-conversation bx-sm" />
 			</a>
 		</div>
-		<div class="tooltip" data-tip="Github">
-			<a href={GITHUB_LINK} class="btn btn-circle btn-ghost">
+		<div class="tooltip" data-tip="GitHub">
+			<a href={GITHUB_LINK} class="btn btn-circle btn-ghost btn-sm">
 				<i class="bx bxl-github bx-sm" />
 			</a>
 		</div>
