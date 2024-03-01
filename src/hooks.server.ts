@@ -9,6 +9,9 @@ const sql = postgres(PG_URI, {
 });
 
 export const handle: Handle = (async ({ event, resolve }) => {
+    const ip = [event.request.headers.get('x-forwarded-for'), event.request.headers.get('x-real-ip')];
+    console.log(`Request from IP: [${ip}]`);
+    
     event.locals.sql = sql;
 
     return resolve(event)
