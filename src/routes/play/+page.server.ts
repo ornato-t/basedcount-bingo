@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
         ORDER BY position ASC;
     ` as BoxCheckable[];
 
-    ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image:/kekw.png', creator_discord_id: '', checked: true });
+    ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image://kekw.png', creator_discord_id: '', checked: true });
 
     const log = await sql`
         WITH union_query AS (
