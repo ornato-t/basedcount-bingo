@@ -8,6 +8,7 @@ export async function getLeaderboardAndRounds(sql: postgres.Sql<Record<string, n
         RIGHT JOIN discord_user u ON w.discord_user_discord_id=u.discord_id
         WHERE u.player = true
         GROUP BY name, image, banner
+        HAVING COUNT(round_number) > 0
         ORDER BY victories DESC, name ASC;
 
         SELECT r.id as round_number, ARRAY_AGG((name, image, banner)) as winners

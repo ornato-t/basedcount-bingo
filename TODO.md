@@ -1,4 +1,3 @@
-- remove 0 wins from api leaderboard
 - bad luck counter (how many boxes have been called without any of them being present in your card)
 - Improved box search: I'd like to add a filtering system to the "boxes added by other players" section, so you can view only the boxes added by a certain user or only the boxes about a certain user
 - Recreate boxes: deleted boxes should be visible on the UI and their creators should have the possibility of reinstating them. If 2. was to be shipped, there should also be a filter to hide deleted boxes, possibly on by default
