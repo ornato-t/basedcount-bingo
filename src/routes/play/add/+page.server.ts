@@ -1,4 +1,4 @@
-import { bingoPlayerRole, serverId } from '$lib/discord';
+import { bingoPlayerRole, serverId } from '$lib/discordIds';
 import { DISCORD_TOKEN, SITE_URL } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';

@@ -1,6 +1,6 @@
 import { DISCORD_TOKEN } from "$env/static/private";
 import type { Box } from "$lib/bingo";
-import { bingoChannelId, bingoMasterRole, bingoPlayerRole } from "$lib/discord";
+import { bingoChannelId, bingoMasterRole, bingoPlayerRole } from "$lib/discordIds";
 import { regexImage, getImgUrl } from "$lib/image";
 import type { User } from "$lib/user";
 

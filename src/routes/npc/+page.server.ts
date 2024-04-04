@@ -1,5 +1,5 @@
 import { error, redirect } from '@sveltejs/kit';
-import { bingoPlayerRole, serverId } from '$lib/discord';
+import { bingoPlayerRole, serverId } from '$lib/discordIds';
 import { DISCORD_TOKEN, SITE_URL } from '$env/static/private';
 import type { Actions, PageServerLoad } from './$types';
 import type { DiscordMember, DiscordMemberFull } from '../play/add/+page.server';

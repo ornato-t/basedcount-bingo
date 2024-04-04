@@ -2,8 +2,8 @@ import type { PageServerLoad } from './$types';
 import type postgres from 'postgres';
 import { DISCORD_ID, DISCORD_SECRET, SITE_URL } from '$env/static/private';
 import { redirect, error as skError } from '@sveltejs/kit';
-import { serverId, bingoPlayerRole, bingoMasterRole, adminRole } from '../../lib/discord';
-import oauthUrl from '../../lib/oauthUrl';
+import { serverId, bingoPlayerRole, bingoMasterRole, adminRole } from '$lib/discordIds';
+import oauthUrl from '$lib/oauthUrl';
 
 export const load: PageServerLoad = async ({ url, locals, cookies }) => {
     const { sql } = locals;

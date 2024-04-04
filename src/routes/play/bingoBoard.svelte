@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { serverId } from '$lib/discord';
+	import { serverId } from '$lib/discordIds';
 	import { fit, parent_style } from '@leveluptuts/svelte-fit';
 	import type { BoxCheckable as Box } from './+page.server';
 	import { regexImage, getImgUrl } from '$lib/image';
