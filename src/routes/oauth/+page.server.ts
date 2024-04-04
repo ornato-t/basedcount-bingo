@@ -1,9 +1,10 @@
 import type { PageServerLoad } from './$types';
 import type postgres from 'postgres';
-import { DISCORD_ID, DISCORD_SECRET, SITE_URL } from '$env/static/private';
+import { DISCORD_ID, DISCORD_SECRET } from '$env/static/private';
 import { redirect, error as skError } from '@sveltejs/kit';
 import { serverId, bingoPlayerRole, bingoMasterRole, adminRole } from '$lib/discordIds';
 import oauthUrl from '$lib/oauthUrl';
+import { createImageLink } from '$lib/discordApi';
 
 export const load: PageServerLoad = async ({ url, locals, cookies }) => {
     const { sql } = locals;
@@ -79,8 +80,8 @@ async function upsertUser(user: UserProfile, sql: postgres.Sql<Record<string, ne
             ${user.user.id},
             ${user.nick ?? user.user.global_name ?? user.user.username}, 
             ${isAdmin(user)},
-            ${createLink(user.user.id, user.avatar, user.user.avatar, 'avatars')},
-            ${createLink(user.user.id, user.banner, user.user.banner, 'banners')},
+            ${createImageLink(user.user.id, user.avatar, user.user.avatar, 'avatars')},
+            ${createImageLink(user.user.id, user.banner, user.user.banner, 'banners')},
             ${uuid}
         )
         ON CONFLICT (discord_id) DO UPDATE SET 
@@ -104,15 +105,6 @@ function isPlayer(user: UserProfile) {
     if (user.roles.includes(bingoPlayerRole))
         return true;
     return false;
-}
-
-function createLink(id: string, localHash: string | undefined, globalHash: string | undefined, endpoint: 'avatars' | 'banners') {
-    if (localHash) return `https://cdn.discordapp.com/guilds/${serverId}/users/${id}/${endpoint}/${localHash}.webp`;
-    if (globalHash) return `https://cdn.discordapp.com/${endpoint}/${id}/${globalHash}.webp`
-
-    if (globalHash == null && endpoint === 'avatars') return SITE_URL + '/discord_green.png';   //Green default picture
-
-    return null;
 }
 
 interface UserProfile {

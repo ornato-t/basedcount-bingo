@@ -1,7 +1,6 @@
-import { bingoPlayerRole, serverId } from '$lib/discordIds';
-import { DISCORD_TOKEN, SITE_URL } from '$env/static/private';
-import { error } from '@sveltejs/kit';
+import { bingoPlayerRole } from '$lib/discordIds';
 import type { Actions, PageServerLoad } from './$types';
+import { createImageLink, getServerUsersAPI } from '$lib/discordApi';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
     const { sql } = locals;
@@ -39,18 +38,12 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 };
 
 async function getServerUsers(): Promise<DiscordMember[]> {
-    const res = await fetch(`https://discord.com/api/guilds/${serverId}/members?limit=1000`, {
-        headers: new Headers({ 'Authorization': `Bot ${DISCORD_TOKEN}` }),
-    });
-
-    const users = await res.json() as DiscordMemberFull[] | { message: string, code: number };
-
-    if ('message' in users) throw error(res.status, { message: users.message });
+    const users = await getServerUsersAPI();
 
     return users.map(member => ({
         name: member.nick ?? member.user.global_name ?? member.user.username,
         discord_id: member.user.id,
-        image: createLink(member.user.id, member.avatar, member.user.avatar),
+        image: createImageLink(member.user.id, member.avatar, member.user.avatar, 'avatars'),
         player: member.roles.includes(bingoPlayerRole)
     } satisfies DiscordMember)).sort((a, b) => {
         // Sort by player field first (players come first)
@@ -60,13 +53,6 @@ async function getServerUsers(): Promise<DiscordMember[]> {
         // If both are players or both are non-players, sort alphabetically
         return a.name.localeCompare(b.name);
     });
-}
-
-function createLink(id: string, localHash: string | undefined, globalHash: string | undefined) {
-    if (localHash) return `https://cdn.discordapp.com/guilds/${serverId}/users/${id}/avatars/${localHash}.webp`;
-    if (globalHash) return `https://cdn.discordapp.com/avatars/${id}/${globalHash}.webp`
-
-    return SITE_URL + '/discord_green.png';   //Green default picture
 }
 
 export const actions = {
@@ -128,22 +114,3 @@ export interface DiscordMember {
     player: boolean,
 }
 
-export interface DiscordMemberFull {
-    avatar: string
-    flags: number
-    joined_at: string
-    nick: string | null
-    roles: string[]
-    user: DiscordUser
-}
-
-interface DiscordUser {
-    id: string
-    username: string
-    avatar: string
-    discriminator: string
-    public_flags: number
-    flags: number
-    banner: string | null
-    global_name: string
-}

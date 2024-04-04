@@ -6,6 +6,7 @@ import { sendBoxAnnouncement, sendBoxUncheckAnnouncement, sendForcedNewRoundAnno
 import type { User } from '$lib/user';
 import type { Log } from '$lib/log';
 import { getRelativeDate, isFinished } from './forcedNewRound';
+import { refreshUserImages } from '$lib/discordApi';
 
 export const load: PageServerLoad = async ({ parent, locals, depends }) => {
     const { sql } = locals;
@@ -188,6 +189,7 @@ export const actions = {
         }
 
         await sendNewRoundAnnouncement(admin_discord_id, admin_name, admin_image, winnersArr);
+        await refreshDatabaseImages(sql);
         await startRound(sql);
 
         return { success: true };
@@ -292,6 +294,26 @@ async function startRound(sql: postgres.Sql<Record<string, never>>) {
             END LOOP;
         END $$;
     `;
+}
+
+async function refreshDatabaseImages(sql: postgres.Sql<Record<string, never>>) {
+    const users = await sql`
+        SELECT discord_id, image, banner, player
+        FROM discord_user
+        LEFT JOIN discord_user_wins_round win
+        ON discord_user.discord_id=win.discord_user_discord_id
+        GROUP BY discord_id, name, image, banner
+    ` as User[];
+
+    const updates = await refreshUserImages(users);
+
+    for(const user of updates) {
+        await sql`
+            UPDATE discord_user
+            SET image=${user.image}
+            WHERE discord_id=${user.discord_id}
+        `
+    }
 }
 
 export interface BoxCheckable extends Box {
