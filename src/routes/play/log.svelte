@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { regexImage, getImgUrl } from '$lib/image';
-	import type { Log } from './proxy+page.server';
+	import type { Log } from '$lib/log';
 	import { enhance } from '$app/forms';
 	import { hoverBox } from '$lib/hoverBoxStore';
 	import Counter from './counter.svelte';
