@@ -7,4 +7,3 @@
 - Edit boxes: there should be a way to change the wording of a box, possibly with a popup modal and a UI similar to the "Add new box" form
 - Description field: each box should have an additional field with a text explanation where the creator can clearly explain what are the requirements for triggering said box. This description would be highlighted when a user tries to check the box
 - test Promise.all in DB connection, check concurrent connections limit on DB side (will have to edit config)
-- better ip logging: explicit user; only show in prod, not in dev
