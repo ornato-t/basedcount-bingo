@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
         token: data.token,
         added,
         addedByOthers,
-        userList: getServerUsers()
+        userList: await getServerUsers()
     };
 };
 
