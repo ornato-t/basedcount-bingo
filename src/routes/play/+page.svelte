@@ -3,9 +3,21 @@
 	import BingoBoard from './bingoBoard.svelte';
 	import CloseRoundModal from './closeRoundModal.svelte';
 	import Log from './log.svelte';
+	import type {Log as Log_t} from '$lib/log'
 	import { hideCard } from '$lib/hideCardStore';
+	import type { User } from '$lib/user';
 
 	export let data: PageData;
+
+	function getCurrentBingos(users: User[], log: Log_t[]){
+		//Extract the discord id of users with a bingo from the log
+		const bingoDiscordIds = log.filter(el => el.type === 'bingo').map(el => el.discord_id);
+
+		//Pair discord ids with user data; only select bingo players
+		const bingoUsers = users.filter(user => bingoDiscordIds.includes(user.discord_id) && user.player);
+
+		return bingoUsers;
+	}
 </script>
 
 <main class="grid grid-cols-1 lg:grid-cols-4 gap-y-8 place-items-center lg:place-items-start">
@@ -67,4 +79,4 @@
 	<Log entries={data.log} token={data.token ?? ''} round={data.round}/>
 </main>
 
-<CloseRoundModal token={data.token ?? ''} users={data.users.filter((user) => user.player)} />
+<CloseRoundModal token={data.token ?? ''} users={getCurrentBingos(data.users, data.log)} />

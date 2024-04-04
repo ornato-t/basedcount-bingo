@@ -4,18 +4,19 @@
 	export let token: string;
 	export let users: User[];
 
-	let selectedUser: User;
+	let selectedUser: User | null;
 	let selectedUserList = new Set<User>();
 
 	function addSelectedUser() {
-		selectedUserList = new Set([...selectedUserList, selectedUser]);
+		if (selectedUser) selectedUserList = new Set([...selectedUserList, selectedUser]);
 	}
 
 	function removeSelectedUser(user: User) {
-        selectedUserList = new Set([...selectedUserList].filter(item => item !== user));
+		selectedUserList = new Set([...selectedUserList].filter((item) => item !== user));
+		selectedUser = null;
 	}
 
-    $: winners = [...selectedUserList].map(el => el.discord_id).join(';');
+	$: winners = [...selectedUserList].map((el) => el.discord_id).join(';');
 </script>
 
 <dialog id="closeRound" class="modal">
@@ -29,12 +30,16 @@
 			<p>If the round ended inconclusively don't select any winners.</p>
 
 			<select class="select select-primary w-full max-w-full mt-4" bind:value={selectedUser} on:change={addSelectedUser}>
-				<option value="default" disabled selected>Select a winner</option>
-				{#each users as user}
-					<option value={user}>
-						{user.name}
-					</option>
-				{/each}
+				{#if users.length > 0}
+					<option value="default" disabled selected>Select a winner</option>
+					{#each users as user}
+						<option value={user}>
+							{user.name}
+						</option>
+					{/each}
+				{:else}
+					<option value="default" disabled selected>No selectable winners</option>
+				{/if}
 			</select>
 			<div class="grid my-2 gap-y-2">
 				{#each selectedUserList as user}

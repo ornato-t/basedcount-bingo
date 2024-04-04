@@ -1,4 +1,3 @@
-- check if bingo before victory
 - auto fetch profile pictures
   - test with page refresh, then move to round start
 - remove 0 wins from api leaderboard
@@ -7,3 +6,5 @@
 - Recreate boxes: deleted boxes should be visible on the UI and their creators should have the possibility of reinstating them. If 2. was to be shipped, there should also be a filter to hide deleted boxes, possibly on by default
 - Edit boxes: there should be a way to change the wording of a box, possibly with a popup modal and a UI similar to the "Add new box" form
 - Description field: each box should have an additional field with a text explanation where the creator can clearly explain what are the requirements for triggering said box. This description would be highlighted when a user tries to check the box
+- test Promise.all in DB connection, check concurrent connections limit on DB side (will have to edit config)
+- better ip logging: explicit user; only show in prod, not in dev
