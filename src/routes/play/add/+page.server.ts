@@ -1,6 +1,5 @@
-import { bingoPlayerRole } from '$lib/discordIds';
 import type { Actions, PageServerLoad } from './$types';
-import { createImageLink, getServerUsersAPI } from '$lib/discordApi';
+import { getServerUsers } from '$lib/discordAPI';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
     const { sql } = locals;
@@ -37,23 +36,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
     };
 };
 
-async function getServerUsers(): Promise<DiscordMember[]> {
-    const users = await getServerUsersAPI();
 
-    return users.map(member => ({
-        name: member.nick ?? member.user.global_name ?? member.user.username,
-        discord_id: member.user.id,
-        image: createImageLink(member.user.id, member.avatar, member.user.avatar, 'avatars'),
-        player: member.roles.includes(bingoPlayerRole)
-    } satisfies DiscordMember)).sort((a, b) => {
-        // Sort by player field first (players come first)
-        if (a.player && !b.player) return -1;
-        if (!a.player && b.player) return 1;
-
-        // If both are players or both are non-players, sort alphabetically
-        return a.name.localeCompare(b.name);
-    });
-}
 
 export const actions = {
     add: async ({ request, locals }) => {
@@ -106,11 +89,3 @@ export const actions = {
         return { success: true }
     }
 } satisfies Actions;
-
-export interface DiscordMember {
-    name: string,
-    discord_id: string,
-    image: string | null,
-    player: boolean,
-}
-

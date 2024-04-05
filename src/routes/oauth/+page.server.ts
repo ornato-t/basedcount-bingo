@@ -4,7 +4,7 @@ import { DISCORD_ID, DISCORD_SECRET } from '$env/static/private';
 import { redirect, error as skError } from '@sveltejs/kit';
 import { serverId, bingoPlayerRole, bingoMasterRole, adminRole } from '$lib/discordIds';
 import oauthUrl from '$lib/oauthUrl';
-import { createImageLink } from '$lib/discordApi';
+import { createImageLink } from '$lib/discordAPI';
 
 export const load: PageServerLoad = async ({ url, locals, cookies }) => {
     const { sql } = locals;

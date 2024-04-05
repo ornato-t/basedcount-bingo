@@ -1,6 +1,6 @@
 import { DISCORD_TOKEN, SITE_URL } from "$env/static/private";
 import { error } from "@sveltejs/kit";
-import { serverId } from "./discordIds";
+import { bingoPlayerRole, serverId } from "./discordIds";
 import type { User } from "./user";
 
 //Return the list of images that have changed since the latest DB update
@@ -32,8 +32,27 @@ export function createImageLink(id: string, localHash: string | undefined, globa
     return null;
 }
 
+//Poll a list of users from the Discord API and convert them to an internal format
+export async function getServerUsers(): Promise<DiscordMember[]> {
+    const users = await getServerUsersAPI();
+
+    return users.map(member => ({
+        name: member.nick ?? member.user.global_name ?? member.user.username,
+        discord_id: member.user.id,
+        image: createImageLink(member.user.id, member.avatar, member.user.avatar, 'avatars'),
+        player: member.roles.includes(bingoPlayerRole)
+    } satisfies DiscordMember)).sort((a, b) => {
+        // Sort by player field first (players come first)
+        if (a.player && !b.player) return -1;
+        if (!a.player && b.player) return 1;
+
+        // If both are players or both are non-players, sort alphabetically
+        return a.name.localeCompare(b.name);
+    });
+}
+
 //Poll a list of users from the Discord API
-export async function getServerUsersAPI(): Promise<DiscordMemberFull[]> {
+async function getServerUsersAPI(): Promise<DiscordMemberFull[]> {
     const res = await fetch(`https://discord.com/api/guilds/${serverId}/members?limit=1000`, {
         headers: new Headers({ 'Authorization': `Bot ${DISCORD_TOKEN}` }),
     });
@@ -45,7 +64,7 @@ export async function getServerUsersAPI(): Promise<DiscordMemberFull[]> {
     return users;
 }
 
-export interface DiscordMemberFull {
+interface DiscordMemberFull {
     avatar: string
     flags: number
     joined_at: string
@@ -64,3 +83,11 @@ interface DiscordUser {
     banner: string | null
     global_name: string
 }
+
+interface DiscordMember {
+    name: string,
+    discord_id: string,
+    image: string | null,
+    player: boolean,
+}
+

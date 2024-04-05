@@ -6,7 +6,7 @@ import { sendBoxAnnouncement, sendBoxUncheckAnnouncement, sendForcedNewRoundAnno
 import type { User } from '$lib/user';
 import type { Log } from '$lib/log';
 import { getRelativeDate, isFinished } from './forcedNewRound';
-import { refreshUserImages } from '$lib/discordApi';
+import { refreshUserImages } from '$lib/discordAPI';
 
 export const load: PageServerLoad = async ({ parent, locals, depends }) => {
     const { sql } = locals;
