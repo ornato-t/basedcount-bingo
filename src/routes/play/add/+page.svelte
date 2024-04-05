@@ -9,7 +9,7 @@
 	const extract = (entry: DiscordMember) => entry.name;
 
 	let discord_id: string | null;
-
+	let editBoxes = false;
 	let imageBox = false;
 	let text = '';
 </script>
@@ -77,40 +77,61 @@
 		</a>
 	</div>
 
-	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12">
-		<h2 class="col-span-full text-xl">Boxes added by you</h2>
+	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-6 place-items-center md:mx-4 mt-12 bg-neutral-focus py-5 shadow-xl rounded-2xl">
+		<h2 class="col-span-full text-3xl">Boxes added by you</h2>
 		{#each data.added as box}
-			<form method="post" action="?/delete">
-				<button class="btn btn-xs btn-circle {box.deleted ? 'btn-accent' : 'btn-error'} relative {box.about_name ? 'top-14' : 'top-8'} left-[8.3rem] z-10">
-					<i class="bx {box.deleted ? 'bx-redo text-accent-content' : 'bx-x text-error-content'} text-2xl relative bottom-1" />
-				</button>
-				{#if box.about_name}
-					<div class="flex items-center {box.deleted ? 'opacity-40' : ''}">
-						<div class="avatar">
-							<div class="h-6 rounded-full">
-								<img src={box.about_image} alt="{box.about_name}'s avatar" />
+			{#if editBoxes || !box.deleted}
+				<form method="post" action="?/delete" class="relative">
+					{#if editBoxes}
+						<button class="btn btn-xs btn-circle {box.deleted ? 'btn-accent' : 'btn-error'} absolute top-7 left-[8.3rem] z-10">
+							<i class="bx {box.deleted ? 'bx-redo text-accent-content' : 'bx-x text-error-content'} text-2xl relative bottom-1" />
+						</button>
+					{/if}
+					{#if box.about_name}
+							<div class="flex items-center overflow-clip whitespace-nowrap w-36 {box.deleted ? 'opacity-40' : ''}">
+							<div class="avatar">
+								<div class="h-6 rounded-full">
+									<img src={box.about_image} alt="{box.about_name}'s avatar" />
+								</div>
 							</div>
+							<span class="ml-2">
+								{box.about_name}
+							</span>
 						</div>
-						<span class="ml-2">
-							{box.about_name}
-						</span>
-					</div>
-				{:else}
-					<span class="invisible"> Hi! </span>
-				{/if}
-				<Box {box} />
-				<input name="box" type="hidden" value={box.box_id} />
-				<input name="token" type="hidden" value={data.token ?? null} />
-			</form>
+					{:else}
+						<span class="invisible"> Hi! </span>
+					{/if}
+					<Box {box} />
+					<input name="box" type="hidden" value={box.box_id} />
+					<input name="token" type="hidden" value={data.token ?? null} />
+				</form>
+			{/if}
 		{/each}
+		<div class="col-span-full w-full grid grid-cols-2 px-6">
+			<label class="label cursor-pointer w-fit gap-2">
+				<input type="checkbox" class="checkbox checkbox-secondary" bind:checked={editBoxes} />
+				<span class="label-text">Edit boxes</span>
+			</label>
+
+			<div class="flex gap-6 place-self-end {editBoxes ? '' : 'invisible'}">
+				<span>
+					<i class="bx bx-x text-error-content bg-error text-xl px-1 rounded-full" />
+					<span class="align-top">Delete box</span>
+				</span>
+				<span>
+					<i class="bx bx-redo text-accent-content bg-accent text-xl px-1 rounded-full" />
+					<span class="align-top">Restore box</span>
+				</span>
+			</div>
+		</div>
 	</div>
 
-	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-8 place-items-center md:mx-4 mt-12">
-		<h2 class="col-span-full text-xl">Boxes added by other players</h2>
+	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-8 place-items-center md:mx-4 mt-12 bg-neutral-focus py-5 shadow-xl rounded-2xl">
+		<h2 class="col-span-full text-3xl">Boxes added by other players</h2>
 		{#each data.addedByOthers as box}
 			<div class="flex flex-col">
 				{#if box.about_name}
-					<div class="flex items-center">
+					<div class="flex items-center overflow-clip whitespace-nowrap w-36">
 						<div class="avatar">
 							<div class="h-6 rounded-full">
 								<img src={box.about_image} alt="{box.about_name}'s avatar" />
@@ -125,7 +146,7 @@
 				{/if}
 				<Box {box} />
 				<span class="text-sm"> Added by: </span>
-				<div class="flex items-center">
+				<div class="flex items-center overflow-clip whitespace-nowrap w-36">
 					<div class="avatar">
 						<div class="h-6 rounded-full">
 							<img src={box.creator_image} alt="{box.creator_name}'s avatar" />
