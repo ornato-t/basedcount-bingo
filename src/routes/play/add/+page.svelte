@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import type { DiscordMember } from '$lib/discordAPI';
 	import Typehead from 'svelte-typeahead';
-	import type { DiscordMember } from './+page.server';
 	import Box from './box.svelte';
 
 	export let data: PageData;
@@ -81,13 +81,11 @@
 		<h2 class="col-span-full text-xl">Boxes added by you</h2>
 		{#each data.added as box}
 			<form method="post" action="?/delete">
-				<button class="btn btn-xs btn-circle btn-error relative {box.about_name ? 'top-14' : 'top-8'} left-[8.3rem] z-10 text-neutral-content">
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-					</svg>
+				<button class="btn btn-xs btn-circle {box.deleted ? 'btn-accent' : 'btn-error'} relative {box.about_name ? 'top-14' : 'top-8'} left-[8.3rem] z-10">
+					<i class="bx {box.deleted ? 'bx-redo text-accent-content' : 'bx-x text-error-content'} text-2xl relative bottom-1" />
 				</button>
 				{#if box.about_name}
-					<div class="flex items-center">
+					<div class="flex items-center {box.deleted ? 'opacity-40' : ''}">
 						<div class="avatar">
 							<div class="h-6 rounded-full">
 								<img src={box.about_image} alt="{box.about_name}'s avatar" />

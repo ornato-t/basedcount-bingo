@@ -84,7 +84,7 @@ interface DiscordUser {
     global_name: string
 }
 
-interface DiscordMember {
+export interface DiscordMember {
     name: string,
     discord_id: string,
     image: string | null,

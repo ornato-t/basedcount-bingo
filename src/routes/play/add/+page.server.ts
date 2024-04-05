@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
     const [added, addedByOthers] = await Promise.all([
         sql`
-            SELECT box.id as box_id, box.text as box_text, u.name as about_name, u.image as about_image, box.about_discord_id
+            SELECT box.id as box_id, box.text as box_text, u.name as about_name, u.image as about_image, box.about_discord_id, box.deleted
             FROM box
             LEFT JOIN discord_user AS u ON box.about_discord_id=u.discord_id
             WHERE box.creator_discord_id = (
@@ -15,17 +15,17 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
                 FROM discord_user
                 WHERE token=${data.token ?? null}
                 LIMIT 1
-            ) AND deleted != TRUE
-        ` as Promise<{ box_id: number, box_text: string, about_name: string, about_image: string, about_discord_id: string }[]>,
+            )
+        ` as Promise<Box[]>,
         sql`
             SELECT b.about_discord_id as about_discord_id, ab.name as about_name, ab.image as about_image, cr.name as creator_name, cr.image as creator_image, b.id as box_id, 
-                CASE WHEN ab.token = ${data.token ?? null} THEN NULL ELSE b.text END AS box_text
+                CASE WHEN ab.token = ${data.token ?? null} THEN NULL ELSE b.text END AS box_text, FALSE as deleted
             FROM box b
             LEFT JOIN discord_user ab ON ab.discord_id=about_discord_id
             INNER JOIN discord_user cr ON cr.discord_id=creator_discord_id
             WHERE b.deleted = false AND cr.token != ${data.token ?? null}
             ORDER BY b.id ASC
-        ` as Promise<{ about_discord_id: string, about_name: string, about_image: string, creator_name: string, creator_image: string, box_id: number, box_text: string | null }[]>
+        ` as Promise<Box[]>
     ]);
 
     return {
@@ -69,6 +69,7 @@ export const actions = {
 
         return { success: true }
     },
+    //Delete a box or restore a deleted one (only available to the creator of the box)
     delete: async ({ request, locals }) => {
         const { sql } = locals;
 
@@ -78,7 +79,7 @@ export const actions = {
 
         await sql`
             UPDATE box
-            SET deleted = TRUE 
+            SET deleted = NOT deleted 
             WHERE id IN (
                 SELECT b.id 
                 FROM box b
@@ -90,3 +91,15 @@ export const actions = {
         return { success: true }
     }
 } satisfies Actions;
+
+
+export interface Box {
+    box_id: number,
+    box_text: string | null,
+    about_name: string,
+    about_image: string,
+    about_discord_id: string,
+    deleted: boolean
+    creator_name?: string
+    creator_image?: string
+}
