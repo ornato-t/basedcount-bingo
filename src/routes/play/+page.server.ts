@@ -14,48 +14,49 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
 
     depends('play');
 
-    //Pulls the most recent card for the user with the provided token
-    const ownCard = await sql`
-        SELECT v.id, v.text, v.checked, v.about_discord_id, v.checked, u.image as about_image, u.name as about_name
-        FROM v_box_in_card v
-        LEFT JOIN discord_user u ON v.about_discord_id=u.discord_id
-        WHERE v.token=${data.token ?? ''}
-        ORDER BY position ASC;
-    ` as BoxCheckable[];
+    const [ownCard, log, round] = await Promise.all([
+        //Pulls the most recent card for the user with the provided token
+        sql`
+            SELECT v.id, v.text, v.checked, v.about_discord_id, v.checked, u.image as about_image, u.name as about_name
+            FROM v_box_in_card v
+            LEFT JOIN discord_user u ON v.about_discord_id=u.discord_id
+            WHERE v.token=${data.token ?? ''}
+            ORDER BY position ASC;
+        ` as Promise<BoxCheckable[]>,
+        //Pull bingo and box checking log
+        sql`
+            WITH union_query AS (
+                    SELECT owner_discord_id AS discord_id, bingo_time AS time, 'bingo' as type, null as text, null as url, round_number as round, -1 as box_id
+                    FROM card
+                    WHERE bingo=true
+                UNION
+                    SELECT discord_user_discord_id AS discord_id, time AS time, 'check' as type, b.text, c.url, card_round_number as round, c.box_id as box_id
+                    FROM checks c
+                    INNER JOIN box b ON c.box_id=b.id
+            )
+            SELECT uq.discord_id, uq.time, uq.type, uq.text, uq.url, u.discord_id, u.name, u.image,  uq.box_id,
+                CASE WHEN u.token = ${data.token ?? ''} THEN true ELSE false END AS self
+            FROM union_query uq
+            INNER JOIN discord_user u ON uq.discord_id=u.discord_id
+            WHERE uq.round=(SELECT MAX(id) FROM round)
+            ORDER BY uq.time ASC;
+        ` as Promise<Log[]>,
+        //Pull info about the current round
+        sql`
+            SELECT id as number, start_time
+            FROM round
+            ORDER BY number DESC
+            LIMIT 1;
+        ` as Promise<{ number: number, start_time: Date }[]>
+    ]);
 
     ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image://kekw.png', creator_discord_id: '', checked: true });
-
-    const log = await sql`
-        WITH union_query AS (
-                SELECT owner_discord_id AS discord_id, bingo_time AS time, 'bingo' as type, null as text, null as url, round_number as round, -1 as box_id
-                FROM card
-                WHERE bingo=true
-            UNION
-                SELECT discord_user_discord_id AS discord_id, time AS time, 'check' as type, b.text, c.url, card_round_number as round, c.box_id as box_id
-                FROM checks c
-                INNER JOIN box b ON c.box_id=b.id
-        )
-        SELECT uq.discord_id, uq.time, uq.type, uq.text, uq.url, u.discord_id, u.name, u.image,  uq.box_id,
-            CASE WHEN u.token = ${data.token ?? ''} THEN true ELSE false END AS self
-        FROM union_query uq
-        INNER JOIN discord_user u ON uq.discord_id=u.discord_id
-        WHERE uq.round=(SELECT MAX(id) FROM round)
-        ORDER BY uq.time ASC;
-    ` as Log[];
-
-    //Pull info about the current round
-    const round = (await sql`
-        SELECT id as number, start_time
-        FROM round
-        ORDER BY number DESC
-        LIMIT 1;
-    `)[0] as { number: number, start_time: Date };
 
     return {
         users: data.users,
         token: data.token,
         cards: ownCard,
-        round,
+        round: round[0],
         log
     };
 };
@@ -307,7 +308,7 @@ async function refreshDatabaseImages(sql: postgres.Sql<Record<string, never>>) {
 
     const updates = await refreshUserImages(users);
 
-    for(const user of updates) {
+    for (const user of updates) {
         await sql`
             UPDATE discord_user
             SET image=${user.image}
