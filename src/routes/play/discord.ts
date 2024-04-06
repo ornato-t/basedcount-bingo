@@ -1,4 +1,4 @@
-import { DISCORD_TOKEN } from "$env/static/private";
+import { DISCORD_TOKEN, SITE_URL } from "$env/static/private";
 import type { Box } from "$lib/bingo";
 import { bingoChannelId, bingoMasterRole, bingoPlayerRole } from "$lib/discordIds";
 import { regexImage, getImgUrl } from "$lib/image";
@@ -131,7 +131,8 @@ export async function sendContestation(box: Box, author: User, contester: User, 
                     <@${contester.discord_id}> disputes <@${author.discord_id}> checked the following box:\n
                     [Image](${url})\n
                     Reason:
-                    > ${reason}
+                    > ${reason}\n
+                    Visit the [bingo site](${SITE_URL}/play) to submit your vote.
                 `,
                 image: { url: getImgUrl(box) }
             }]
@@ -146,7 +147,8 @@ export async function sendContestation(box: Box, author: User, contester: User, 
                     <@${contester.discord_id}> disputes <@${author.discord_id}> checked the following box:\n
                     [${box.text}](${url})\n
                     Reason:
-                    > ${reason}
+                    > ${reason}\n
+                    Visit the [bingo site](${SITE_URL}/play) to submit your vote.
                 `,
             }]
         });

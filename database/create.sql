@@ -56,12 +56,10 @@ CREATE TABLE checks (
     card_round_number INTEGER NOT NULL,
     time timestamptz,
     url TEXT NOT NULL,
-    contestation_id INTEGER,
     PRIMARY KEY (discord_user_discord_id, box_id, card_owner_discord_id, card_round_number),
     FOREIGN KEY (discord_user_discord_id) REFERENCES discord_user(discord_id),
     FOREIGN KEY (box_id) REFERENCES BOX(id),
     FOREIGN KEY (card_owner_discord_id, card_round_number) REFERENCES card(owner_discord_id, round_number)
-    FOREIGN KEY (contestation_id) REFERENCES contestation(id),
 );
 CREATE OR REPLACE VIEW v_box_in_card AS
     SELECT 
@@ -84,19 +82,27 @@ CREATE OR REPLACE VIEW v_box_in_card AS
     WHERE c.round_number=(SELECT MAX(round_number) FROM card
 );
 CREATE TABLE contestation (
-    id SERIAL NOT NULL,
+    contester_discord_id TEXT NOT NULL,
+    checker_discord_id TEXT NOT NULL,
+    box_id INTEGER NOT NULL,
+    card_owner_discord_id TEXT NOT NULL,
+    card_round_number INTEGER NOT NULL,
     reason TEXT NOT NULL,
     time timestamptz NOT NULL,
-    author_discord_id TEXT NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (author_discord_id) REFERENCES discord_user(discord_id)
+    PRIMARY KEY (contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number),
+    FOREIGN KEY (checker_discord_id, box_id, card_owner_discord_id, card_round_number) REFERENCES checks(discord_user_discord_id, box_id, card_owner_discord_id, card_round_number),
+    FOREIGN KEY (contester_discord_id) REFERENCES discord_user(discord_id)
 );
 CREATE TABLE contestation_vote (
-    contestation_id INTEGER NOT NULL,
+    contester_discord_id TEXT NOT NULL,
+    checker_discord_id TEXT NOT NULL,
+    box_id INTEGER NOT NULL,
+    card_owner_discord_id TEXT NOT NULL,
+    card_round_number INTEGER NOT NULL,
     voter_discord_id TEXT NOT NULL,
     vote BOOL NOT NULL,
-    PRIMARY KEY (contestation_id, voter_discord_id),
-    FOREIGN KEY (contestation_id) REFERENCES contestation(id),
+    PRIMARY KEY (contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number, voter_discord_id),
+    FOREIGN KEY (contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number) REFERENCES contestation(contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number),
     FOREIGN KEY (voter_discord_id) REFERENCES discord_user(discord_id)
 );
 

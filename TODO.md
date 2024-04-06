@@ -2,3 +2,6 @@
 - Improved box search: I'd like to add a filtering system to the "boxes added by other players" section, so you can view only the boxes added by a certain user or only the boxes about a certain user
 - Edit boxes: there should be a way to change the wording of a box, possibly with a popup modal and a UI similar to the "Add new box" form
 - Description field: each box should have an additional field with a text explanation where the creator can clearly explain what are the requirements for triggering said box. This description would be highlighted when a user tries to check the box
+- On site contestation
+  - update type definition and query to include contestation_id in log
+    - consider showing warning icon or different background colour for contested entries

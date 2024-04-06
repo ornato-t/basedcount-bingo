@@ -250,6 +250,17 @@ export const actions = {
             `.then(user => user[0]) as Promise<User>,
         ]);
 
+        await Promise.all([
+            sql`
+                INSERT INTO contestation(contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number, reason, time)
+                VALUES(${contester.discord_id}, ${checker.discord_id}, ${box.id}, ${checker.discord_id}, (SELECT MAX(id) FROM round), ${reasonStr}, NOW())          
+            `,
+            sql`
+                INSERT INTO contestation_vote(contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number, voter_discord_id, vote)
+                VALUES(${contester.discord_id}, ${checker.discord_id}, ${box.id}, ${checker.discord_id}, (SELECT MAX(id) FROM round), ${contester.discord_id}, TRUE)          
+            `,
+        ]);
+
         await sendContestation(box, checker, contester, urlStr, reasonStr);
 
         return { success: true };
