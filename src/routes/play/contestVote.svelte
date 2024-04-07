@@ -2,12 +2,39 @@
 	import { regexImage, getImgUrl } from '$lib/image';
 	import { enhance } from '$app/forms';
 	import type { LogContestation } from '$lib/log';
+	import type { CurrentUser } from '../+layout.server';
 
 	export let token: string;
 	export let contestation: LogContestation;
 	export let round: number;
+	export let currentUser: CurrentUser;
 
-    let ownVote: boolean;
+	let ownVote: boolean;
+
+	$: voteAgainst = getVoters(contestation, ownVote, true);
+	$: voteFavour = getVoters(contestation, ownVote, false);
+
+	function getVoters(log: LogContestation, ownVote: boolean, match: boolean): { discord_id: string; name: string; image: string }[] {
+		let votes = log.votes
+			.filter((el) => el.vote === match)
+			.map((el) => ({
+				discord_id: el.voter_discord_id,
+				name: el.voter_name,
+				image: el.voter_image
+			}));
+        
+		if (ownVote === match && !votes.some((v) => v.discord_id === currentUser.discord_id)) {
+			votes.push({
+				discord_id: currentUser.discord_id,
+				name: currentUser.name,
+				image: currentUser.image
+			});
+		} else if (ownVote && ownVote !== match) {
+            votes = votes.filter(v => v.discord_id !== currentUser.discord_id);
+        }
+
+		return votes;
+	}
 </script>
 
 <dialog id="contestVoteBox" class="modal">
@@ -47,31 +74,27 @@
 			}}
 		>
 			<div class="flex flex-row w-full">
-				<input type="radio" id="radioVote1" name="vote" bind:group={ownVote} value={true} class="hidden" />
+				<input type="radio" id="radioVote1" name="vote" bind:group={ownVote} value={false} class="hidden" />
 				<label for="radioVote1" class="rounded-xl border border-success grid grid-cols-4 flex-grow p-1">
-					{#each contestation.votes as vote}
-						{#if !vote.vote}
-							<div class="avatar">
-								<div class="w-10 rounded-full">
-									<img src={vote.voter_image} alt="{vote.voter_name}'s avatar" />
-								</div>
+					{#each voteFavour as vote}
+						<div class="avatar">
+							<div class="w-10 rounded-full">
+								<img src={vote.image} alt="{vote.name}'s avatar" />
 							</div>
-						{/if}
+						</div>
 					{/each}
 				</label>
 
 				<div class="divider divider-horizontal">VS</div>
 
-				<input type="radio" id="radioVote2" name="vote" class="hidden" bind:group={ownVote} value={false} />
+				<input type="radio" id="radioVote2" name="vote" class="hidden" bind:group={ownVote} value={true} />
 				<label for="radioVote2" class="rounded-xl border border-error grid grid-cols-4 flex-grow p-1">
-					{#each contestation.votes as vote}
-						{#if vote.vote}
-							<div class="avatar">
-								<div class="w-10 rounded-full">
-									<img src={vote.voter_image} alt="{vote.voter_name}'s avatar" />
-								</div>
+					{#each voteAgainst as vote}
+						<div class="avatar">
+							<div class="w-10 rounded-full">
+								<img src={vote.image} alt="{vote.name}'s avatar" />
 							</div>
-						{/if}
+						</div>
 					{/each}
 				</label>
 			</div>

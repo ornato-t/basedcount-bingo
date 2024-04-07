@@ -15,12 +15,12 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
             ORDER BY victories DESC      
         ` as Promise<User[]>,
         sql`
-            SELECT name, admin, image, banner, COUNT(round_number) as victories, banned
+            SELECT name, admin, image, banner, COUNT(round_number) as victories, banned, discord_id
             FROM discord_user
             LEFT JOIN discord_user_wins_round win
             ON discord_user.discord_id=win.discord_user_discord_id
             WHERE token=${token ?? null}
-            GROUP BY name, admin, image, banner, banned  
+            GROUP BY name, admin, image, banner, banned, discord_id
         ` as Promise<CurrentUserDb[]>
     ]);
 
@@ -35,6 +35,7 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
             name: currentUserDb[0].name,
             victories: Number.parseInt(currentUserDb[0].victories),
             banned: currentUserDb[0].banned,
+            discord_id: currentUserDb[0].discord_id,
         };
     }
 
@@ -52,13 +53,15 @@ interface CurrentUserDb {
     banner: string,
     victories: string,
     banned: boolean,
+    discord_id: string,
 }
 
-interface CurrentUser {
+export interface CurrentUser {
     name: string,
     admin: boolean,
     image: string,
     banner: string,
     victories: number,
     banned: boolean,
+    discord_id: string,
 }

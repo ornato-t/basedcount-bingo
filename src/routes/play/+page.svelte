@@ -6,8 +6,11 @@
 	import type {Log as Log_t} from '$lib/log'
 	import { hideCard } from '$lib/hideCardStore';
 	import type { User } from '$lib/user';
+	import type { CurrentUser } from '../+layout.server';
 
 	export let data: PageData;
+
+	const currentUserProp = data.currentUser as CurrentUser;
 
 	function getCurrentBingos(users: User[], log: Log_t[]){
 		//Extract the discord id of users with a bingo from the log
@@ -76,7 +79,7 @@
 
 	<BingoBoard boxes={data.cards} token={data.token ?? ''} className={'col-span-2'} />
 
-	<Log entries={data.log} token={data.token ?? ''} round={data.round}/>
+	<Log entries={data.log} token={data.token ?? ''} round={data.round} currentUser={currentUserProp}/>
 </main>
 
 <CloseRoundModal token={data.token ?? ''} users={getCurrentBingos(data.users, data.log)} />

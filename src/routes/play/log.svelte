@@ -6,10 +6,12 @@
 	import { hoverBox } from '$lib/hoverBoxStore';
 	import Counter from './counter.svelte';
 	import ContestVote from './contestVote.svelte';
+	import type { CurrentUser } from '../+layout.server';
 
 	export let entries: Log[];
 	export let token: string;
 	export let round: { number: number; start_time: Date };
+	export let currentUser: CurrentUser;
 
 	let confirmed: number | null;
 	let contesting: Log = entries[0];
@@ -173,5 +175,5 @@
 	</dialog>
 {/if}
 {#if contestation}
-	<ContestVote {token} {contestation} round={round.number}/>
+	<ContestVote {token} {contestation} round={round.number} {currentUser}/>
 {/if}
