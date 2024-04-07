@@ -92,6 +92,7 @@
 					</button>
 				</div>
 			{:else if !log.self && log.type === 'contestation'}
+				<!-- TODO fix for contester -->
 				<div class="self-end flex flex-row gap-1.5 mb-1.5">
 					<!-- svelte-ignore missing-declaration -->
 					<button

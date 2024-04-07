@@ -39,7 +39,7 @@
 
 <dialog id="contestVoteBox" class="modal">
 	<div class="modal-box max-w-xl">
-		<h3 class="font-bold text-lg">Vote a contestation</h3>
+		<h3 class="font-bold text-lg">Vote in a contestation</h3>
 
 		<p class="pt-4">
 			<span class="font-mono">{contestation.name}</span>
@@ -75,7 +75,7 @@
 		>
 			<div class="flex flex-row w-full">
 				<input type="radio" id="radioVote1" name="vote" bind:group={ownVote} value={false} class="hidden" />
-				<label for="radioVote1" class="rounded-xl border border-success grid grid-cols-4 flex-grow p-1">
+				<label for="radioVote1" class="rounded-xl border border-success grid grid-cols-4 place-items-center flex-grow p-1">
 					{#each voteFavour as vote}
 						<div class="avatar">
 							<div class="w-10 rounded-full">
@@ -88,7 +88,7 @@
 				<div class="divider divider-horizontal">VS</div>
 
 				<input type="radio" id="radioVote2" name="vote" class="hidden" bind:group={ownVote} value={true} />
-				<label for="radioVote2" class="rounded-xl border border-error grid grid-cols-4 flex-grow p-1">
+				<label for="radioVote2" class="rounded-xl border border-error grid grid-cols-4 place-items-center flex-grow p-1">
 					{#each voteAgainst as vote}
 						<div class="avatar">
 							<div class="w-10 rounded-full">
