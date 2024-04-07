@@ -4,7 +4,7 @@ import type postgres from 'postgres';
 import { checkBingo } from './bingo';
 import { sendBoxAnnouncement, sendBoxUncheckAnnouncement, sendForcedNewRoundAnnouncement, sendContestation, sendNewRoundAnnouncement } from './discord';
 import type { User } from '$lib/user';
-import type { Log } from '$lib/log';
+import type { Log, LogContestation } from '$lib/log';
 import { getRelativeDate, isFinished } from './forcedNewRound';
 import { refreshUserImages } from '$lib/discordAPI';
 
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
 
     depends('play');
 
-    const [ownCard, log, round] = await Promise.all([
+    const [ownCard, logBase, logContestation, round] = await Promise.all([
         //Pulls the most recent card for the user with the provided token
         sql`
             SELECT v.id, v.text, v.checked, v.about_discord_id, v.checked, u.image as about_image, u.name as about_name
@@ -38,9 +38,41 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
                 CASE WHEN u.token = ${data.token ?? ''} THEN true ELSE false END AS self
             FROM union_query uq
             INNER JOIN discord_user u ON uq.discord_id=u.discord_id
-            WHERE uq.round=(SELECT MAX(id) FROM round)
-            ORDER BY uq.time ASC;
+            WHERE uq.round=(SELECT MAX(id) FROM round);
         ` as Promise<Log[]>,
+        //Pull contestation log with appropriate side data
+        sql`
+            SELECT
+                c.contester_discord_id as discord_id, c.time, 'contestation' as type, b.text, ch.url, uco.name, uco.image, c.box_id, c.reason,
+                CASE WHEN uco.token = ${data.token ?? ''} THEN true ELSE false END AS self,
+                c.box_id as box_id, c.checker_discord_id as box_checker_discord_id, uch.name as box_checker_name, uch.image as box_checker_image,
+                json_agg(
+                    json_build_object(
+                        'voter_discord_id', uv.discord_id,
+                        'voter_name', uv.name,
+                        'voter_image', uv.image,
+                        'vote', cv.vote
+                    )
+                ) AS votes
+            FROM contestation c
+            INNER JOIN discord_user uco ON uco.discord_id=c.contester_discord_id
+            INNER JOIN discord_user uch ON uch.discord_id=c.checker_discord_id
+            INNER JOIN box b ON b.id=c.box_id
+            INNER JOIN checks ch ON ch.discord_user_discord_id=c.checker_discord_id
+                AND ch.box_id=c.box_id
+                AND ch.card_owner_discord_id=c.card_owner_discord_id
+                AND ch.card_round_number=c.card_round_number
+            INNER JOIN contestation_vote cv ON c.contester_discord_id = cv.contester_discord_id
+                AND c.checker_discord_id = cv.checker_discord_id
+                AND c.box_id = cv.box_id
+                AND c.card_round_number = cv.card_round_number
+            INNER JOIN discord_user uv ON uv.discord_id=cv.voter_discord_id
+            WHERE c.card_round_number = (SELECT MAX(id) FROM round)
+            GROUP BY c.contester_discord_id, c.time, b.text, ch.url, uco.name, uco.image, c.box_id, c.reason,
+                uco.token,
+                c.box_id, c.checker_discord_id, uch.name, uch.image,
+                c.card_owner_discord_id, c.card_round_number;
+        ` as Promise<LogContestation[]>,
         //Pull info about the current round
         sql`
             SELECT id as number, start_time
@@ -50,6 +82,7 @@ export const load: PageServerLoad = async ({ parent, locals, depends }) => {
         ` as Promise<{ number: number, start_time: Date }[]>
     ]);
 
+    const log = [...logBase, ...logContestation].sort((a, b) => a.time.valueOf() - b.time.valueOf());   //Merge the two log arrays and sort by date
     ownCard.splice(12, 0, { about_discord_id: null, id: NaN, text: 'image://kekw.png', creator_discord_id: '', checked: true });
 
     return {
@@ -257,7 +290,9 @@ export const actions = {
             `,
             sql`
                 INSERT INTO contestation_vote(contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number, voter_discord_id, vote)
-                VALUES(${contester.discord_id}, ${checker.discord_id}, ${box.id}, ${checker.discord_id}, (SELECT MAX(id) FROM round), ${contester.discord_id}, TRUE)          
+                VALUES
+                    (${contester.discord_id}, ${checker.discord_id}, ${box.id}, ${checker.discord_id}, (SELECT MAX(id) FROM round), ${contester.discord_id}, TRUE),    
+                    (${contester.discord_id}, ${checker.discord_id}, ${box.id}, ${checker.discord_id}, (SELECT MAX(id) FROM round), ${checker.discord_id}, FALSE),
             `,
         ]);
 

@@ -20,5 +20,20 @@ interface LogBingo {
     self: boolean
     box_id: -1,
 }
+export interface LogContestation {
+    discord_id: string,
+    time: Date,
+    type: 'contestation',
+    text: '',
+    url: '',
+    name: string,
+    image: string,
+    self: boolean
+    box_id: number,
+    reason: string,
+    box_checker_discord_id: string,
+    box_checker_name: string,
+    box_checker_image: string,
+}
 
-export type Log = LogCheck | LogBingo;
+export type Log = LogCheck | LogBingo | LogContestation;
