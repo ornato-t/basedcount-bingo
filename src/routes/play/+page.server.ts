@@ -300,6 +300,9 @@ export const actions = {
 
         return { success: true };
     },
+    contestVote: async () => {
+        //TODO
+    },
     manual: async () => { }
 } satisfies Actions;
 

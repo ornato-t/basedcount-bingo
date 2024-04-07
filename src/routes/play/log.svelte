@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { regexImage, getImgUrl } from '$lib/image';
-	import type { Log } from '$lib/log';
+	import type { Log, LogContestation } from '$lib/log';
 	import { enhance } from '$app/forms';
 	import { hoverBox } from '$lib/hoverBoxStore';
 	import Counter from './counter.svelte';
+	import ContestVote from './contestVote.svelte';
 
 	export let entries: Log[];
 	export let token: string;
@@ -12,6 +13,7 @@
 
 	let confirmed: number | null;
 	let contesting: Log = entries[0];
+	let contestation: LogContestation;
 
 	onMount(() => {
 		const element = document.querySelector('.carousel-vertical')!;
@@ -64,8 +66,10 @@
 						{log.text}
 					{/if}
 				</div>
-			{:else}
+			{:else if log.type === 'bingo'}
 				<div class="chat-bubble chat-bubble-accent uppercase">bingo!</div>
+			{:else if log.type === 'contestation'}
+				<div class="chat-bubble chat-bubble-error uppercase">contestation!</div>
 			{/if}
 			{#if !log.self && log.type === 'check'}
 				<div class="self-end flex flex-row gap-1.5 mb-1.5">
@@ -83,6 +87,22 @@
 					</button>
 					<button class="btn btn-square btn-ghost btn-outline btn-sm" on:click={() => copyLink(log, i)} title="Copy message link">
 						<i class="bx {confirmed === i ? 'bx-check text-xl' : 'bx-copy text-lg'}" />
+					</button>
+				</div>
+			{:else if !log.self && log.type === 'contestation'}
+				<div class="self-end flex flex-row gap-1.5 mb-1.5">
+					<!-- svelte-ignore missing-declaration -->
+					<button
+						class="btn btn-square btn-error btn-outline btn-sm"
+						title="Contest box"
+						on:click={() => {
+							// @ts-ignore
+							contestation = log;
+							// @ts-ignore
+							contestVoteBox.showModal();
+						}}
+					>
+						<i class="bx bx-comment-dots text-lg" />
 					</button>
 				</div>
 			{/if}
@@ -107,7 +127,7 @@
 			{:else}
 				<p class="pl-2 py-4 font-mono">{contesting.text}</p>
 			{/if}
-			<p>Enter your complaint below. It will be sent on Discord and relayed to the admins.</p>
+			<p>Enter your complaint below. Other users will be able to vote it.</p>
 
 			<!-- svelte-ignore missing-declaration -->
 			<form
@@ -151,4 +171,7 @@
 			</form>
 		</div>
 	</dialog>
+{/if}
+{#if contestation}
+	<ContestVote {token} {contestation} round={round.number}/>
 {/if}
