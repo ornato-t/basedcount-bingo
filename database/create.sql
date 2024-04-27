@@ -90,7 +90,7 @@ CREATE TABLE contestation (
     reason TEXT NOT NULL,
     time timestamptz NOT NULL,
     PRIMARY KEY (contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number),
-    FOREIGN KEY (checker_discord_id, box_id, card_owner_discord_id, card_round_number) REFERENCES checks(discord_user_discord_id, box_id, card_owner_discord_id, card_round_number),
+    FOREIGN KEY (checker_discord_id, box_id, card_owner_discord_id, card_round_number) REFERENCES checks(discord_user_discord_id, box_id, card_owner_discord_id, card_round_number) ON DELETE CASCADE,
     FOREIGN KEY (contester_discord_id) REFERENCES discord_user(discord_id)
 );
 CREATE TABLE contestation_vote (
@@ -102,7 +102,7 @@ CREATE TABLE contestation_vote (
     voter_discord_id TEXT NOT NULL,
     vote BOOL NOT NULL,
     PRIMARY KEY (contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number, voter_discord_id),
-    FOREIGN KEY (contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number) REFERENCES contestation(contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number),
+    FOREIGN KEY (contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number) REFERENCES contestation(contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number) ON DELETE CASCADE,
     FOREIGN KEY (voter_discord_id) REFERENCES discord_user(discord_id)
 );
 
