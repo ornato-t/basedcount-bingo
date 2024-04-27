@@ -292,7 +292,7 @@ export const actions = {
                 INSERT INTO contestation_vote(contester_discord_id, checker_discord_id, box_id, card_owner_discord_id, card_round_number, voter_discord_id, vote)
                 VALUES
                     (${contester.discord_id}, ${checker.discord_id}, ${box.id}, ${checker.discord_id}, (SELECT MAX(id) FROM round), ${contester.discord_id}, TRUE),    
-                    (${contester.discord_id}, ${checker.discord_id}, ${box.id}, ${checker.discord_id}, (SELECT MAX(id) FROM round), ${checker.discord_id}, FALSE),
+                    (${contester.discord_id}, ${checker.discord_id}, ${box.id}, ${checker.discord_id}, (SELECT MAX(id) FROM round), ${checker.discord_id}, FALSE)
             `,
         ]);
 
