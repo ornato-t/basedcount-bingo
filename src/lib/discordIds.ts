@@ -10,7 +10,10 @@ const ids = {
 }
 
 export const serverId = ids.server;
-export const bingoPlayerRole = !dev ? ids.playerRole : '';
-export const bingoMasterRole = !dev ? ids.adminRole1 : '';
+//Discord pings disabled to limit spam during inactivity
+export const bingoPlayerRole = '';
+export const bingoMasterRole = '';
+//export const bingoPlayerRole = !dev ? ids.playerRole : '';
+//export const bingoMasterRole = !dev ? ids.adminRole1 : '';
 export const adminRole = !dev ? ids.adminRole2 : '';
 export const bingoChannelId = !dev ? ids.channel : devChannel;
